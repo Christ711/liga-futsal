@@ -9,7 +9,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: package.json, pnpm-lock.yaml, tsconfig.json, next.config.ts, .nvmrc, src/app/layout.tsx, src/app/page.tsx
       Hecho cuando: `pnpm build` y `pnpm typecheck` pasan y `package.json` fija `packageManager` (pnpm 10) y `engines.node` (24.x, la LTS que soporta Vercel).
 
-- [ ] T2 - Configurar ESLint y Prettier con los scripts `lint`, `format` y `format:check`
+- [x] T2 - Configurar ESLint y Prettier con los scripts `lint`, `format` y `format:check`
       RF: [SIN RF] (ADR 013)
       Archivos: eslint.config.mjs, .prettierrc, .prettierignore, package.json
       Hecho cuando: los tres scripts corren sin errores sobre el proyecto.
