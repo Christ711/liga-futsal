@@ -19,7 +19,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: eslint.config.mjs
       Hecho cuando: un import temporal de `@prisma/client` en `src/domain` hace fallar `pnpm lint` y, sin él, `pnpm lint` pasa.
 
-- [ ] T4 - Configurar Vitest y crear `domain/result` con el catálogo de errores
+- [x] T4 - Configurar Vitest y crear `domain/result` con el catálogo de errores
       RF: [SIN RF] (ADR 010, ADR 013)
       Archivos: vitest.config.ts, src/domain/result.ts, src/domain/result.test.ts, package.json
       Hecho cuando: `pnpm test` ejecuta en verde el test que construye un `ok` y un rechazo con `code` y `message` en español.
