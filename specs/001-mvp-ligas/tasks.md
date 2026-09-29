@@ -24,7 +24,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: vitest.config.ts, src/domain/result.ts, src/domain/result.test.ts, package.json
       Hecho cuando: `pnpm test` ejecuta en verde el test que construye un `ok` y un rechazo con `code` y `message` en español.
 
-- [ ] T5 - Configurar Tailwind v4, shadcn/ui y el layout raíz en español
+- [x] T5 - Configurar Tailwind v4, shadcn/ui y el layout raíz en español
       RF: [SIN RF] (ADR 012, principio 6)
       Archivos: src/app/globals.css, components.json, src/lib/utils.ts, src/components/ui/button.tsx, src/app/layout.tsx
       Hecho cuando: la página de inicio muestra un `Button` de shadcn con estilos y el `<html>` tiene `lang="es-CL"`.
