@@ -23,10 +23,12 @@ Vitest (versión mayor 5) para tests unitarios, Playwright para tests E2E y la m
 - Los tests unitarios del dominio corren con Vitest sin base de datos ni Next.js.
 - Los tests E2E corren con Playwright en Chromium con viewport de 360 px contra la app construida para producción y una base real de pruebas (la base concreta la fija la ADR de entornos y CI).
 - RNF-2 se mide con un test de Playwright que limita la red a 150 ms de latencia y 1,6 Mbps y la CPU a 4 veces más lenta, con caché vacía.
+- ESLint se fija en la versión mayor 9: `eslint-config-next` 16.3 depende de `eslint-plugin-react` 7.37.5, que no es compatible con ESLint 10. Es una herramienta de desarrollo que no llega a producción.
 - ESLint y Prettier corren en CI y un error de cualquiera de los dos bloquea el merge; Prettier no se discute en revisión, se aplica.
 - Los comandos concretos se registran en `AGENTS.md`.
 - Revertir: reemplazar herramientas sin tocar el código de la app; los tests se reescriben en la sintaxis de la nueva herramienta.
 
 ## Revisar si...
+- `eslint-config-next` publica una versión compatible con ESLint 10 (entonces se sube ESLint a la 10).
 - Next.js publica sus reglas de lint para otra herramienta o deja de mantener su configuración de ESLint.
 - Los E2E en CI superan 10 minutos por ejecución.
