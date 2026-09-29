@@ -17,7 +17,7 @@ El dominio no puede importar Next.js, Prisma, Better Auth ni módulos con efecto
 `packages/domain` y `apps/web` con workspaces. Gana: frontera del dominio aplicada por el gestor de paquetes. Pierde: configuración de workspaces, builds y rutas de TypeScript desproporcionada para una sola app. Cambiarla: coste medio.
 
 ## Decisión
-Una sola app con capas en el nivel superior y funcionalidades dentro de cada capa, gestionada con pnpm (versión mayor vigente: 12). La frontera del dominio queda en una sola carpeta verificable por lint, sin la ceremonia de un monorepo; pnpm es más rápido en CI, no permite importar dependencias no declaradas y lo soportan Vercel y GitHub Actions.
+Una sola app con capas en el nivel superior y funcionalidades dentro de cada capa, gestionada con pnpm 10. La frontera del dominio queda en una sola carpeta verificable por lint, sin la ceremonia de un monorepo; pnpm es más rápido en CI y no permite importar dependencias no declaradas. Se fija la versión mayor 10 porque es la última que Vercel soporta de forma nativa; las versiones 11 y 12 solo funcionan en Vercel activando Corepack con una opción experimental, lo que es un riesgo para una app que funciona sola.
 
 ## Consecuencias
 - Estructura:
@@ -47,5 +47,6 @@ Una sola app con capas en el nivel superior y funcionalidades dentro de cada cap
 - Revertir: mover archivos y actualizar importaciones y reglas de lint.
 
 ## Revisar si...
+- Vercel soporta de forma nativa una versión mayor de pnpm posterior a la 10.
 - Aparece un segundo artefacto desplegable (otra app o un servicio) que comparta el dominio, lo que justificaría un monorepo.
 - Las funcionalidades crecen tanto que recorrer capas para un cambio pequeño se vuelve la queja habitual.

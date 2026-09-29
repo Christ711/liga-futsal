@@ -4,10 +4,10 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 
 ## Fase 0 - Base del proyecto
 
-- [ ] T1 - Inicializar la app Next.js con TypeScript, pnpm y versiones fijas
+- [x] T1 - Inicializar la app Next.js con TypeScript, pnpm y versiones fijas
       RF: [SIN RF] (ADR 002, ADR 016)
       Archivos: package.json, pnpm-lock.yaml, tsconfig.json, next.config.ts, .nvmrc, src/app/layout.tsx, src/app/page.tsx
-      Hecho cuando: `pnpm build` y `pnpm typecheck` pasan y `package.json` fija `packageManager` (pnpm 12) y `engines.node`.
+      Hecho cuando: `pnpm build` y `pnpm typecheck` pasan y `package.json` fija `packageManager` (pnpm 10) y `engines.node` (24.x, la LTS que soporta Vercel).
 
 - [ ] T2 - Configurar ESLint y Prettier con los scripts `lint`, `format` y `format:check`
       RF: [SIN RF] (ADR 013)
