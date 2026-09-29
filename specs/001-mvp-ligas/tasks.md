@@ -14,7 +14,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: eslint.config.mjs, .prettierrc, .prettierignore, package.json
       Hecho cuando: los tres scripts corren sin errores sobre el proyecto.
 
-- [ ] T3 - Agregar las reglas de lint de frontera de imports
+- [x] T3 - Agregar las reglas de lint de frontera de imports
       RF: [SIN RF] (principio 8, ADR 016)
       Archivos: eslint.config.mjs
       Hecho cuando: un import temporal de `@prisma/client` en `src/domain` hace fallar `pnpm lint` y, sin él, `pnpm lint` pasa.
