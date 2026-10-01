@@ -50,5 +50,12 @@ export default defineConfig([
       ],
     },
   },
-  globalIgnores([".next/**", "out/**", "next-env.d.ts", "src/generated/**"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "next-env.d.ts",
+    "src/generated/**",
+    "test-results/**",
+    "playwright-report/**",
+  ]),
 ]);

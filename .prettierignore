@@ -5,6 +5,8 @@ pnpm-lock.yaml
 next-env.d.ts
 prisma/migrations/
 src/generated/
+test-results/
+playwright-report/
 
 # Documentos del flujo SDD: los mantienen las skills sdd-*, no Prettier.
 *.md
