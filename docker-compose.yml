@@ -1,0 +1,38 @@
+# Servicios de desarrollo local (ADR 014, ADR 018). CI levanta los suyos.
+name: liga-futsal
+
+services:
+  postgres:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: liga_dev
+      # Sin contraseña: solo escucha en 127.0.0.1 y así no se versiona
+      # ninguna credencial (principio 5).
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      # 5433 en el host porque 5432 lo usan otros proyectos del autor.
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d liga_dev"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  mailpit:
+    image: axllent/mailpit:v1.31.3
+    ports:
+      # Interfaz web y API para leer correos en los tests.
+      - "127.0.0.1:8025:8025"
+      # SMTP al que envía la app en desarrollo.
+      - "127.0.0.1:1025:1025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  postgres-data:
