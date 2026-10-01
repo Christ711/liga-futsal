@@ -59,7 +59,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: playwright.config.ts, tests/e2e/global-setup.ts, tests/e2e/smoke.spec.ts, package.json
       Hecho cuando: `pnpm test:e2e` construye la app, reinicia su propia base (`liga_e2e`) y abre `/` a 360 px en verde.
 
-- [ ] T12 - Crear el workflow de CI de ADR 014
+- [x] T12 - Crear el workflow de CI de ADR 014
       RF: [SIN RF] (principio 2, ADR 014)
       Archivos: .github/workflows/ci.yml
       Hecho cuando: un PR ejecuta en GitHub Actions instalación, generación de Prisma, formato, lint, tipos, unitarios, integración, build y E2E con servicios Postgres 17 y Mailpit, todo en verde.
