@@ -39,7 +39,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: prisma/schema.prisma, prisma.config.ts, src/server/db/client.ts, package.json
       Hecho cuando: `pnpm prisma validate` pasa, el cliente se genera y `pnpm typecheck` pasa importándolo.
 
-- [ ] T8 - Validar las variables de entorno con Zod y crear `.env.example`
+- [x] T8 - Validar las variables de entorno con Zod y crear `.env.example`
       RF: [SIN RF] (principio 5)
       Archivos: src/server/env.ts, .env.example, .gitignore
       Hecho cuando: arrancar sin `DATABASE_URL` falla con un mensaje que nombra la variable, y `git check-ignore .env` confirma que `.env` está ignorado.

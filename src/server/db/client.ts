@@ -3,11 +3,12 @@ import "server-only";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 import { PrismaClient } from "@/generated/prisma/client";
+import { getEnv } from "@/server/env";
 
 // Driver pg por TCP en todos los entornos (ADR 004): Postgres de Docker en local
 // y CI, y la URL con pooling de Neon en producción.
 function createPrismaClient() {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg({ connectionString: getEnv().DATABASE_URL });
   return new PrismaClient({ adapter });
 }
 
