@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:up": "docker compose up -d --wait"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",

@@ -29,10 +29,10 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/app/globals.css, components.json, src/lib/utils.ts, src/components/ui/button.tsx, src/app/layout.tsx
       Hecho cuando: la página de inicio muestra un `Button` de shadcn con estilos y el `<html>` tiene `lang="es-CL"`.
 
-- [ ] T6 - Crear el `docker-compose.yml` con Postgres 17 y Mailpit y el script `db:up`
+- [x] T6 - Crear el `docker-compose.yml` con Postgres 17 y Mailpit y el script `db:up`
       RF: [SIN RF] (ADR 014, ADR 018)
       Archivos: docker-compose.yml, package.json
-      Hecho cuando: `pnpm db:up` deja Postgres escuchando en el puerto 5432 y la interfaz de Mailpit en el 8025.
+      Hecho cuando: `pnpm db:up` deja Postgres escuchando en el puerto 5433 (5432 lo usan otros proyectos del autor) y la interfaz de Mailpit en el 8025.
 
 - [ ] T7 - Instalar Prisma 7 con el adaptador de Neon y crear el cliente en `server/db`
       RF: [SIN RF] (ADR 004)
