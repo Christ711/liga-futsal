@@ -34,7 +34,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: docker-compose.yml, package.json
       Hecho cuando: `pnpm db:up` deja Postgres escuchando en el puerto 5433 (5432 lo usan otros proyectos del autor) y la interfaz de Mailpit en el 8025.
 
-- [ ] T7 - Instalar Prisma 7 con el adaptador de Neon y crear el cliente en `server/db`
+- [x] T7 - Instalar Prisma 7 con el adaptador `pg` y crear el cliente en `server/db`
       RF: [SIN RF] (ADR 004)
       Archivos: prisma/schema.prisma, prisma.config.ts, src/server/db/client.ts, package.json
       Hecho cuando: `pnpm prisma validate` pasa, el cliente se genera y `pnpm typecheck` pasa importándolo.

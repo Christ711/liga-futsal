@@ -17,17 +17,18 @@ Esquema en `schema.prisma`, cliente tipado generado, migraciones SQL con detecci
 Query builder tipado sin ORM; migraciones y tipos escritos a mano. Gana: control total del SQL, pocas dependencias. Pierde: más trabajo manual y más riesgo de desincronizar tipos y base. Cambiarla: coste medio.
 
 ## Decisión
-Prisma ORM con `prisma migrate`, en la última versión mayor estable (7.x a la fecha; el tag `latest` de npm apunta a una RC de la 8, que no se usa). El autor lo conoce bien, y sus migraciones con detección de desvíos son las más seguras para una app que no se vigila a diario. La conexión a Neon usa el adaptador oficial de Prisma para Neon, compatible con funciones serverless y transacciones.
+Prisma ORM con `prisma migrate`, en la última versión mayor estable (7.x a la fecha; el tag `latest` de npm apunta a una RC de la 8, que no se usa). El autor lo conoce bien, y sus migraciones con detección de desvíos son las más seguras para una app que no se vigila a diario. La conexión usa el adaptador `@prisma/adapter-pg` (driver `pg` por TCP) en todos los entornos: Postgres de Docker en local y CI (ADR 014) y la URL con pooling de Neon en producción. Se descartó el adaptador de Neon (`@prisma/adapter-neon`) porque su driver habla con Neon por WebSocket o HTTP y no se conecta a un Postgres estándar sin un proxy; usarlo solo en producción dejaría a CI probando un driver distinto del que corre en producción.
 
 ## Consecuencias
 - El esquema vive en `schema.prisma` y cada cambio genera una migración SQL versionada que se revisa en el PR.
 - Las migraciones generadas no se editan a mano después de aplicarse (límite de AGENTS.md sobre archivos autogenerados).
 - Build y CI ejecutan `prisma generate`; producción aplica migraciones con `prisma migrate deploy`, nunca `migrate dev`.
 - Las operaciones de RF-50, RF-74, RF-75 y RF-92 se ejecutan en una transacción.
-- Las versiones de `prisma`, `@prisma/client` y el adaptador de Neon se fijan en la misma versión exacta.
+- Las versiones de `prisma`, `@prisma/client` y `@prisma/adapter-pg` se fijan en la misma versión exacta.
+- En producción `DATABASE_URL` apunta a la URL con pooling de Neon (host `-pooler`).
 - Revertir: reescribir las consultas con otra herramienta; las tablas y los datos se mantienen.
 
 ## Revisar si...
-- El adaptador de Prisma para Neon deja de soportar transacciones o funciones serverless.
+- La medición de RNF-2 muestra que abrir conexiones TCP desde las funciones de Vercel es el cuello de botella (entonces se evalúa el adaptador de Neon con un proxy en local y CI).
 - Una versión mayor de Prisma obliga a una migración que cuesta más que cambiar de herramienta.
 - El tamaño del cliente de Prisma impide cumplir RNF-2.
