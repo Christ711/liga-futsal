@@ -21,6 +21,7 @@ Base reiniciada por ejecución y fixtures con Prisma por test. Da tests independ
 
 ## Consecuencias
 - Los E2E y los tests de integración usan bases separadas (`liga_e2e` y `liga_integration`) para no pisarse.
+- El reinicio lo hace `tests/support/reset-test-database.ts` (crea la base si falta, recrea el esquema `public` y aplica `prisma migrate deploy`) en vez de `prisma migrate reset`, que exige consentimiento manual cuando lo ejecuta un agente de IA. Decisión del autor (2026-10-01); como resguardo, solo reinicia `liga_integration` o `liga_e2e` en un host local o en CI.
 - Los fixtures crean datos respetando las mismas restricciones que los casos de uso (nombres normalizados, relaciones válidas); si un caso de uso agrega una regla, el fixture se actualiza en el mismo PR.
 - Cada test genera nombres y correos únicos, de modo que el orden de ejecución no importa.
 - Revertir: reemplazar fixtures por pasos de interfaz o por una semilla.
