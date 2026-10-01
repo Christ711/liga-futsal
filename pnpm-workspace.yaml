@@ -1,5 +1,11 @@
+# Dependencias autorizadas a ejecutar su script de instalación.
+# Al migrar a pnpm 11, estas claves se reemplazan por `allowBuilds`.
+onlyBuiltDependencies:
+  # Descargan el motor de Prisma que aplica las migraciones.
+  - "@prisma/engines"
+  - prisma
+
 # Dependencias cuyos scripts de instalación no se ejecutan.
-# Al migrar a pnpm 11, esta clave se reemplaza por `allowBuilds` (con valor false).
 ignoredBuiltDependencies:
   # Trae su binario nativo como dependencia opcional por plataforma;
   # su script de instalación es solo un respaldo.

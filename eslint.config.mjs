@@ -50,5 +50,5 @@ export default defineConfig([
       ],
     },
   },
-  globalIgnores([".next/**", "out/**", "next-env.d.ts"]),
+  globalIgnores([".next/**", "out/**", "next-env.d.ts", "src/generated/**"]),
 ]);

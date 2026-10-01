@@ -13,3 +13,6 @@ next-env.d.ts
 
 # Sistema
 .DS_Store
+
+# Cliente de Prisma generado
+src/generated/
