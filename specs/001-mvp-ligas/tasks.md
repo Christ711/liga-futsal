@@ -49,7 +49,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/time.ts, src/server/time.test.ts
       Hecho cuando: con el reloj fijado en 2026-01-01T02:00Z el test obtiene "2025-12-31", y con 2026-08-01T03:30Z obtiene "2026-07-31".
 
-- [ ] T10 - Configurar tests de integración de Vitest contra el Postgres local
+- [x] T10 - Configurar tests de integración de Vitest contra el Postgres local
       RF: [SIN RF] (ADR 013, ADR 014)
       Archivos: vitest.config.ts, tests/integration/setup.ts, package.json
       Hecho cuando: `pnpm test:integration` reinicia su propia base (`liga_integration`, separada de la de E2E) con las migraciones y ejecuta en verde un test que consulta `SELECT 1` con el cliente de Prisma.

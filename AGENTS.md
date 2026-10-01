@@ -8,6 +8,7 @@ Gestor de paquetes: pnpm. Los scripts los crea la primera tarea de implementaci√
 - Base local: `pnpm db:up` (Postgres en Docker) y `pnpm db:migrate`
 - Ejecutar: `pnpm dev`
 - Tests unitarios: `pnpm test`
+- Tests de integraci√≥n: `pnpm test:integration` (necesita `pnpm db:up`)
 - Tests E2E: `pnpm test:e2e`
 - Lint: `pnpm lint`
 - Formato: `pnpm format` (verificar: `pnpm format:check`)
@@ -50,7 +51,7 @@ Gestor de paquetes: pnpm. Los scripts los crea la primera tarea de implementaci√
 
 ## Verificaci√≥n obligatoria al terminar cualquier tarea
 1. `pnpm format:check`, `pnpm lint` y `pnpm typecheck` sin errores.
-2. `pnpm test` en verde.
+2. `pnpm test` y `pnpm test:integration` en verde.
 3. `pnpm test:e2e` en verde.
 4. El comportamiento nuevo o cambiado coincide con la spec de `specs/` que lo origina.
 

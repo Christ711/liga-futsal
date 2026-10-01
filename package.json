@@ -15,9 +15,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
     "db:up": "docker compose up -d --wait",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:integration": "vitest run --project integration"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.0",
