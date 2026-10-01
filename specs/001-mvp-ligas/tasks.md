@@ -44,7 +44,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/env.ts, .env.example, .gitignore
       Hecho cuando: arrancar sin `DATABASE_URL` falla con un mensaje que nombra la variable, y `git check-ignore .env` confirma que `.env` está ignorado.
 
-- [ ] T9 - Crear el módulo de tiempo con "hoy" y "ahora" en America/Santiago
+- [x] T9 - Crear el módulo de tiempo con "hoy" y "ahora" en America/Santiago
       RF: [SIN RF] (ADR 015; lo usan RF-17, RF-94 y RF-97)
       Archivos: src/server/time.ts, src/server/time.test.ts
       Hecho cuando: con el reloj fijado en 2026-01-01T02:00Z el test obtiene "2025-12-31", y con 2026-08-01T03:30Z obtiene "2026-07-31".
