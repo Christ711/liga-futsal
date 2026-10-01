@@ -18,7 +18,8 @@
     "test": "vitest run --project unit",
     "db:up": "docker compose up -d --wait",
     "postinstall": "prisma generate",
-    "test:integration": "vitest run --project integration"
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.0",
@@ -35,6 +36,7 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.19.0",
     "@types/pg": "8.23.1",

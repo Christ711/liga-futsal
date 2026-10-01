@@ -54,7 +54,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: vitest.config.ts, tests/integration/setup.ts, package.json
       Hecho cuando: `pnpm test:integration` reinicia su propia base (`liga_integration`, separada de la de E2E) con las migraciones y ejecuta en verde un test que consulta `SELECT 1` con el cliente de Prisma.
 
-- [ ] T11 - Configurar Playwright a 360 px contra el build de producción, con reinicio de base
+- [x] T11 - Configurar Playwright a 360 px contra el build de producción, con reinicio de base
       RF: [SIN RF] (ADR 013, ADR 019)
       Archivos: playwright.config.ts, tests/e2e/global-setup.ts, tests/e2e/smoke.spec.ts, package.json
       Hecho cuando: `pnpm test:e2e` construye la app, reinicia su propia base (`liga_e2e`) y abre `/` a 360 px en verde.
