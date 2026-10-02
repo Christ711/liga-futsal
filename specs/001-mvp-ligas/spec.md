@@ -153,7 +153,7 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 
   Dado A y B con 7 puntos, DG +2, 5 GF y sus partidos entre ellos empatados / Cuando se muestra la tabla / Entonces A y B comparten la misma posición.
 
-  Dado A, B y C con 7 puntos, DG +2 y 5 GF, donde A suma 4 puntos entre ellos y B y C suman 1 cada uno / Cuando se muestra la tabla / Entonces A aparece primero y B y C comparten la posición siguiente.
+  Dado A, B y C con 7 puntos, DG +2 y 5 GF, donde A suma 6 puntos entre ellos y B y C suman 1 cada uno / Cuando se muestra la tabla / Entonces A aparece primero y B y C comparten la posición siguiente. [MODIFICADO] (Anterior: donde A suma 4 puntos entre ellos y B y C suman 1 cada uno.)
 
 ### Descuentos de puntos
 - RF-67: MIENTRAS la liga está en curso, EL SISTEMA permitirá a su dueño aplicar a un equipo un descuento de una cantidad entera de puntos mayor que cero con un motivo obligatorio de hasta 100 caracteres.
@@ -243,3 +243,4 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 
 ## Historial de cambios
 - 2026-10-02 - RF-44, el escenario de 4 equipos de RF-45 y el caso límite de 3 equipos: el orden de la fecha pasa de "sin consecutivos si existe" a "con el mínimo posible de consecutivos" - con 4 equipos no existe ningún orden sin partidos consecutivos del mismo equipo (comprobado por búsqueda exhaustiva), así que la regla anterior nunca aplicaba a ligas de 3 o 4 equipos y su escenario era imposible.
+- 2026-10-02 - Tercer escenario de desempate de RF-66: A pasa de sumar 4 a sumar 6 puntos entre los empatados - la combinación 4, 1 y 1 no puede producirse con ningún conjunto de partidos entre tres equipos; la regla no cambia.
