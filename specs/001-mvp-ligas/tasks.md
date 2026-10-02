@@ -178,17 +178,17 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 
 ## Fase 2 - Modelo de datos y autenticación
 
-- [ ] T35 - Configurar Better Auth con Prisma y montar `/api/auth`
+- [x] T35 - Configurar Better Auth con Prisma y montar `/api/auth`
       RF: RF-5, RF-6
       Archivos: src/server/auth/auth.ts, src/app/api/auth/[...all]/route.ts, prisma/schema.prisma, prisma/migrations/
       Hecho cuando: un test de integración crea un usuario con `auth.api` sin verificar correo, con `name` vacío, y su sesión vence a 30 días sin IP ni user agent.
 
-- [ ] T36 - Crear el esquema de ligas, equipos, escudos y jugadores
+- [x] T36 - Crear el esquema de ligas, equipos, escudos y jugadores
       RF: RF-18, RF-21, RF-26, RF-35
       Archivos: prisma/schema.prisma, prisma/migrations/, tests/integration/schema-leagues.test.ts
       Hecho cuando: la migración se aplica y los tests muestran que un segundo registro con la misma `nameKey` en el mismo ámbito falla.
 
-- [ ] T37 - Crear el esquema de fechas, partidos, goles, descuentos, snapshot e intentos fallidos
+- [x] T37 - Crear el esquema de fechas, partidos, goles, descuentos, snapshot e intentos fallidos
       RF: RF-37, RF-40, RF-99
       Archivos: prisma/schema.prisma, prisma/migrations/, tests/integration/schema-matchdays.test.ts
       Hecho cuando: la migración se aplica, borrar un jugador con goles falla por clave foránea y dos fechas con el mismo día en una liga fallan.

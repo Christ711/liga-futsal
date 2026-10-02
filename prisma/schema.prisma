@@ -10,3 +10,248 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// --- Better Auth (ADR 005). Modelos generados con `auth generate`; `name` se guarda vacío. ---
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt @db.Timestamptz(3)
+  sessions      Session[]
+  accounts      Account[]
+  leagues       League[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime @db.Timestamptz(3)
+  token     String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime? @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// --- Ligas, equipos, escudos y jugadores (plan 001, modelo de datos) ---
+
+enum LeagueStatus {
+  IN_PROGRESS
+  FINALIZED
+}
+
+model League {
+  id          String          @id @default(cuid())
+  ownerId     String
+  owner       User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name        String
+  /// Clave de comparación del nombre (domain/names): sin espacios exteriores y en minúsculas.
+  nameKey     String
+  /// Semestre con formato AAAA-1 o AAAA-2 (RF-16).
+  semester    String
+  status      LeagueStatus    @default(IN_PROGRESS)
+  finalizedAt DateTime?       @db.Timestamptz(3)
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
+  teams       Team[]
+  players     Player[]
+  matchdays   Matchday[]
+  snapshot    LeagueSnapshot?
+
+  // RF-18: el nombre no se repite dentro de un semestre, sin importar el dueño.
+  @@unique([semester, nameKey])
+  @@index([ownerId])
+  @@map("league")
+}
+
+model Team {
+  id         String           @id @default(cuid())
+  leagueId   String
+  league     League           @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  name       String
+  nameKey    String
+  createdAt  DateTime         @default(now()) @db.Timestamptz(3)
+  crest      TeamCrest?
+  players    Player[]
+  matchesAsA Match[]          @relation("teamA")
+  matchesAsB Match[]          @relation("teamB")
+  goals      Goal[]
+  deductions PointDeduction[]
+
+  // RF-26: el nombre no se repite dentro de la liga.
+  @@unique([leagueId, nameKey])
+  @@map("team")
+}
+
+/// Escudo del equipo, aparte de `Team` para que las consultas de equipos nunca
+/// carguen los bytes por accidente (plan D1, ADR 007).
+model TeamCrest {
+  teamId    String   @id
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  /// Imagen ya procesada: WebP de 256 px como máximo.
+  data      Bytes
+  /// Hash del contenido; forma parte de la URL para la caché permanente.
+  hash      String
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("team_crest")
+}
+
+model Player {
+  id        String   @id @default(cuid())
+  leagueId  String
+  league    League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  /// Equipo actual; cambia con un traspaso (RF-39).
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  name      String
+  nameKey   String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  goals     Goal[]
+
+  // RF-35: el nombre no se repite en toda la liga, aunque sea de otro equipo.
+  @@unique([leagueId, nameKey])
+  @@index([teamId])
+  @@map("player")
+}
+
+// --- Fechas, partidos, goles, descuentos, snapshot e intentos fallidos ---
+
+model Matchday {
+  id          String    @id @default(cuid())
+  leagueId    String
+  league      League    @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  /// Día de juego como fecha de calendario, sin hora ni zona (ADR 015).
+  playDate    DateTime  @db.Date
+  /// Nulo mientras la fecha nunca se ha finalizado (RF-48).
+  finalizedAt DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  matches     Match[]
+
+  // RF-99: no hay dos fechas el mismo día en una liga. El número de fecha no se
+  // guarda: se calcula por orden cronológico (RF-43, plan D3).
+  @@unique([leagueId, playDate])
+  @@map("matchday")
+}
+
+enum MatchStatus {
+  PENDING
+  FINISHED
+}
+
+model Match {
+  id         String      @id @default(cuid())
+  matchdayId String
+  matchday   Matchday    @relation(fields: [matchdayId], references: [id], onDelete: Cascade)
+  /// Orden del partido dentro de la fecha (RF-46).
+  position   Int
+  /// "A" y "B" solo nombran a los equipos: no hay local ni visita (RF-47).
+  teamAId    String
+  teamA      Team        @relation("teamA", fields: [teamAId], references: [id], onDelete: Cascade)
+  teamBId    String
+  teamB      Team        @relation("teamB", fields: [teamBId], references: [id], onDelete: Cascade)
+  status     MatchStatus @default(PENDING)
+  /// Queda en true al finalizar su fecha; desde ahí no se modifica (RF-102, RF-103).
+  locked     Boolean     @default(false)
+  goals      Goal[]
+
+  @@index([matchdayId])
+  @@map("match")
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  /// Equipo al que suma el gol; no cambia si el autor es traspasado (RF-40, plan D5).
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  /// Nulo en un "Gol sin autor" (RF-56). NoAction impide borrar a un jugador con
+  /// goles (RF-37) y, a diferencia de Restrict, se evalúa al final de la sentencia,
+  /// así que borrar la liga completa sí funciona (RF-79).
+  scorerId  String?
+  scorer    Player?  @relation(fields: [scorerId], references: [id], onDelete: NoAction)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([matchId])
+  @@index([scorerId])
+  @@map("goal")
+}
+
+model PointDeduction {
+  id        String   @id @default(cuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  /// Entero mayor que cero; lo valida el caso de uso (RF-67).
+  points    Int
+  reason    String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([teamId])
+  @@map("point_deduction")
+}
+
+/// Tablas finales de una liga finalizada (RF-74, ADR 009).
+model LeagueSnapshot {
+  leagueId   String   @id
+  league     League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  standings  Json
+  topScorers Json
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("league_snapshot")
+}
+
+/// Intento fallido de inicio de sesión, para el bloqueo por correo (RF-7, plan D10).
+model LoginFailure {
+  id        String   @id @default(cuid())
+  email     String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([email, createdAt])
+  @@map("login_failure")
+}

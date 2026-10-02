@@ -53,6 +53,8 @@ jobs:
       DATABASE_URL: postgresql://postgres@127.0.0.1:5432/liga_dev
       INTEGRATION_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/liga_integration
       E2E_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/liga_e2e
+      # Solo para el paso de build; los tests definen el suyo. No es un secreto real.
+      BETTER_AUTH_SECRET: secreto-de-ci-para-el-build-no-usar-en-produccion
 
     steps:
       - name: Descargar el código
