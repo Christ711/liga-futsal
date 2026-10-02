@@ -106,7 +106,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/semester.ts, src/domain/semester.test.ts
       Hecho cuando: "2026-1" está terminado el 2026-08-01 y no el 2026-07-31, y "2026-2" está terminado el 2027-01-01.
 
-- [ ] T21 - Calcular el marcador de un partido desde sus goles
+- [x] T21 - Calcular el marcador de un partido desde sus goles
       RF: RF-47, RF-55, RF-56
       Archivos: src/domain/matches.ts, src/domain/matches.test.ts
       Hecho cuando: un partido con 2 goles de A (uno sin autor) y 1 de B da 2-1, y el modelo no expone local ni visita.
