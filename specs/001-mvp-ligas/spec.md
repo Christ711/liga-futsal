@@ -97,10 +97,15 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 
   Dado las fechas 1 (10/09), 2 (17/09) y 3 (24/09) / Cuando el dueño elimina la del 17/09 y genera una con día 20/09 / Entonces las fechas quedan 1 (10/09), 2 (20/09) y 3 (24/09).
 
-- RF-44: CUANDO el sistema genera el orden de una fecha y existe al menos un orden en que ningún equipo juega dos partidos consecutivos, EL SISTEMA usará uno de esos órdenes.
+- RF-44 [MODIFICADO]: CUANDO el sistema genera el orden de una fecha, EL SISTEMA usará un orden con la menor cantidad posible de pares de partidos consecutivos que comparten un equipo. (Anterior: CUANDO el sistema genera el orden de una fecha y existe al menos un orden en que ningún equipo juega dos partidos consecutivos, EL SISTEMA usará uno de esos órdenes.)
+
+  Dado una liga con 4 equipos / Cuando el dueño genera una fecha / Entonces el orden tiene exactamente 2 pares de partidos consecutivos que comparten un equipo, el mínimo posible con 4 equipos.
+
+  Dado una liga con 5 equipos / Cuando el dueño genera una fecha / Entonces ningún equipo juega dos partidos consecutivos.
+
 - RF-45: CUANDO el sistema genera el orden de una fecha que tiene una fecha anterior en orden cronológico, EL SISTEMA hará que su primer partido no enfrente al mismo par de equipos que el primer partido del orden final de esa fecha anterior, incluido cualquier reordenamiento manual.
 
-  Dado una liga con 4 equipos A, B, C, D y una fecha anterior con orden final A-B, C-D, A-C, B-D, A-D, B-C / Cuando el dueño genera una fecha nueva con un día posterior / Entonces ningún equipo juega dos partidos seguidos y el primer partido no es A-B.
+  Dado una liga con 4 equipos A, B, C, D y una fecha anterior con orden final A-B, C-D, A-C, B-D, A-D, B-C / Cuando el dueño genera una fecha nueva con un día posterior / Entonces el orden tiene 2 pares de partidos consecutivos que comparten un equipo, el mínimo posible, y el primer partido no es A-B. [MODIFICADO] (Anterior: Entonces ningún equipo juega dos partidos seguidos y el primer partido no es A-B.)
 
   Dado una liga con 3 equipos y una fecha anterior que abrió con A-B / Cuando el dueño genera una fecha nueva con un día posterior / Entonces se crean 3 partidos y el primero es A-C o B-C, aunque algún equipo juegue dos partidos seguidos.
 
@@ -182,7 +187,7 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - RNF-3: Todas las vistas se usan sin desplazamiento horizontal desde 360 px de ancho de pantalla.
 
 ## Casos límite
-- Liga con exactamente 3 equipos: la fecha tiene 3 partidos y es inevitable que algún equipo juegue dos seguidos (RF-44 no aplica).
+- Liga con 3 o 4 equipos [MODIFICADO]: no existe ningún orden sin partidos consecutivos del mismo equipo; el mínimo es 2 pares consecutivos que comparten un equipo, y RF-44 exige ese mínimo. Desde 5 equipos el mínimo es 0. (Anterior: Liga con exactamente 3 equipos: la fecha tiene 3 partidos y es inevitable que algún equipo juegue dos seguidos (RF-44 no aplica).)
 - Liga con 8 equipos: la fecha tiene 28 partidos y la generación sigue cumpliendo RF-42 a RF-45.
 - Fecha sin fecha anterior en orden cronológico (la primera, o una generada con un día anterior a todas): RF-45 no aplica.
 - Fecha generada con un día entre dos existentes: toma el número intermedio y las posteriores se renumeran (RF-43).
@@ -237,3 +242,4 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - Ninguna.
 
 ## Historial de cambios
+- 2026-10-02 - RF-44, el escenario de 4 equipos de RF-45 y el caso límite de 3 equipos: el orden de la fecha pasa de "sin consecutivos si existe" a "con el mínimo posible de consecutivos" - con 4 equipos no existe ningún orden sin partidos consecutivos del mismo equipo (comprobado por búsqueda exhaustiva), así que la regla anterior nunca aplicaba a ligas de 3 o 4 equipos y su escenario era imposible.
