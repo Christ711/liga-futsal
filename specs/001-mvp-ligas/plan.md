@@ -97,8 +97,8 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 - Alternativa descartada: deducir el equipo desde el jugador. Por qué no: tras un traspaso cambiaría el marcador de partidos pasados y no sirve para goles sin autor.
 
 ### D6. Orden de la fecha por búsqueda con retroceso y aleatoriedad inyectada
-- Decisión: `scheduling` genera los pares, los baraja con un generador aleatorio recibido por parámetro y busca por retroceso un orden sin partidos consecutivos del mismo equipo y cuyo primer partido no repita el par que abrió la fecha anterior. Si no existe orden sin consecutivos (3 equipos), devuelve uno que cumpla solo RF-45.
-- Por qué: con 28 partidos como máximo la búsqueda es instantánea, prueba la existencia de un orden válido (RF-44) y el generador inyectado hace los tests deterministas.
+- Decisión: `scheduling` genera los pares, los baraja con un generador aleatorio recibido por parámetro y busca por retroceso un orden cuyo primer partido no repita el par que abrió la fecha anterior y que tenga a lo más k pares de partidos consecutivos que comparten un equipo, empezando con k = 0 y subiendo k de a uno hasta encontrar un orden; ese k es el mínimo posible (2 con 3 o 4 equipos, 0 desde 5).
+- Por qué: subir k desde 0 garantiza el mínimo que exige RF-44; solo con 4 equipos (6 partidos) la búsqueda agota los niveles 0 y 1, y desde 5 equipos encuentra un orden con k = 0 de inmediato. El generador inyectado hace los tests deterministas.
 - Alternativa descartada: método del círculo (rondas fijas) con rotación. Por qué no: no garantiza la ausencia de consecutivos al concatenar rondas y siempre produce las mismas secuencias.
 
 ### D7. Snapshot final como JSON
@@ -176,7 +176,7 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 **Unitarios (Vitest, `src/domain/**/*.test.ts`)** — sin base ni Next.js:
 - `names`: normalización, largos límite (60/30/40 y uno más), vacío y solo espacios.
 - `semester`: formato válido e inválido, semestre de un día en los bordes (31/07 y 01/08), semestre terminado.
-- `scheduling`: todos los pares exactamente una vez para 3 a 8 equipos; sin consecutivos para 4 a 8 equipos con muchas semillas; RF-45 con y sin fecha anterior; 3 equipos cumple RF-45; el escenario de 4 equipos de la spec.
+- `scheduling`: todos los pares exactamente una vez para 3 a 8 equipos; mínimo de consecutivos (2 con 3 y 4 equipos, 0 con 5 a 8) con muchas semillas; RF-45 con y sin fecha anterior; 3 equipos cumple RF-45; el escenario de 4 equipos de la spec.
 - `matchdays`: numeración cronológica y el escenario 10/09, 20/09, 24/09; estados abierta, incompleta y finalizada.
 - `matches`: marcador desde goles, gol sin autor, transiciones permitidas y prohibidas con partido bloqueado.
 - `standings`: 3-1-0, descuentos y puntos negativos, cada criterio de orden, los tres escenarios de desempate de la spec, posición compartida, partidos pendientes excluidos; goleadores con empate, gol sin autor excluido, equipo actual tras traspaso.

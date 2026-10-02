@@ -131,17 +131,17 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/matchdays.ts, src/domain/matchdays.test.ts
       Hecho cuando: con 4 terminados y 2 pendientes se bloquean solo los 4, y al refinalizar tras terminar los 2 se bloquean esos 2.
 
-- [ ] T26 - Generar los pares todos contra todos de una fecha
+- [x] T26 - Generar los pares todos contra todos de una fecha
       RF: RF-42
       Archivos: src/domain/scheduling.ts, src/domain/scheduling.test.ts
       Hecho cuando: para 3 a 8 equipos se generan n(n-1)/2 pares, cada par exactamente una vez.
 
-- [ ] T27 - Ordenar los partidos sin que un equipo juegue dos seguidos
+- [ ] ~~T27 - Ordenar los partidos sin que un equipo juegue dos seguidos~~ [OBSOLETA] (reemplazada por T87: con 4 equipos no existe un orden sin consecutivos)
       RF: RF-44
       Archivos: src/domain/scheduling.ts, src/domain/scheduling.test.ts
       Hecho cuando: con 4 a 8 equipos y 100 semillas ningún orden tiene consecutivos, y con 3 equipos se devuelve un orden igualmente.
 
-- [ ] T28 - Evitar que el primer partido repita el par que abrió la fecha anterior
+- [x] T28 - Evitar que el primer partido repita el par que abrió la fecha anterior
       RF: RF-45
       Archivos: src/domain/scheduling.ts, src/domain/scheduling.test.ts
       Hecho cuando: los dos escenarios de la spec pasan con 100 semillas y, sin fecha anterior, no se aplica la restricción.
@@ -446,6 +446,11 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: ninguno (resultado en la descripción del PR de validación)
       Hecho cuando: la app responde en su URL de producción y `tests/e2e/performance.spec.ts` contra producción, con la base suspendida, queda registrado con su tiempo medido.
 
+- [x] T87 - Ordenar los partidos con el mínimo posible de partidos consecutivos del mismo equipo
+      RF: RF-44
+      Archivos: src/domain/scheduling.ts, src/domain/scheduling.test.ts
+      Hecho cuando: con 100 semillas, los órdenes de 3 y 4 equipos tienen exactamente 2 pares de partidos consecutivos que comparten un equipo y los de 5 a 8 equipos tienen 0.
+
 ## Trazabilidad
 | RF | Tareas |
 |---|---|
@@ -492,7 +497,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 | RF-41 | T33, T63 |
 | RF-42 | T26, T63 |
 | RF-43 | T23, T64, T65 |
-| RF-44 | T27, T63 |
+| RF-44 | T87, T63 |
 | RF-45 | T28, T63 |
 | RF-46 | T68 |
 | RF-47 | T21, T67 |
