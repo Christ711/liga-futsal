@@ -32,7 +32,12 @@ export default defineConfig({
           environment: "node",
           include: ["tests/integration/**/*.test.ts"],
           globalSetup: ["tests/integration/setup.ts"],
-          env: { DATABASE_URL: integrationDatabaseUrl },
+          env: {
+            DATABASE_URL: integrationDatabaseUrl,
+            // Secreto fijo solo para pruebas; nunca se usa fuera de bases desechables.
+            BETTER_AUTH_SECRET: "secreto-de-pruebas-de-integracion-no-usar-en-produccion",
+            BETTER_AUTH_URL: "http://localhost:3000",
+          },
           // Comparten una base: los archivos corren de a uno para no pisarse.
           fileParallelism: false,
         },

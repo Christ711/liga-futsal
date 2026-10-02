@@ -37,6 +37,11 @@ export default defineConfig({
     url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: false,
     timeout: 180_000,
-    env: { DATABASE_URL: e2eDatabaseUrl },
+    env: {
+      DATABASE_URL: e2eDatabaseUrl,
+      // Secreto fijo solo para pruebas; nunca se usa fuera de bases desechables.
+      BETTER_AUTH_SECRET: "secreto-de-pruebas-e2e-no-usar-en-produccion",
+      BETTER_AUTH_URL: `http://127.0.0.1:${PORT}`,
+    },
   },
 });

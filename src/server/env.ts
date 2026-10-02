@@ -14,6 +14,15 @@ const envSchema = z.object({
         ? "falta; defínela en .env (ver .env.example)"
         : "debe ser una URL de Postgres (postgresql://...)",
   }),
+  // Secreto con el que Better Auth firma sesiones y tokens (ADR 005).
+  BETTER_AUTH_SECRET: z
+    .string({ error: "falta; genera uno con `openssl rand -base64 32`" })
+    .min(32, {
+      error: "debe tener al menos 32 caracteres",
+    }),
+  // URL pública de la app. Obligatoria en producción; sin ella, Better Auth
+  // deduce el origen de cada petición (lo que usan las URLs de prueba).
+  BETTER_AUTH_URL: z.url({ error: "debe ser una URL (https://...)" }).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
