@@ -6,12 +6,16 @@ import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 
 import { db } from "@/server/db/client";
+import { deliverInBackground } from "@/server/email/background";
+import { sendEmail } from "@/server/email/send";
+import { passwordResetEmail } from "@/server/email/templates/password-reset";
 import { getEnv } from "@/server/env";
 
 import { assertInviteCode } from "./invite-code-hook";
 import { assertNotLockedOut, recordFailedSignIn } from "./login-lockout-hooks";
 
 const THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
+const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 const env = getEnv();
 
@@ -25,6 +29,16 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     // RF-5: la cuenta se activa sin verificar el correo.
     requireEmailVerification: false,
+    // RF-10: el link de recuperación se envía por correo, en segundo plano.
+    sendResetPassword: async ({ user, url }) => {
+      await deliverInBackground("recuperación de contraseña", () =>
+        sendEmail({ to: user.email, ...passwordResetEmail(url) }),
+      );
+    },
+    // RF-11: el link vale 1 hora; Better Auth lo invalida al usarlo.
+    resetPasswordTokenExpiresIn: ONE_HOUR_IN_SECONDS,
+    // RF-86: definir una contraseña nueva cierra todas las sesiones de la cuenta.
+    revokeSessionsOnPasswordReset: true,
   },
   session: {
     // RF-6: 30 días desde el inicio de sesión, sin renovación automática.

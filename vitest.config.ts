@@ -38,6 +38,10 @@ export default defineConfig({
             BETTER_AUTH_SECRET: "secreto-de-pruebas-de-integracion-no-usar-en-produccion",
             BETTER_AUTH_URL: "http://localhost:3000",
             INVITE_CODE: "codigo-de-pruebas-de-integracion",
+            // Mailpit de docker-compose o del job de CI (ADR 018).
+            SMTP_HOST: "127.0.0.1",
+            SMTP_PORT: "1025",
+            MAIL_FROM: "Liga Futsal <liga-futsal@example.com>",
           },
           // Comparten una base: los archivos corren de a uno para no pisarse.
           fileParallelism: false,

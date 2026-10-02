@@ -2,12 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AuthCard } from "@/components/auth/auth-card";
+import { FormNotice } from "@/components/auth/form-notice";
 
 import { SignInForm } from "./sign-in-form";
 
 export const metadata: Metadata = { title: "Ingresar - Liga Futsal" };
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ restablecida?: string }>;
+}) {
+  const { restablecida } = await searchParams;
+
   return (
     <AuthCard
       title="Ingresar"
@@ -28,6 +35,11 @@ export default function SignInPage() {
         </>
       }
     >
+      {restablecida ? (
+        <div className="mb-4">
+          <FormNotice>Contraseña actualizada. Ingresa con tu contraseña nueva.</FormNotice>
+        </div>
+      ) : null}
       <SignInForm />
     </AuthCard>
   );

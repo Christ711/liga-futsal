@@ -56,6 +56,9 @@ jobs:
       # Solo para el paso de build; los tests definen el suyo. No es un secreto real.
       BETTER_AUTH_SECRET: secreto-de-ci-para-el-build-no-usar-en-produccion
       INVITE_CODE: codigo-de-ci-para-el-build
+      SMTP_HOST: 127.0.0.1
+      SMTP_PORT: 1025
+      MAIL_FROM: Liga Futsal <liga-futsal@example.com>
 
     steps:
       - name: Descargar el código
