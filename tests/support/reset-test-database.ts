@@ -38,7 +38,14 @@ export async function resetTestDatabase(databaseUrl: string): Promise<void> {
   }
 
   execFileSync("pnpm", ["prisma", "migrate", "deploy"], {
-    env: { ...process.env, DATABASE_URL: databaseUrl, PRISMA_HIDE_UPDATE_MESSAGE: "1" },
+    env: {
+      ...process.env,
+      DATABASE_URL: databaseUrl,
+      // prisma.config.ts prefiere la URL directa: se fija a la misma base de
+      // pruebas para que una variable heredada no desvíe las migraciones.
+      DATABASE_URL_UNPOOLED: databaseUrl,
+      PRISMA_HIDE_UPDATE_MESSAGE: "1",
+    },
     stdio: "inherit",
   });
 }

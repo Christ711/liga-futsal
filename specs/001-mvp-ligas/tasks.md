@@ -64,22 +64,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: .github/workflows/ci.yml
       Hecho cuando: un PR ejecuta en GitHub Actions instalación, generación de Prisma, formato, lint, tipos, unitarios, integración, build y E2E con servicios Postgres 17 y Mailpit, todo en verde.
 
-- [ ] T13 - (manual, autor) Proteger `main` en GitHub exigiendo el job de CI
+- [x] T13 - (manual, autor) Proteger `main` en GitHub exigiendo el job de CI
       RF: [SIN RF] (principio 2, ADR 014)
       Archivos: ninguno (configuración del repositorio)
       Hecho cuando: GitHub bloquea el merge de un PR con CI en rojo y rechaza un push directo a `main`.
 
-- [ ] T14 - (manual, autor) Crear el proyecto de Neon en `aws-sa-east-1` y la rama `preview` vacía
+- [x] T14 - (manual, autor) Crear el proyecto de Neon en `aws-sa-east-1` y la rama `preview` vacía
       RF: [SIN RF] (ADR 003, ADR 014, ADR 017)
       Archivos: ninguno
       Hecho cuando: el autor tiene las URLs de conexión de la rama principal y de `preview`, y `preview` no es copia de datos de producción.
 
-- [ ] T15 - (manual, autor) Crear la cuenta de Gmail dedicada con verificación en dos pasos y contraseña de aplicación
+- [x] T15 - (manual, autor) Crear la cuenta de Gmail dedicada con verificación en dos pasos y contraseña de aplicación
       RF: [SIN RF] (ADR 006)
       Archivos: ninguno
       Hecho cuando: el autor tiene usuario y contraseña de aplicación SMTP guardados fuera del repositorio.
 
-- [ ] T16 - Configurar `vercel.json` con la región `gru1` y el build con `prisma migrate deploy`
+- [x] T16 - Configurar `vercel.json` con la región `gru1` y el build con `prisma migrate deploy`
       RF: [SIN RF] (ADR 001, ADR 014, ADR 017)
       Archivos: vercel.json, package.json
       Hecho cuando: `vercel.json` declara `regions: ["gru1"]` y el script `vercel-build` ejecuta `prisma migrate deploy` antes de `next build` contra la base local sin errores.
