@@ -166,12 +166,12 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/standings.ts, src/domain/standings.test.ts
       Hecho cuando: los goles sin autor no suman, los empatados comparten posición y cada goleador aparece con su equipo actual aunque sus goles sean de otro.
 
-- [ ] T33 - Implementar las reglas de permisos de la liga
+- [x] T33 - Implementar las reglas de permisos de la liga
       RF: RF-23, RF-24, RF-37, RF-41, RF-76, RF-100
       Archivos: src/domain/league-rules.ts, src/domain/league-rules.test.ts
       Hecho cuando: cada regla tiene un test que la permite y otro que la rechaza con su `code`.
 
-- [ ] T34 - Decidir el bloqueo por intentos fallidos
+- [x] T34 - Decidir el bloqueo por intentos fallidos
       RF: RF-7
       Archivos: src/domain/login-lockout.ts, src/domain/login-lockout.test.ts
       Hecho cuando: 4 fallos en 15 minutos no bloquean, 5 sí, y el bloqueo termina 15 minutos después del quinto fallo.
