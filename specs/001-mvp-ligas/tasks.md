@@ -84,14 +84,14 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: vercel.json, package.json
       Hecho cuando: `vercel.json` declara `regions: ["gru1"]` y el script `vercel-build` ejecuta `prisma migrate deploy` antes de `next build` contra la base local sin errores.
 
-- [ ] T17 - (manual, autor) Crear el proyecto de Vercel con variables de entorno por entorno y URLs de prueba protegidas
+- [x] T17 - (manual, autor) Crear el proyecto de Vercel con variables de entorno por entorno y URLs de prueba protegidas
       RF: [SIN RF] (ADR 001, ADR 014, principio 5)
       Archivos: ninguno
       Hecho cuando: un merge a `main` publica en producción, un PR obtiene URL de prueba protegida con la autenticación de Vercel, y producción y `preview` usan cada una su `DATABASE_URL`.
 
 ## Fase 1 - Dominio
 
-- [ ] T18 - Normalizar y validar nombres de liga, equipo y jugador
+- [x] T18 - Normalizar y validar nombres de liga, equipo y jugador
       RF: RF-19, RF-27, RF-36
       Archivos: src/domain/names.ts, src/domain/names.test.ts
       Hecho cuando: los tests aceptan 60/30/40 caracteres, rechazan 61/31/41, vacío y solo espacios, y " Tigres " y "tigres" producen la misma `nameKey`.

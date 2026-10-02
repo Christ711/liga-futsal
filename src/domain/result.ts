@@ -7,6 +7,8 @@
 /** Catálogo de códigos de rechazo con su mensaje en español. Cada tarea agrega los de sus RF. */
 export const errorMessages = {
   INVALID_INPUT: "Revisa los datos ingresados.",
+  NAME_REQUIRED: "El nombre es obligatorio.",
+  NAME_TOO_LONG: "El nombre es demasiado largo.",
   UNEXPECTED_ERROR: "Ocurrió un error inesperado. Intenta de nuevo.",
 } as const satisfies Record<string, string>;
 
