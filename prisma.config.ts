@@ -8,7 +8,10 @@ try {
   // Sin archivo .env: se usan las variables del entorno.
 }
 
-const databaseUrl = process.env.DATABASE_URL;
+// Las migraciones usan la conexión directa cuando existe (en Neon,
+// DATABASE_URL_UNPOOLED): el pooler no soporta todo lo que usa Prisma Migrate.
+// En local y en CI solo existe DATABASE_URL, que ya es directa.
+const databaseUrl = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
