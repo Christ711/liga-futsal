@@ -146,22 +146,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/scheduling.ts, src/domain/scheduling.test.ts
       Hecho cuando: los dos escenarios de la spec pasan con 100 semillas y, sin fecha anterior, no se aplica la restricción.
 
-- [ ] T29 - Calcular la tabla de posiciones básica con puntos 3-1-0
+- [x] T29 - Calcular la tabla de posiciones básica con puntos 3-1-0
       RF: RF-59, RF-62, RF-63
       Archivos: src/domain/standings.ts, src/domain/standings.test.ts
       Hecho cuando: los tests obtienen PJ, PG, PE, PP, GF, GC, DG y Pts correctos e ignoran los partidos pendientes.
 
-- [ ] T30 - Aplicar los descuentos de puntos a la tabla
+- [x] T30 - Aplicar los descuentos de puntos a la tabla
       RF: RF-64, RF-69, RF-70
       Archivos: src/domain/standings.ts, src/domain/standings.test.ts
       Hecho cuando: dos descuentos se suman, los puntos pueden quedar negativos y cada fila expone sus descuentos con motivo y cantidad.
 
-- [ ] T31 - Ordenar la tabla y resolver los desempates
+- [x] T31 - Ordenar la tabla y resolver los desempates
       RF: RF-65, RF-66, RF-107
       Archivos: src/domain/standings.ts, src/domain/standings.test.ts
       Hecho cuando: pasan los tres escenarios de desempate de la spec y los casos de desempate por DG y por GF.
 
-- [ ] T32 - Calcular la tabla de goleadores
+- [x] T32 - Calcular la tabla de goleadores
       RF: RF-40, RF-56, RF-71, RF-72
       Archivos: src/domain/standings.ts, src/domain/standings.test.ts
       Hecho cuando: los goles sin autor no suman, los empatados comparten posición y cada goleador aparece con su equipo actual aunque sus goles sean de otro.
