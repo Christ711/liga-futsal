@@ -8,8 +8,13 @@
 export const errorMessages = {
   INVALID_INPUT: "Revisa los datos ingresados.",
   INVALID_SEMESTER: "El semestre no tiene un formato válido.",
+  MATCH_ALREADY_FINISHED: "El partido ya está terminado.",
+  MATCH_LOCKED: "El partido ya no se puede modificar porque su fecha fue finalizada.",
+  MATCH_NOT_FINISHED: "El partido todavía no está terminado.",
   NAME_REQUIRED: "El nombre es obligatorio.",
   NAME_TOO_LONG: "El nombre es demasiado largo.",
+  SCORER_NOT_IN_TEAM: "Ese jugador no pertenece al equipo del gol.",
+  TEAM_NOT_IN_MATCH: "Ese equipo no juega este partido.",
   UNEXPECTED_ERROR: "Ocurrió un error inesperado. Intenta de nuevo.",
 } as const satisfies Record<string, string>;
 
