@@ -7,6 +7,9 @@ const PORT = 3100;
 export const e2eDatabaseUrl =
   process.env.E2E_DATABASE_URL ?? "postgresql://postgres@127.0.0.1:5433/liga_e2e";
 
+/** Código de invitación de las pruebas E2E; los tests lo importan desde aquí. */
+export const e2eInviteCode = "codigo-de-pruebas-e2e";
+
 export default defineConfig({
   testDir: "tests/e2e",
   // Reinicia liga_e2e antes de la ejecución.
@@ -42,6 +45,7 @@ export default defineConfig({
       // Secreto fijo solo para pruebas; nunca se usa fuera de bases desechables.
       BETTER_AUTH_SECRET: "secreto-de-pruebas-e2e-no-usar-en-produccion",
       BETTER_AUTH_URL: `http://127.0.0.1:${PORT}`,
+      INVITE_CODE: e2eInviteCode,
     },
   },
 });
