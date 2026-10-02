@@ -5,6 +5,13 @@ import { db } from "@/server/db/client";
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 const uniqueEmail = () => `ayudante-${crypto.randomUUID()}@example.com`;
+const inviteCode = process.env.INVITE_CODE!;
+
+/** Cuerpo de registro con el código de invitación, que el tipo de Better Auth no declara. */
+const signUpBody = (email: string, password = "contraseña-segura") => {
+  const body = { email, password, name: "", inviteCode };
+  return body;
+};
 
 describe("Better Auth (RF-5, RF-6)", () => {
   afterAll(async () => {
@@ -15,7 +22,7 @@ describe("Better Auth (RF-5, RF-6)", () => {
     const email = uniqueEmail();
 
     const result = await auth.api.signUpEmail({
-      body: { email, password: "contraseña-segura", name: "" },
+      body: signUpBody(email),
     });
 
     expect(result.token).toEqual(expect.any(String));
@@ -29,7 +36,7 @@ describe("Better Auth (RF-5, RF-6)", () => {
     const before = Date.now();
 
     await auth.api.signUpEmail({
-      body: { email, password: "contraseña-segura", name: "" },
+      body: signUpBody(email),
       headers: new Headers({
         "user-agent": "Mozilla/5.0 (iPhone)",
         "x-forwarded-for": "203.0.113.7",
@@ -49,7 +56,9 @@ describe("Better Auth (RF-5, RF-6)", () => {
   it("guarda la contraseña como hash, nunca en texto plano", async () => {
     const email = uniqueEmail();
 
-    await auth.api.signUpEmail({ body: { email, password: "contraseña-segura", name: "" } });
+    await auth.api.signUpEmail({
+      body: signUpBody(email),
+    });
 
     const user = await db.user.findUniqueOrThrow({ where: { email }, include: { accounts: true } });
     const stored = user.accounts[0]!.password;
@@ -59,7 +68,7 @@ describe("Better Auth (RF-5, RF-6)", () => {
 
   it("rechaza una contraseña de menos de 8 caracteres", async () => {
     await expect(
-      auth.api.signUpEmail({ body: { email: uniqueEmail(), password: "1234567", name: "" } }),
+      auth.api.signUpEmail({ body: signUpBody(uniqueEmail(), "1234567") }),
     ).rejects.toThrow();
   });
 });

@@ -37,6 +37,7 @@ export default defineConfig({
             // Secreto fijo solo para pruebas; nunca se usa fuera de bases desechables.
             BETTER_AUTH_SECRET: "secreto-de-pruebas-de-integracion-no-usar-en-produccion",
             BETTER_AUTH_URL: "http://localhost:3000",
+            INVITE_CODE: "codigo-de-pruebas-de-integracion",
           },
           // Comparten una base: los archivos corren de a uno para no pisarse.
           fileParallelism: false,

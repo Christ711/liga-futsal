@@ -5,6 +5,7 @@ import { parseEnv } from "./env";
 const valid = {
   DATABASE_URL: "postgresql://postgres@127.0.0.1:5433/liga_dev",
   BETTER_AUTH_SECRET: "un-secreto-de-prueba-con-mas-de-32-caracteres",
+  INVITE_CODE: "codigo-de-prueba",
 };
 
 describe("parseEnv", () => {
@@ -28,6 +29,13 @@ describe("parseEnv", () => {
     );
   });
 
+  it("falla nombrando INVITE_CODE cuando falta o tiene menos de 8 caracteres", () => {
+    expect(() => parseEnv({ ...valid, INVITE_CODE: undefined })).toThrow(/INVITE_CODE: falta/);
+    expect(() => parseEnv({ ...valid, INVITE_CODE: "corto" })).toThrow(
+      /INVITE_CODE: debe tener al menos 8/,
+    );
+  });
+
   it("acepta que BETTER_AUTH_URL no esté definida", () => {
     expect(parseEnv(valid).BETTER_AUTH_URL).toBeUndefined();
   });
@@ -37,7 +45,7 @@ describe("parseEnv", () => {
   });
 
   it("nombra todas las variables inválidas a la vez", () => {
-    expect(() => parseEnv({})).toThrow(/DATABASE_URL[\s\S]*BETTER_AUTH_SECRET/);
+    expect(() => parseEnv({})).toThrow(/DATABASE_URL[\s\S]*BETTER_AUTH_SECRET[\s\S]*INVITE_CODE/);
   });
 
   it("devuelve las variables validadas cuando están completas", () => {

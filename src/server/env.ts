@@ -20,6 +20,10 @@ const envSchema = z.object({
     .min(32, {
       error: "debe tener al menos 32 caracteres",
     }),
+  // Código que el profesor entrega a los ayudantes para registrarse (RF-2).
+  INVITE_CODE: z.string({ error: "falta; define el código de invitación" }).min(8, {
+    error: "debe tener al menos 8 caracteres",
+  }),
   // URL pública de la app. Obligatoria en producción; sin ella, Better Auth
   // deduce el origen de cada petición (lo que usan las URLs de prueba).
   BETTER_AUTH_URL: z.url({ error: "debe ser una URL (https://...)" }).optional(),

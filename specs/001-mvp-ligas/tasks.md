@@ -193,22 +193,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: prisma/schema.prisma, prisma/migrations/, tests/integration/schema-matchdays.test.ts
       Hecho cuando: la migración se aplica, borrar un jugador con goles falla por clave foránea y dos fechas con el mismo día en una liga fallan.
 
-- [ ] T38 - Exigir el código de invitación en el registro
+- [x] T38 - Exigir el código de invitación en el registro
       RF: RF-2
       Archivos: src/server/auth/invite-code-hook.ts, src/server/auth/auth.ts, tests/integration/invite-code.test.ts
       Hecho cuando: el registro con `auth.api` sin código o con código incorrecto se rechaza y con el código correcto se acepta.
 
-- [ ] T39 - Crear la página y la Server Action de registro
+- [x] T39 - Crear la página y la Server Action de registro
       RF: RF-1, RF-2, RF-3, RF-4, RF-5
       Archivos: src/app/registro/page.tsx, src/app/registro/actions.ts, src/server/use-cases/register.ts, tests/e2e/register.spec.ts
       Hecho cuando: el E2E registra e inicia sesión con código correcto, muestra "Código de invitación incorrecto", ofrece recuperar ante correo repetido, rechaza contraseñas de 7 caracteres, y un POST directo a `/api/auth/sign-up/email` sin código se rechaza.
 
-- [ ] T40 - Crear el inicio y el cierre de sesión
+- [x] T40 - Crear el inicio y el cierre de sesión
       RF: RF-6, RF-8
       Archivos: src/app/ingresar/page.tsx, src/app/ingresar/actions.ts, src/server/use-cases/sign-in.ts, src/server/use-cases/sign-out.ts, src/server/auth/session.ts, tests/e2e/sign-in.spec.ts
       Hecho cuando: el E2E inicia sesión, la cookie de sesión dura 30 días, y tras cerrar sesión la cookie desaparece y la sesión ya no existe en la base.
 
-- [ ] T41 - Bloquear el inicio de sesión tras 5 intentos fallidos
+- [x] T41 - Bloquear el inicio de sesión tras 5 intentos fallidos
       RF: RF-7
       Archivos: src/server/auth/login-lockout-hooks.ts, src/server/auth/auth.ts, tests/e2e/login-lockout.spec.ts
       Hecho cuando: el E2E falla 5 veces y el sexto intento con la contraseña correcta se rechaza con el mensaje de bloqueo.
