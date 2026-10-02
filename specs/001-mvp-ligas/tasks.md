@@ -101,7 +101,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/semester.ts, src/domain/semester.test.ts
       Hecho cuando: "2026-1" es válido, "2026-3" y "26-1" no, 2026-07-31 da "2026-1" y 2026-08-01 da "2026-2".
 
-- [ ] T20 - Determinar si el semestre de una liga ya terminó
+- [x] T20 - Determinar si el semestre de una liga ya terminó
       RF: RF-94
       Archivos: src/domain/semester.ts, src/domain/semester.test.ts
       Hecho cuando: "2026-1" está terminado el 2026-08-01 y no el 2026-07-31, y "2026-2" está terminado el 2027-01-01.

@@ -32,3 +32,15 @@ export function semesterOfDay(day: string): Semester {
   const half = Number(month) <= LAST_MONTH_OF_FIRST_SEMESTER ? 1 : 2;
   return `${year}-${half}`;
 }
+
+/**
+ * Indica si un semestre ya terminó respecto de "hoy" según el corte de RF-17
+ * (RF-94): terminó cuando el semestre de hoy es posterior a él.
+ */
+export function isSemesterOver(semester: Semester, today: string): boolean {
+  if (!SEMESTER_FORMAT.test(semester)) {
+    throw new Error(`Semestre inválido: se esperaba AAAA-1 o AAAA-2 y se recibió "${semester}".`);
+  }
+  // Con el formato fijo `AAAA-N`, el orden alfabético coincide con el cronológico.
+  return semester < semesterOfDay(today);
+}
