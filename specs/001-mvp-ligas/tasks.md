@@ -111,22 +111,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/matches.ts, src/domain/matches.test.ts
       Hecho cuando: un partido con 2 goles de A (uno sin autor) y 1 de B da 2-1, y el modelo no expone local ni visita.
 
-- [ ] T22 - Validar las transiciones de un partido y el bloqueo
+- [x] T22 - Validar las transiciones de un partido y el bloqueo
       RF: RF-57, RF-58, RF-84, RF-103
       Archivos: src/domain/matches.ts, src/domain/matches.test.ts
       Hecho cuando: los tests permiten terminar en 0-0, devolver a pendiente y agregar, quitar o reasignar goles en un partido no bloqueado, y rechazan cada una con `MATCH_LOCKED` si está bloqueado.
 
-- [ ] T23 - Numerar las fechas por orden cronológico
+- [x] T23 - Numerar las fechas por orden cronológico
       RF: RF-43
       Archivos: src/domain/matchdays.ts, src/domain/matchdays.test.ts
       Hecho cuando: el escenario de la spec (borrar 17/09 y crear 20/09) numera 10/09, 20/09 y 24/09 como 1, 2 y 3.
 
-- [ ] T24 - Derivar el estado de una fecha y permitir jugar pendientes de fechas incompletas
+- [x] T24 - Derivar el estado de una fecha y permitir jugar pendientes de fechas incompletas
       RF: RF-48, RF-49, RF-104, RF-105
       Archivos: src/domain/matchdays.ts, src/domain/matchdays.test.ts
       Hecho cuando: los tests distinguen abierta, incompleta con su cantidad de pendientes y finalizada, y un partido pendiente de una fecha incompleta admite goles.
 
-- [ ] T25 - Calcular qué partidos se bloquean al finalizar una fecha
+- [x] T25 - Calcular qué partidos se bloquean al finalizar una fecha
       RF: RF-102
       Archivos: src/domain/matchdays.ts, src/domain/matchdays.test.ts
       Hecho cuando: con 4 terminados y 2 pendientes se bloquean solo los 4, y al refinalizar tras terminar los 2 se bloquean esos 2.
