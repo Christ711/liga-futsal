@@ -96,7 +96,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/names.ts, src/domain/names.test.ts
       Hecho cuando: los tests aceptan 60/30/40 caracteres, rechazan 61/31/41, vacío y solo espacios, y " Tigres " y "tigres" producen la misma `nameKey`.
 
-- [ ] T19 - Validar el formato de semestre y calcular el semestre de un día
+- [x] T19 - Validar el formato de semestre y calcular el semestre de un día
       RF: RF-16, RF-17
       Archivos: src/domain/semester.ts, src/domain/semester.test.ts
       Hecho cuando: "2026-1" es válido, "2026-3" y "26-1" no, 2026-07-31 da "2026-1" y 2026-08-01 da "2026-2".

@@ -7,6 +7,7 @@
 /** Catálogo de códigos de rechazo con su mensaje en español. Cada tarea agrega los de sus RF. */
 export const errorMessages = {
   INVALID_INPUT: "Revisa los datos ingresados.",
+  INVALID_SEMESTER: "El semestre no tiene un formato válido.",
   NAME_REQUIRED: "El nombre es obligatorio.",
   NAME_TOO_LONG: "El nombre es demasiado largo.",
   UNEXPECTED_ERROR: "Ocurrió un error inesperado. Intenta de nuevo.",
