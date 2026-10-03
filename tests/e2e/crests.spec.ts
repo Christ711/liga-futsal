@@ -12,7 +12,7 @@ const REJECTION = "El escudo debe ser una imagen PNG, JPG o WebP de hasta 2 MB."
 const fixture = (name: string) => readFileSync(`tests/fixtures/crests/${name}`);
 
 const teamItem = (page: Page, name: string) =>
-  page.getByRole("region", { name: "Equipos" }).getByRole("listitem").filter({ hasText: name });
+  page.getByRole("region", { name: "Equipos" }).getByRole("listitem", { name, exact: true });
 
 /** Liga con el equipo "Los Tigres" y su editor abierto. */
 async function openTeamEditor(page: Page, request: import("@playwright/test").APIRequestContext) {
@@ -21,7 +21,7 @@ async function openTeamEditor(page: Page, request: import("@playwright/test").AP
   const team = await seedTeam(league.id, "Los Tigres");
   await page.goto(`/mis-ligas/${league.id}`);
   const item = teamItem(page, "Los Tigres");
-  await item.locator("summary").click();
+  await item.locator("summary").first().click();
   return { item, team };
 }
 

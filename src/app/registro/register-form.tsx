@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useActionState } from "react";
 
-import { FormAlert } from "@/components/auth/form-alert";
-import { FormField } from "@/components/auth/form-field";
+import { FormAlert } from "@/components/forms/form-alert";
+import { FormField } from "@/components/forms/form-field";
 import { Button } from "@/components/ui/button";
 
 import { registerAction } from "./actions";

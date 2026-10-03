@@ -2,8 +2,8 @@
 
 import { useActionState } from "react";
 
-import { FormField } from "@/components/auth/form-field";
-import { FormNotice } from "@/components/auth/form-notice";
+import { FormField } from "@/components/forms/form-field";
+import { FormNotice } from "@/components/forms/form-notice";
 import { Button } from "@/components/ui/button";
 
 import { requestPasswordResetAction } from "./actions";

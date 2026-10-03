@@ -2,7 +2,7 @@ import "server-only";
 
 import { checkLeagueEditable, type LeagueStatus } from "@/domain/league-rules";
 import { fail, ok, type Result } from "@/domain/result";
-import type { League, Team } from "@/generated/prisma/client";
+import type { League, Player, PointDeduction, Team } from "@/generated/prisma/client";
 import { db } from "@/server/db/client";
 
 type Options = { mustBeInProgress?: boolean };
@@ -46,4 +46,34 @@ export async function requireOwnedTeam(
   const team = await db.team.findFirst({ where: { id: teamId, leagueId } });
   if (!team) return fail("NOT_FOUND");
   return ok({ league: league.data, team });
+}
+
+/** Autoriza una operación sobre un jugador de la liga; uno de otra liga se trata como inexistente. */
+export async function requireOwnedPlayer(
+  userId: string,
+  leagueId: string,
+  playerId: string,
+  options: Options = {},
+): Promise<Result<{ league: League; player: Player }>> {
+  const league = await requireOwnedLeague(userId, leagueId, options);
+  if (!league.ok) return league;
+  const player = await db.player.findFirst({ where: { id: playerId, leagueId } });
+  if (!player) return fail("NOT_FOUND");
+  return ok({ league: league.data, player });
+}
+
+/** Autoriza una operación sobre un descuento de un equipo de la liga. */
+export async function requireOwnedDeduction(
+  userId: string,
+  leagueId: string,
+  deductionId: string,
+  options: Options = {},
+): Promise<Result<{ league: League; deduction: PointDeduction }>> {
+  const league = await requireOwnedLeague(userId, leagueId, options);
+  if (!league.ok) return league;
+  const deduction = await db.pointDeduction.findFirst({
+    where: { id: deductionId, team: { leagueId } },
+  });
+  if (!deduction) return fail("NOT_FOUND");
+  return ok({ league: league.data, deduction });
 }

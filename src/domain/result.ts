@@ -14,6 +14,7 @@ export const errorMessages = {
   INVALID_EMAIL: "Escribe un correo válido.",
   INVALID_INPUT: "Revisa los datos ingresados.",
   INVALID_INVITE_CODE: "Código de invitación incorrecto",
+  INVALID_POINTS: "Los puntos deben ser un número entero mayor que 0.",
   INVALID_SEMESTER: "El semestre no tiene un formato válido.",
   LEAGUE_FINALIZED: "La liga está finalizada y ya no se puede modificar.",
   MATCHDAY_OPEN: "Hay una fecha abierta. Primero finaliza esa fecha.",
@@ -27,6 +28,8 @@ export const errorMessages = {
   PASSWORD_TOO_SHORT: "La contraseña debe tener al menos 8 caracteres.",
   PLAYER_HAS_GOALS:
     "El jugador tiene goles registrados y no se puede eliminar. Puedes editar su nombre.",
+  REASON_REQUIRED: "El motivo es obligatorio.",
+  REASON_TOO_LONG: "El motivo es demasiado largo.",
   RESET_LINK_INVALID: "El link ya no es válido. Solicita uno nuevo.",
   SCORER_NOT_IN_TEAM: "Ese jugador no pertenece al equipo del gol.",
   TEAM_NOT_IN_MATCH: "Ese equipo no juega este partido.",

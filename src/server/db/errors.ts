@@ -6,3 +6,8 @@ import { Prisma } from "@/generated/prisma/client";
 export function isUniqueViolation(error: unknown): boolean {
   return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
 }
+
+/** Verdadero si la escritura chocó con una clave foránea (código P2003 de Prisma). */
+export function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003";
+}

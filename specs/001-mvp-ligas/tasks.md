@@ -300,22 +300,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/use-cases/set-team-crest.ts, src/server/use-cases/remove-team-crest.ts, src/app/escudos/[teamId]/[hash]/route.ts, src/components/crest/crest.tsx, next.config.ts, tests/e2e/crests.spec.ts
       Hecho cuando: el E2E sube un escudo de 1,9 MB, lo ve servido con caché permanente, lo reemplaza con otra URL, lo quita y ve el escudo genérico con la inicial.
 
-- [ ] T59 - Agregar y editar jugadores
+- [x] T59 - Agregar y editar jugadores
       RF: RF-33, RF-34, RF-35, RF-36
       Archivos: src/server/use-cases/create-player.ts, src/server/use-cases/update-player.ts, src/app/(admin)/mis-ligas/[leagueId]/player-actions.ts, src/components/league/players-section.tsx, tests/e2e/players.spec.ts
       Hecho cuando: el E2E agrega y renombra jugadores y rechaza un nombre repetido en otro equipo de la liga y uno de 41 caracteres.
 
-- [ ] T60 - Eliminar jugadores sin goles
+- [x] T60 - Eliminar jugadores sin goles
       RF: RF-37, RF-38
       Archivos: src/server/use-cases/delete-player.ts, src/app/(admin)/mis-ligas/[leagueId]/player-actions.ts, tests/e2e/players.spec.ts
       Hecho cuando: el E2E elimina un jugador sin goles y, para uno con goles, ve el rechazo que sugiere editar el nombre.
 
-- [ ] T61 - Traspasar jugadores entre equipos
+- [x] T61 - Traspasar jugadores entre equipos
       RF: RF-39, RF-40
       Archivos: src/server/use-cases/transfer-player.ts, src/app/(admin)/mis-ligas/[leagueId]/player-actions.ts, tests/integration/transfer-player.test.ts
       Hecho cuando: tras el traspaso el jugador pertenece al nuevo equipo, sus goles siguen siendo suyos y el marcador del partido anterior no cambia.
 
-- [ ] T62 - Aplicar, editar y eliminar descuentos de puntos
+- [x] T62 - Aplicar, editar y eliminar descuentos de puntos
       RF: RF-67, RF-68, RF-69
       Archivos: src/server/use-cases/point-deductions.ts, src/app/(admin)/mis-ligas/[leagueId]/deduction-actions.ts, src/components/league/deductions-section.tsx, tests/e2e/deductions.spec.ts
       Hecho cuando: el E2E aplica dos descuentos al mismo equipo, edita uno y elimina el otro, y rechaza 0 puntos y un motivo vacío o de 101 caracteres.
