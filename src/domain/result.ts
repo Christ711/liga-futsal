@@ -6,6 +6,7 @@
 
 /** Catálogo de códigos de rechazo con su mensaje en español. Cada tarea agrega los de sus RF. */
 export const errorMessages = {
+  CREST_INVALID: "El escudo debe ser una imagen PNG, JPG o WebP de hasta 2 MB.",
   DUPLICATE_NAME: "Ese nombre ya está en uso.",
   EMAIL_ALREADY_REGISTERED: "Ya existe una cuenta con ese correo.",
   FORBIDDEN: "No tienes permiso para modificar esta liga.",

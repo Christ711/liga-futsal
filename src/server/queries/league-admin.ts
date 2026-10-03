@@ -6,7 +6,36 @@ import { db } from "@/server/db/client";
 export async function getLeagueAdmin(leagueId: string) {
   const league = await db.league.findUniqueOrThrow({
     where: { id: leagueId },
-    select: { id: true, name: true, semester: true, status: true },
+    select: {
+      id: true,
+      name: true,
+      semester: true,
+      status: true,
+      _count: { select: { matchdays: true } },
+      teams: {
+        orderBy: { nameKey: "asc" },
+        select: {
+          id: true,
+          name: true,
+          crest: { select: { hash: true } },
+          _count: { select: { players: true } },
+        },
+      },
+    },
   });
-  return { ...league, finalized: league.status === "FINALIZED" };
+  const finalized = league.status === "FINALIZED";
+  return {
+    id: league.id,
+    name: league.name,
+    semester: league.semester,
+    finalized,
+    // RF-23, RF-24: equipos solo mientras la liga está en curso y sin fechas.
+    canChangeTeams: !finalized && league._count.matchdays === 0,
+    teams: league.teams.map((team) => ({
+      id: team.id,
+      name: team.name,
+      crestHash: team.crest?.hash ?? null,
+      playerCount: team._count.players,
+    })),
+  };
 }

@@ -1,9 +1,15 @@
 import "server-only";
 
-import { checkLeagueEditable } from "@/domain/league-rules";
+import { checkLeagueEditable, type LeagueStatus } from "@/domain/league-rules";
 import { fail, ok, type Result } from "@/domain/result";
-import type { League } from "@/generated/prisma/client";
+import type { League, Team } from "@/generated/prisma/client";
 import { db } from "@/server/db/client";
+
+type Options = { mustBeInProgress?: boolean };
+
+/** Estado de la liga en el vocabulario del dominio. */
+export const leagueStatus = (league: Pick<League, "status">): LeagueStatus =>
+  league.status === "FINALIZED" ? "finalized" : "in_progress";
 
 /**
  * Autoriza una operación sobre una liga (principio 3): solo su dueño la
@@ -13,16 +19,31 @@ import { db } from "@/server/db/client";
 export async function requireOwnedLeague(
   userId: string,
   leagueId: string,
-  { mustBeInProgress = false }: { mustBeInProgress?: boolean } = {},
+  { mustBeInProgress = false }: Options = {},
 ): Promise<Result<League>> {
   const league = await db.league.findUnique({ where: { id: leagueId } });
   if (!league) return fail("NOT_FOUND");
   if (league.ownerId !== userId) return fail("FORBIDDEN");
   if (mustBeInProgress) {
-    const editable = checkLeagueEditable({
-      status: league.status === "FINALIZED" ? "finalized" : "in_progress",
-    });
+    const editable = checkLeagueEditable({ status: leagueStatus(league) });
     if (!editable.ok) return editable;
   }
   return ok(league);
+}
+
+/**
+ * Autoriza una operación sobre un equipo: la liga debe ser del ayudante y el
+ * equipo debe pertenecer a esa liga; si no, se trata como inexistente.
+ */
+export async function requireOwnedTeam(
+  userId: string,
+  leagueId: string,
+  teamId: string,
+  options: Options = {},
+): Promise<Result<{ league: League; team: Team }>> {
+  const league = await requireOwnedLeague(userId, leagueId, options);
+  if (!league.ok) return league;
+  const team = await db.team.findFirst({ where: { id: teamId, leagueId } });
+  if (!team) return fail("NOT_FOUND");
+  return ok({ league: league.data, team });
 }

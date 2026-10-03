@@ -280,22 +280,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/app/(admin)/mis-ligas/[leagueId]/actions.ts, src/server/use-cases/delete-league.ts, src/components/ui/alert-dialog.tsx, tests/e2e/leagues.spec.ts
       Hecho cuando: el diálogo advierte el borrado total, y tras confirmar la liga, sus equipos y escudos ya no existen.
 
-- [ ] T55 - Agregar y eliminar equipos antes de la primera fecha
+- [x] T55 - Agregar y eliminar equipos antes de la primera fecha
       RF: RF-23, RF-24, RF-26, RF-27, RF-95, RF-96
       Archivos: src/server/use-cases/create-team.ts, src/server/use-cases/delete-team.ts, src/app/(admin)/mis-ligas/[leagueId]/team-actions.ts, src/components/league/teams-section.tsx, tests/e2e/teams.spec.ts
       Hecho cuando: el E2E agrega equipos, rechaza duplicado y 31 caracteres, elimina uno con diálogo que cuenta sus jugadores, y con una fecha existente ya no ofrece agregar ni eliminar.
 
-- [ ] T56 - Editar el nombre de un equipo
+- [x] T56 - Editar el nombre de un equipo
       RF: RF-25, RF-26
       Archivos: src/server/use-cases/update-team.ts, src/app/(admin)/mis-ligas/[leagueId]/team-actions.ts, tests/e2e/teams.spec.ts
       Hecho cuando: el E2E renombra un equipo y el cambio a un nombre existente de la liga se rechaza.
 
-- [ ] T57 - Validar y procesar escudos en el servidor
+- [x] T57 - Validar y procesar escudos en el servidor
       RF: RF-28, RF-29, RF-30
       Archivos: src/server/crests/process.ts, tests/integration/crests.test.ts, tests/fixtures/crests/
       Hecho cuando: PNG, JPG y WebP válidos salen como WebP de máximo 256 px con proporción conservada, y SVG, un texto renombrado a `.png` y un archivo de más de 2 MB se rechazan.
 
-- [ ] T58 - Subir, reemplazar y quitar escudos, servirlos y mostrar el genérico
+- [x] T58 - Subir, reemplazar y quitar escudos, servirlos y mostrar el genérico
       RF: RF-25, RF-31, RF-32
       Archivos: src/server/use-cases/set-team-crest.ts, src/server/use-cases/remove-team-crest.ts, src/app/escudos/[teamId]/[hash]/route.ts, src/components/crest/crest.tsx, next.config.ts, tests/e2e/crests.spec.ts
       Hecho cuando: el E2E sube un escudo de 1,9 MB, lo ve servido con caché permanente, lo reemplaza con otra URL, lo quita y ve el escudo genérico con la inicial.

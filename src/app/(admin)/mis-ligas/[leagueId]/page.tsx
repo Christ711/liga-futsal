@@ -8,6 +8,7 @@ import { getLeagueAdmin } from "@/server/queries/league-admin";
 import { LeagueForm } from "../league-form";
 import { deleteLeagueAction, updateLeagueAction } from "./actions";
 import { loadOwnedLeague } from "./owned-league";
+import { TeamsSection } from "./teams-section";
 
 type Props = { params: Promise<{ leagueId: string }> };
 
@@ -48,6 +49,13 @@ export default async function LeagueAdminPage({ params }: Props) {
           />
         </PageSection>
       )}
+
+      <TeamsSection
+        leagueId={league.id}
+        teams={league.teams}
+        finalized={league.finalized}
+        canChangeTeams={league.canChangeTeams}
+      />
 
       <PageSection
         id="eliminar-liga"
