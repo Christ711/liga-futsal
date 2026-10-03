@@ -6,3 +6,12 @@ export type FormState = {
   /** Valores a conservar en el formulario; nunca incluye contraseñas. */
   values: Record<string, string>;
 } | null;
+
+/**
+ * Estado de un formulario que se queda en la página: rechazo con los valores a
+ * conservar, o éxito con un aviso para mostrar.
+ */
+export type NoticeFormState =
+  | { ok: false; error: AppError; values: Record<string, string> }
+  | { ok: true; notice: string }
+  | null;

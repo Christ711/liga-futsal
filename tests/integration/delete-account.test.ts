@@ -1,25 +1,10 @@
 import { afterAll, describe, expect, it } from "vitest";
 
-import { auth } from "@/server/auth/auth";
 import { db } from "@/server/db/client";
 import { deleteAccount } from "@/server/use-cases/delete-account";
 
 import { createLeague, createPlayer, createTeam } from "../support/fixtures";
-
-/** Crea una cuenta real y devuelve las cabeceras de una petición con su sesión. */
-async function signedUpAccount() {
-  const email = `ayudante-${crypto.randomUUID()}@example.com`;
-  const body = {
-    email,
-    password: "contraseña-segura",
-    name: "",
-    inviteCode: process.env.INVITE_CODE!,
-  };
-  const response = await auth.api.signUpEmail({ body, asResponse: true });
-  const cookie = response.headers.get("set-cookie")!.split(";")[0]!;
-  const user = await db.user.findUniqueOrThrow({ where: { email } });
-  return { user, headers: new Headers({ cookie }) };
-}
+import { signedUpAccount } from "../support/session";
 
 /** Liga con todos sus datos: equipos con escudo, jugadores, fecha, partido, gol con autor, descuento y snapshot. */
 async function createFullLeague(ownerId: string) {

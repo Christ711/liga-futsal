@@ -5,18 +5,14 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-import { errorMessages, type AppError } from "@/domain/result";
+import { errorMessages, type Result } from "@/domain/result";
 import { changeEmail } from "@/server/use-cases/change-email";
 import { changePassword } from "@/server/use-cases/change-password";
 import { deleteAccount } from "@/server/use-cases/delete-account";
 
-/** Resultado de un formulario de la cuenta: rechazo con su error, o éxito con su aviso. */
-export type AccountFormState =
-  | { ok: false; error: AppError; values: Record<string, string> }
-  | { ok: true; notice: string }
-  | null;
+import type { NoticeFormState } from "../../form-state";
 
-const invalidInput = (): AccountFormState => ({
+const invalidInput = (): NoticeFormState => ({
   ok: false,
   error: { code: "INVALID_INPUT", message: errorMessages.INVALID_INPUT },
   values: {},
@@ -25,9 +21,9 @@ const invalidInput = (): AccountFormState => ({
 const passwordSchema = z.object({ currentPassword: z.string(), newPassword: z.string() });
 
 export async function changePasswordAction(
-  _previous: AccountFormState,
+  _previous: NoticeFormState,
   formData: FormData,
-): Promise<AccountFormState> {
+): Promise<NoticeFormState> {
   const parsed = passwordSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return invalidInput();
 
@@ -42,9 +38,9 @@ export async function changePasswordAction(
 const emailSchema = z.object({ email: z.string(), currentPassword: z.string() });
 
 export async function changeEmailAction(
-  _previous: AccountFormState,
+  _previous: NoticeFormState,
   formData: FormData,
-): Promise<AccountFormState> {
+): Promise<NoticeFormState> {
   const parsed = emailSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return invalidInput();
 
@@ -55,8 +51,8 @@ export async function changeEmailAction(
   return { ok: true, notice: "Correo actualizado." };
 }
 
-export async function deleteAccountAction(): Promise<AccountFormState> {
+export async function deleteAccountAction(): Promise<Result<never>> {
   const result = await deleteAccount(await headers());
-  if (!result.ok) return { ok: false, error: result.error, values: {} };
+  if (!result.ok) return result;
   redirect("/");
 }

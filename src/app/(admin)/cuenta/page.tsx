@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
+import { PageSection } from "@/components/layout/page-section";
 import { requireSession } from "@/server/auth/session";
 import { getAccountSummary } from "@/server/queries/account";
 
-import { AccountSection } from "./account-section";
 import { ChangeEmailForm } from "./change-email-form";
 import { ChangePasswordForm } from "./change-password-form";
 import { DeleteAccountDialog } from "./delete-account-dialog";
@@ -23,27 +23,27 @@ export default async function AccountPage() {
           <span className="font-medium wrap-anywhere text-foreground">{summary.email}</span>
         </p>
       </div>
-      <AccountSection
+      <PageSection
         id="cambiar-correo"
         title="Cambiar correo"
         description="Desde ahora ingresarás con el correo nuevo. No te enviaremos un mensaje para verificarlo."
       >
         <ChangeEmailForm />
-      </AccountSection>
-      <AccountSection
+      </PageSection>
+      <PageSection
         id="cambiar-contrasena"
         title="Cambiar contraseña"
         description="Tu sesión seguirá abierta aquí y se cerrará en los demás dispositivos."
       >
         <ChangePasswordForm />
-      </AccountSection>
-      <AccountSection
+      </PageSection>
+      <PageSection
         id="eliminar-cuenta"
         title="Eliminar cuenta"
         description="Borra tu cuenta y todas tus ligas. No se puede deshacer."
       >
         <DeleteAccountDialog leagues={summary.leagues} />
-      </AccountSection>
+      </PageSection>
     </main>
   );
 }

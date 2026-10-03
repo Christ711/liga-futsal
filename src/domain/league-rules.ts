@@ -1,4 +1,6 @@
+import { validateName, type ValidName } from "./names";
 import { fail, ok, type Result } from "./result";
+import { validateSemester, type Semester } from "./semester";
 
 export type LeagueStatus = "in_progress" | "finalized";
 
@@ -41,4 +43,22 @@ export function checkCanGenerateMatchday(league: {
   if (league.teamCount < MIN_TEAMS_FOR_MATCHDAY) return fail("NOT_ENOUGH_TEAMS");
   if (league.hasOpenMatchday) return fail("MATCHDAY_OPEN");
   return ok(null);
+}
+
+/**
+ * Valida el nombre y el semestre de una liga (RF-16, RF-19). Si ambos fallan,
+ * informa los dos campos a la vez para que el formulario los marque juntos.
+ */
+export function validateLeagueData(input: {
+  name: string;
+  semester: string;
+}): Result<ValidName & { semester: Semester }> {
+  const name = validateName("league", input.name);
+  const semester = validateSemester(input.semester.trim());
+  if (!name.ok && !semester.ok) {
+    return fail("INVALID_INPUT", { fields: { ...name.error.fields, ...semester.error.fields } });
+  }
+  if (!name.ok) return name;
+  if (!semester.ok) return semester;
+  return ok({ ...name.data, semester: semester.data });
 }

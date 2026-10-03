@@ -6,6 +6,7 @@
 
 /** Catálogo de códigos de rechazo con su mensaje en español. Cada tarea agrega los de sus RF. */
 export const errorMessages = {
+  DUPLICATE_NAME: "Ese nombre ya está en uso.",
   EMAIL_ALREADY_REGISTERED: "Ya existe una cuenta con ese correo.",
   FORBIDDEN: "No tienes permiso para modificar esta liga.",
   INVALID_CREDENTIALS: "Correo o contraseña incorrectos.",

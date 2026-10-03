@@ -250,32 +250,32 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 
 ## Fase 3 - Ligas, equipos, jugadores y descuentos
 
-- [ ] T49 - Crear el layout autenticado con proveedor de TanStack Query y cabecera
+- [x] T49 - Crear el layout autenticado con proveedor de TanStack Query y cabecera
       RF: RF-12
       Archivos: src/app/(admin)/layout.tsx, src/components/providers/query-provider.tsx, src/components/layout/admin-header.tsx
       Hecho cuando: sin sesión, cualquier ruta de `(admin)` redirige a `/ingresar`, y con sesión la cabecera muestra "Mis ligas", "Cuenta" y "Cerrar sesión".
 
-- [ ] T50 - Crear la lista "Mis ligas" con el aviso de semestre terminado
+- [x] T50 - Crear la lista "Mis ligas" con el aviso de semestre terminado
       RF: RF-21, RF-22, RF-94
       Archivos: src/app/(admin)/mis-ligas/page.tsx, src/server/queries/my-leagues.ts, tests/e2e/my-leagues.spec.ts
       Hecho cuando: el E2E ve sus ligas separadas en curso y finalizadas, y una liga en curso de un semestre anterior al actual muestra "El semestre terminó" mientras una del semestre actual no.
 
-- [ ] T51 - Crear una liga
+- [x] T51 - Crear una liga
       RF: RF-15, RF-16, RF-17, RF-18, RF-19
       Archivos: src/app/(admin)/mis-ligas/nueva/page.tsx, src/app/(admin)/mis-ligas/nueva/actions.ts, src/server/use-cases/create-league.ts, tests/e2e/leagues.spec.ts
       Hecho cuando: el formulario sugiere el semestre actual, crea la liga en curso y rechaza nombre duplicado en el mismo semestre, nombre de 61 caracteres y semestre inválido.
 
-- [ ] T52 - Crear la página de administración de la liga y redirigir al que no es dueño
+- [x] T52 - Crear la página de administración de la liga y redirigir al que no es dueño
       RF: RF-93
       Archivos: src/app/(admin)/mis-ligas/[leagueId]/layout.tsx, src/app/(admin)/mis-ligas/[leagueId]/page.tsx, src/server/queries/league-admin.ts, tests/e2e/leagues.spec.ts
       Hecho cuando: el dueño ve la página de administración y otro ayudante con sesión es redirigido a `/ligas/[leagueId]`.
 
-- [ ] T53 - Editar el nombre y el semestre de una liga
+- [x] T53 - Editar el nombre y el semestre de una liga
       RF: RF-18, RF-20
       Archivos: src/app/(admin)/mis-ligas/[leagueId]/actions.ts, src/server/use-cases/update-league.ts, tests/e2e/leagues.spec.ts
       Hecho cuando: el E2E edita nombre y semestre, y la edición a un nombre existente del mismo semestre se rechaza.
 
-- [ ] T54 - Eliminar una liga con confirmación
+- [x] T54 - Eliminar una liga con confirmación
       RF: RF-78, RF-79
       Archivos: src/app/(admin)/mis-ligas/[leagueId]/actions.ts, src/server/use-cases/delete-league.ts, src/components/ui/alert-dialog.tsx, tests/e2e/leagues.spec.ts
       Hecho cuando: el diálogo advierte el borrado total, y tras confirmar la liga, sus equipos y escudos ya no existen.
