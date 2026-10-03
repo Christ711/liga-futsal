@@ -6,6 +6,9 @@ const valid = {
   DATABASE_URL: "postgresql://postgres@127.0.0.1:5433/liga_dev",
   BETTER_AUTH_SECRET: "un-secreto-de-prueba-con-mas-de-32-caracteres",
   INVITE_CODE: "codigo-de-prueba",
+  SMTP_HOST: "127.0.0.1",
+  SMTP_PORT: "1025",
+  MAIL_FROM: "Liga Futsal <liga-futsal@example.com>",
 };
 
 describe("parseEnv", () => {
@@ -48,9 +51,32 @@ describe("parseEnv", () => {
     expect(() => parseEnv({})).toThrow(/DATABASE_URL[\s\S]*BETTER_AUTH_SECRET[\s\S]*INVITE_CODE/);
   });
 
+  it("falla nombrando las variables de correo cuando faltan", () => {
+    expect(() => parseEnv({ ...valid, SMTP_HOST: undefined })).toThrow(/SMTP_HOST/);
+    expect(() => parseEnv({ ...valid, SMTP_PORT: undefined })).toThrow(/SMTP_PORT/);
+    expect(() => parseEnv({ ...valid, MAIL_FROM: undefined })).toThrow(/MAIL_FROM/);
+  });
+
+  it("exige SMTP_USER y SMTP_PASSWORD juntos", () => {
+    expect(() => parseEnv({ ...valid, SMTP_USER: "cuenta@gmail.com" })).toThrow(
+      /SMTP_PASSWORD: SMTP_USER y SMTP_PASSWORD deben definirse juntos/,
+    );
+    expect(
+      parseEnv({ ...valid, SMTP_USER: "cuenta@gmail.com", SMTP_PASSWORD: "clave" }).SMTP_USER,
+    ).toBe("cuenta@gmail.com");
+  });
+
+  it("convierte SMTP_PORT a número", () => {
+    expect(parseEnv({ ...valid, SMTP_PORT: "465" }).SMTP_PORT).toBe(465);
+  });
+
   it("devuelve las variables validadas cuando están completas", () => {
     const env = parseEnv({ ...valid, BETTER_AUTH_URL: "https://liga-futsal-nine.vercel.app" });
 
-    expect(env).toEqual({ ...valid, BETTER_AUTH_URL: "https://liga-futsal-nine.vercel.app" });
+    expect(env).toEqual({
+      ...valid,
+      SMTP_PORT: 1025,
+      BETTER_AUTH_URL: "https://liga-futsal-nine.vercel.app",
+    });
   });
 });

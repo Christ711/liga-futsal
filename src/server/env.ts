@@ -6,28 +6,46 @@ import { z } from "zod";
  * Variables de entorno del servidor (principio 5). Cada tarea que agrega un
  * servicio suma aquí sus variables y las documenta en `.env.example`.
  */
-const envSchema = z.object({
-  DATABASE_URL: z.url({
-    protocol: /^postgres(ql)?$/,
-    error: (issue) =>
-      issue.input === undefined
-        ? "falta; defínela en .env (ver .env.example)"
-        : "debe ser una URL de Postgres (postgresql://...)",
-  }),
-  // Secreto con el que Better Auth firma sesiones y tokens (ADR 005).
-  BETTER_AUTH_SECRET: z
-    .string({ error: "falta; genera uno con `openssl rand -base64 32`" })
-    .min(32, {
-      error: "debe tener al menos 32 caracteres",
+const envSchema = z
+  .object({
+    DATABASE_URL: z.url({
+      protocol: /^postgres(ql)?$/,
+      error: (issue) =>
+        issue.input === undefined
+          ? "falta; defínela en .env (ver .env.example)"
+          : "debe ser una URL de Postgres (postgresql://...)",
     }),
-  // Código que el profesor entrega a los ayudantes para registrarse (RF-2).
-  INVITE_CODE: z.string({ error: "falta; define el código de invitación" }).min(8, {
-    error: "debe tener al menos 8 caracteres",
-  }),
-  // URL pública de la app. Obligatoria en producción; sin ella, Better Auth
-  // deduce el origen de cada petición (lo que usan las URLs de prueba).
-  BETTER_AUTH_URL: z.url({ error: "debe ser una URL (https://...)" }).optional(),
-});
+    // Secreto con el que Better Auth firma sesiones y tokens (ADR 005).
+    BETTER_AUTH_SECRET: z
+      .string({ error: "falta; genera uno con `openssl rand -base64 32`" })
+      .min(32, {
+        error: "debe tener al menos 32 caracteres",
+      }),
+    // Código que el profesor entrega a los ayudantes para registrarse (RF-2).
+    INVITE_CODE: z.string({ error: "falta; define el código de invitación" }).min(8, {
+      error: "debe tener al menos 8 caracteres",
+    }),
+    // URL pública de la app. Obligatoria en producción; sin ella, Better Auth
+    // deduce el origen de cada petición (lo que usan las URLs de prueba).
+    BETTER_AUTH_URL: z.url({ error: "debe ser una URL (https://...)" }).optional(),
+    // Servidor SMTP para el correo de recuperación (ADR 006): Gmail en Vercel,
+    // Mailpit en local y CI.
+    SMTP_HOST: z.string({ error: "falta; por ejemplo smtp.gmail.com" }).min(1, { error: "falta" }),
+    SMTP_PORT: z.coerce
+      .number({ error: "falta; por ejemplo 465" })
+      .int()
+      .positive({ error: "debe ser un puerto válido" }),
+    // Usuario y contraseña SMTP. Mailpit no los pide, así que son opcionales,
+    // pero deben venir los dos o ninguno.
+    SMTP_USER: z.string().min(1).optional(),
+    SMTP_PASSWORD: z.string().min(1).optional(),
+    // Remitente de los correos, por ejemplo "Liga Futsal <cuenta@gmail.com>".
+    MAIL_FROM: z.string({ error: "falta; el remitente de los correos" }).min(3, { error: "falta" }),
+  })
+  .refine((env) => Boolean(env.SMTP_USER) === Boolean(env.SMTP_PASSWORD), {
+    path: ["SMTP_PASSWORD"],
+    error: "SMTP_USER y SMTP_PASSWORD deben definirse juntos",
+  });
 
 export type Env = z.infer<typeof envSchema>;
 

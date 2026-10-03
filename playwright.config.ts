@@ -46,6 +46,10 @@ export default defineConfig({
       BETTER_AUTH_SECRET: "secreto-de-pruebas-e2e-no-usar-en-produccion",
       BETTER_AUTH_URL: `http://127.0.0.1:${PORT}`,
       INVITE_CODE: e2eInviteCode,
+      // Mailpit de docker-compose o del job de CI (ADR 018).
+      SMTP_HOST: "127.0.0.1",
+      SMTP_PORT: "1025",
+      MAIL_FROM: "Liga Futsal <liga-futsal@example.com>",
     },
   },
 });

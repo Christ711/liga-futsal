@@ -23,6 +23,7 @@ export const errorMessages = {
   PASSWORD_TOO_SHORT: "La contraseña debe tener al menos 8 caracteres.",
   PLAYER_HAS_GOALS:
     "El jugador tiene goles registrados y no se puede eliminar. Puedes editar su nombre.",
+  RESET_LINK_INVALID: "El link ya no es válido. Solicita uno nuevo.",
   SCORER_NOT_IN_TEAM: "Ese jugador no pertenece al equipo del gol.",
   TEAM_NOT_IN_MATCH: "Ese equipo no juega este partido.",
   TEAMS_LOCKED: "La liga ya tiene fechas: no se pueden agregar ni eliminar equipos.",

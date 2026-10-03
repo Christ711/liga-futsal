@@ -213,17 +213,17 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/auth/login-lockout-hooks.ts, src/server/auth/auth.ts, tests/e2e/login-lockout.spec.ts
       Hecho cuando: el E2E falla 5 veces y el sexto intento con la contraseña correcta se rechaza con el mensaje de bloqueo.
 
-- [ ] T42 - Crear el módulo de correo SMTP y el helper de Mailpit para E2E
+- [x] T42 - Crear el módulo de correo SMTP y el helper de Mailpit para E2E
       RF: RF-10
       Archivos: src/server/email/send.ts, src/server/email/templates/password-reset.ts, tests/e2e/helpers/mailpit.ts, tests/integration/email.test.ts
       Hecho cuando: un test de integración envía el correo de recuperación y el helper lo lee desde Mailpit con su link.
 
-- [ ] T43 - Crear la solicitud de recuperación de contraseña
+- [x] T43 - Crear la solicitud de recuperación de contraseña
       RF: RF-9, RF-10
       Archivos: src/app/recuperar/page.tsx, src/app/recuperar/actions.ts, src/server/use-cases/request-password-reset.ts, tests/e2e/password-reset.spec.ts
       Hecho cuando: el E2E ve "Si el correo existe, te enviamos un link" con correo existente e inexistente, y solo el existente recibe correo en Mailpit.
 
-- [ ] T44 - Crear el restablecimiento de contraseña
+- [x] T44 - Crear el restablecimiento de contraseña
       RF: RF-4, RF-11, RF-86
       Archivos: src/app/restablecer/page.tsx, src/app/restablecer/actions.ts, src/server/use-cases/reset-password.ts, tests/e2e/password-reset.spec.ts
       Hecho cuando: el E2E restablece con el link, una segunda sesión abierta queda cerrada, reutilizar el link se rechaza, y un link cuyo vencimiento se fija en el pasado directamente en la base se rechaza.
