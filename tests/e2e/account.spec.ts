@@ -1,15 +1,22 @@
-import { expect, test, type Browser, type Page } from "@playwright/test";
+import { expect, test, type APIRequestContext, type Browser, type Page } from "@playwright/test";
 
-import { createAccount, formAlert, queryDatabase, signIn, uniqueEmail } from "./helpers/accounts";
+import {
+  createAccount,
+  formAlert,
+  queryDatabase,
+  signIn,
+  signInNewAccount,
+  signOut,
+  uniqueEmail,
+} from "./helpers/accounts";
+import { seedLeague, seedTeamWithCrest } from "./helpers/leagues";
 import { countEmailsTo } from "./helpers/mailpit";
 
 const NEW_PASSWORD = "otra-contraseña-segura";
 
 /** Crea una cuenta, inicia sesión y abre `/cuenta`. */
-async function openAccount(page: Page, request: import("@playwright/test").APIRequestContext) {
-  const account = await createAccount(request);
-  await signIn(page, account.email, account.password);
-  await expect(page.getByRole("button", { name: "Cerrar sesión" })).toBeVisible();
+async function openAccount(page: Page, request: APIRequestContext) {
+  const account = await signInNewAccount(page, request);
   await page.goto("/cuenta");
   return account;
 }
@@ -47,28 +54,10 @@ async function changeEmail(page: Page, email: string, password: string) {
   await form.getByRole("button", { name: "Cambiar correo" }).click();
 }
 
-/** Crea una liga del ayudante con un equipo con escudo, directo en la base (ADR 019). */
 async function createLeagueWithCrest(email: string, status: "IN_PROGRESS" | "FINALIZED") {
-  const [user] = await queryDatabase<{ id: string }>('SELECT id FROM "user" WHERE email = $1', [
-    email,
-  ]);
-  const leagueId = crypto.randomUUID();
-  const teamId = crypto.randomUUID();
-  const name = `Liga ${leagueId.slice(0, 8)}`;
-  await queryDatabase(
-    `INSERT INTO league (id, "ownerId", name, "nameKey", semester, status, "finalizedAt", "updatedAt")
-     VALUES ($1, $2, $3, lower($3), '2026-2', $4::"LeagueStatus", $5, now())`,
-    [leagueId, user!.id, name, status, status === "FINALIZED" ? new Date() : null],
-  );
-  await queryDatabase(
-    `INSERT INTO team (id, "leagueId", name, "nameKey") VALUES ($1, $2, 'Los Tigres', 'los tigres')`,
-    [teamId, leagueId],
-  );
-  await queryDatabase(
-    `INSERT INTO team_crest ("teamId", data, hash, "updatedAt") VALUES ($1, '\\x00'::bytea, 'h', now())`,
-    [teamId],
-  );
-  return { leagueId, teamId };
+  const league = await seedLeague(email, { status });
+  const team = await seedTeamWithCrest(league.id);
+  return { leagueId: league.id, teamId: team.id };
 }
 
 test("sin sesión, la página de cuenta redirige a ingresar", async ({ page }) => {
@@ -165,7 +154,7 @@ test.describe("cambio de correo", () => {
     expect(await countEmailsTo(account.email)).toBe(0);
 
     // Desde ahora se ingresa con el correo nuevo.
-    await page.getByRole("button", { name: "Cerrar sesión" }).click();
+    await signOut(page);
     await signIn(page, account.email, account.password);
     await expect(formAlert(page)).toHaveText("Correo o contraseña incorrectos.");
     await signIn(page, newEmail, account.password);

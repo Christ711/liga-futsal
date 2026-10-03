@@ -28,5 +28,5 @@ export async function registerAction(_previous: FormState, formData: FormData): 
       values: { email: parsed.data.email, inviteCode: parsed.data.inviteCode },
     };
   }
-  redirect("/");
+  redirect("/mis-ligas");
 }

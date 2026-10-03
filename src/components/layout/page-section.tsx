@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-/** Bloque de la página de cuenta; su título le da nombre a la región para lectores de pantalla. */
-export function AccountSection({
+/** Bloque con título de una página; el título le da nombre a la región para lectores de pantalla. */
+export function PageSection({
   id,
   title,
   description,
@@ -11,7 +11,7 @@ export function AccountSection({
 }: {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }) {
   return (
@@ -23,7 +23,7 @@ export function AccountSection({
               {title}
             </h2>
           </CardTitle>
-          <CardDescription>{description}</CardDescription>
+          {description ? <CardDescription>{description}</CardDescription> : null}
         </CardHeader>
         <CardContent>{children}</CardContent>
       </Card>

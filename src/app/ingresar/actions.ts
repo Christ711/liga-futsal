@@ -25,7 +25,7 @@ export async function signInAction(_previous: FormState, formData: FormData): Pr
   if (!result.ok) {
     return { error: result.error, values: { email: parsed.data.email } };
   }
-  redirect("/");
+  redirect("/mis-ligas");
 }
 
 export async function signOutAction(): Promise<void> {

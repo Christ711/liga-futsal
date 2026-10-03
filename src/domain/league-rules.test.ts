@@ -6,6 +6,7 @@ import {
   checkCanGenerateMatchday,
   checkLeagueEditable,
   MIN_TEAMS_FOR_MATCHDAY,
+  validateLeagueData,
 } from "./league-rules";
 
 const codeOf = (result: { ok: boolean; error?: { code: string } }) =>
@@ -88,5 +89,37 @@ describe("checkCanGenerateMatchday (RF-41, RF-100)", () => {
     expect(codeOf(checkCanGenerateMatchday({ ...ready, status: "finalized" }))).toBe(
       "LEAGUE_FINALIZED",
     );
+  });
+});
+
+describe("validateLeagueData (RF-16, RF-19)", () => {
+  it("devuelve el nombre limpio, su clave y el semestre sin espacios", () => {
+    expect(validateLeagueData({ name: "  Liga Martes ", semester: " 2026-2 " })).toEqual({
+      ok: true,
+      data: { name: "Liga Martes", nameKey: "liga martes", semester: "2026-2" },
+    });
+  });
+
+  it("informa a la vez los errores del nombre y del semestre", () => {
+    const result = validateLeagueData({ name: "", semester: "2026-3" });
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        code: "INVALID_INPUT",
+        message: "Revisa los datos ingresados.",
+        fields: {
+          name: "Escribe un nombre.",
+          semester: "Usa el formato AAAA-1 o AAAA-2, por ejemplo 2026-2.",
+        },
+      },
+    });
+  });
+
+  it("con un solo error conserva su código", () => {
+    expect(codeOf(validateLeagueData({ name: "x".repeat(61), semester: "2026-1" }))).toBe(
+      "NAME_TOO_LONG",
+    );
+    expect(codeOf(validateLeagueData({ name: "Liga", semester: "26-1" }))).toBe("INVALID_SEMESTER");
   });
 });

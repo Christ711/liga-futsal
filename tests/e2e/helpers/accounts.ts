@@ -46,6 +46,23 @@ export async function signIn(page: Page, email: string, password: string) {
   await page.getByRole("button", { name: "Ingresar" }).click();
 }
 
+/**
+ * Cierra la sesión desde la cabecera y espera a que termine: navegar antes
+ * dejaría que la respuesta del cierre borre la cookie de un ingreso posterior.
+ */
+export async function signOut(page: Page) {
+  await page.getByRole("banner").getByRole("button", { name: "Cerrar sesión" }).click();
+  await page.getByRole("banner").getByRole("link", { name: "Ingresar" }).waitFor();
+}
+
+/** Crea una cuenta nueva e inicia sesión con ella en la página. */
+export async function signInNewAccount(page: Page, request: APIRequestContext) {
+  const account = await createAccount(request);
+  await signIn(page, account.email, account.password);
+  await page.getByRole("button", { name: "Cerrar sesión" }).waitFor();
+  return account;
+}
+
 /** Consulta directa a la base de E2E, para comprobar lo que quedó guardado. */
 export async function queryDatabase<T extends pg.QueryResultRow>(
   sql: string,
