@@ -97,3 +97,22 @@ export async function seedMatchday(leagueId: string, playDate = "2026-09-01") {
   ]);
   return { id };
 }
+
+/** Partido terminado con un gol del jugador, en una fecha nueva de la liga. */
+export async function seedGoal(
+  leagueId: string,
+  match: { teamAId: string; teamBId: string },
+  scorer: { id: string; teamId: string },
+) {
+  const matchday = await seedMatchday(leagueId);
+  const matchId = crypto.randomUUID();
+  await queryDatabase(
+    `INSERT INTO match (id, "matchdayId", position, "teamAId", "teamBId", status)
+     VALUES ($1, $2, 1, $3, $4, 'FINISHED')`,
+    [matchId, matchday.id, match.teamAId, match.teamBId],
+  );
+  await queryDatabase(
+    `INSERT INTO goal (id, "matchId", "teamId", "scorerId") VALUES ($1, $2, $3, $4)`,
+    [crypto.randomUUID(), matchId, scorer.teamId, scorer.id],
+  );
+}

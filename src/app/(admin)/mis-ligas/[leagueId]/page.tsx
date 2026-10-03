@@ -7,6 +7,7 @@ import { getLeagueAdmin } from "@/server/queries/league-admin";
 
 import { LeagueForm } from "../league-form";
 import { deleteLeagueAction, updateLeagueAction } from "./actions";
+import { DeductionsSection } from "./deductions-section";
 import { loadOwnedLeague } from "./owned-league";
 import { TeamsSection } from "./teams-section";
 
@@ -55,6 +56,13 @@ export default async function LeagueAdminPage({ params }: Props) {
         teams={league.teams}
         finalized={league.finalized}
         canChangeTeams={league.canChangeTeams}
+      />
+
+      <DeductionsSection
+        leagueId={league.id}
+        teams={league.teams}
+        deductions={league.deductions}
+        finalized={league.finalized}
       />
 
       <PageSection

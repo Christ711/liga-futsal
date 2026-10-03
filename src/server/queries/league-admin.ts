@@ -4,25 +4,33 @@ import { db } from "@/server/db/client";
 
 /** Datos de la página de administración de una liga; la autorización ya la hizo el layout. */
 export async function getLeagueAdmin(leagueId: string) {
-  const league = await db.league.findUniqueOrThrow({
-    where: { id: leagueId },
-    select: {
-      id: true,
-      name: true,
-      semester: true,
-      status: true,
-      _count: { select: { matchdays: true } },
-      teams: {
-        orderBy: { nameKey: "asc" },
-        select: {
-          id: true,
-          name: true,
-          crest: { select: { hash: true } },
-          _count: { select: { players: true } },
+  const [league, deductions] = await Promise.all([
+    db.league.findUniqueOrThrow({
+      where: { id: leagueId },
+      select: {
+        id: true,
+        name: true,
+        semester: true,
+        status: true,
+        _count: { select: { matchdays: true } },
+        teams: {
+          orderBy: { nameKey: "asc" },
+          select: {
+            id: true,
+            name: true,
+            crest: { select: { hash: true } },
+            players: { orderBy: { nameKey: "asc" }, select: { id: true, name: true } },
+          },
         },
       },
-    },
-  });
+    }),
+    db.pointDeduction.findMany({
+      where: { team: { leagueId } },
+      // En el orden en que se aplicaron (RF-67).
+      orderBy: { createdAt: "asc" },
+      select: { id: true, points: true, reason: true, team: { select: { id: true, name: true } } },
+    }),
+  ]);
   const finalized = league.status === "FINALIZED";
   return {
     id: league.id,
@@ -35,7 +43,12 @@ export async function getLeagueAdmin(leagueId: string) {
       id: team.id,
       name: team.name,
       crestHash: team.crest?.hash ?? null,
-      playerCount: team._count.players,
+      players: team.players,
+    })),
+    deductions: deductions.map(({ team, ...deduction }) => ({
+      ...deduction,
+      teamId: team.id,
+      teamName: team.name,
     })),
   };
 }

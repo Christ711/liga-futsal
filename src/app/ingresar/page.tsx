@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AuthCard } from "@/components/auth/auth-card";
-import { FormNotice } from "@/components/auth/form-notice";
+import { FormNotice } from "@/components/forms/form-notice";
 
 import { SignInForm } from "./sign-in-form";
 

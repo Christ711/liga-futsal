@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 
-import { FormAlert } from "@/components/auth/form-alert";
+import { FormAlert } from "@/components/forms/form-alert";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { AppError, Result } from "@/domain/result";
+import { cn } from "@/lib/utils";
 
 /**
  * Botón que pide confirmación antes de una acción destructiva. Si la acción
@@ -23,6 +24,7 @@ import type { AppError, Result } from "@/domain/result";
  */
 export function ConfirmDialog({
   triggerLabel,
+  triggerVariant = "destructive",
   title,
   description,
   confirmLabel,
@@ -30,6 +32,8 @@ export function ConfirmDialog({
   action,
 }: {
   triggerLabel: string;
+  /** Las acciones menores (eliminar un jugador) usan un botón menos llamativo. */
+  triggerVariant?: "destructive" | "outline";
   title: string;
   description: string;
   confirmLabel: string;
@@ -47,7 +51,11 @@ export function ConfirmDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" size="lg" className="h-11 w-full">
+        <Button
+          variant={triggerVariant}
+          size="lg"
+          className={cn("h-11 w-full", triggerVariant === "outline" && "text-destructive")}
+        >
           {triggerLabel}
         </Button>
       </AlertDialogTrigger>

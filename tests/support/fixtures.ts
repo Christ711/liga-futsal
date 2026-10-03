@@ -32,3 +32,19 @@ export async function createTeam(leagueId: string, name = `Equipo ${unique()}`) 
 export async function createPlayer(leagueId: string, teamId: string, name = `Jugador ${unique()}`) {
   return db.player.create({ data: { leagueId, teamId, name, nameKey: nameKey(name) } });
 }
+
+/** Partido terminado entre dos equipos, en una fecha nueva de la liga. */
+export async function createFinishedMatch(leagueId: string, teamAId: string, teamBId: string) {
+  // Días consecutivos desde el 1 de agosto: no hay dos fechas el mismo día (RF-99).
+  const previous = await db.matchday.count({ where: { leagueId } });
+  const matchday = await db.matchday.create({
+    data: { leagueId, playDate: new Date(Date.UTC(2026, 7, 1 + previous)) },
+  });
+  return db.match.create({
+    data: { matchdayId: matchday.id, position: 1, teamAId, teamBId, status: "FINISHED" },
+  });
+}
+
+export async function createGoal(matchId: string, teamId: string, scorerId: string | null) {
+  return db.goal.create({ data: { matchId, teamId, scorerId } });
+}

@@ -2,8 +2,7 @@
 
 import { useActionState, useState, type FormEvent } from "react";
 
-import { FormAlert } from "@/components/auth/form-alert";
-import { FormField } from "@/components/auth/form-field";
+import { FormAlert } from "@/components/forms/form-alert";
 import { Label } from "@/components/ui/label";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { errorMessages, type Result } from "@/domain/result";
 import { cn } from "@/lib/utils";
 
 import type { NoticeFormState } from "../../../form-state";
+import { NameForm } from "./name-form";
 import { teamDeletionWarning } from "./team-deletion-warning";
 
 type FormAction = (previous: NoticeFormState, formData: FormData) => Promise<NoticeFormState>;
@@ -35,8 +35,15 @@ export function TeamEditor({
   deleteAction: () => Promise<Result<null>>;
 }) {
   return (
-    <div className="grid gap-6 border-t px-4 py-4">
-      <RenameForm team={team} action={renameAction} />
+    <div className="grid gap-6">
+      <NameForm
+        action={renameAction}
+        id={`team-${team.id}-name`}
+        label="Nombre del equipo"
+        submitLabel="Guardar nombre"
+        pendingLabel="Guardando..."
+        defaultValue={team.name}
+      />
       <CrestForm team={team} action={crestAction} removeAction={removeCrestAction} />
       {canDelete ? (
         <ConfirmDialog
@@ -52,28 +59,6 @@ export function TeamEditor({
         />
       ) : null}
     </div>
-  );
-}
-
-function RenameForm({ team, action }: { team: { id: string; name: string }; action: FormAction }) {
-  const [state, formAction, pending] = useActionState(action, null);
-  const error = state?.ok === false ? state.error : undefined;
-
-  return (
-    <form action={formAction} className="grid gap-3" noValidate>
-      <FormField
-        id={`team-${team.id}-name`}
-        name="name"
-        label="Nombre"
-        autoComplete="off"
-        required
-        defaultValue={state?.ok === false ? state.values.name : team.name}
-        error={error?.fields?.name ?? (error ? error.message : undefined)}
-      />
-      <Button type="submit" variant="outline" className="h-11 w-full" disabled={pending}>
-        {pending ? "Guardando..." : "Guardar nombre"}
-      </Button>
-    </form>
   );
 }
 

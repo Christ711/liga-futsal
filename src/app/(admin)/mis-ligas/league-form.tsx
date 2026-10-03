@@ -2,9 +2,9 @@
 
 import { useActionState } from "react";
 
-import { FormAlert } from "@/components/auth/form-alert";
-import { FormField } from "@/components/auth/form-field";
-import { FormNotice } from "@/components/auth/form-notice";
+import { FormAlert } from "@/components/forms/form-alert";
+import { FormField } from "@/components/forms/form-field";
+import { FormNotice } from "@/components/forms/form-notice";
 import { Button } from "@/components/ui/button";
 import { NAME_MAX_LENGTH } from "@/domain/names";
 

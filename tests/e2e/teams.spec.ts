@@ -8,16 +8,19 @@ const LOCKED = "La liga ya tiene fechas: no se pueden agregar ni eliminar equipo
 const teamsSection = (page: Page) => page.getByRole("region", { name: "Equipos" });
 
 const teamItem = (page: Page, name: string) =>
-  teamsSection(page).getByRole("listitem").filter({ hasText: name });
+  teamsSection(page).getByRole("listitem", { name, exact: true });
+
+const teamDetails = (item: ReturnType<typeof teamItem>) =>
+  item.getByRole("region", { name: "Datos del equipo" });
 
 async function openTeam(page: Page, name: string) {
   const item = teamItem(page, name);
-  await item.locator("summary").click();
+  await item.locator("summary").first().click();
   return item;
 }
 
 async function addTeam(page: Page, name: string) {
-  await teamsSection(page).getByLabel("Nombre del equipo").fill(name);
+  await teamsSection(page).getByLabel("Nuevo equipo").fill(name);
   await teamsSection(page).getByRole("button", { name: "Agregar equipo" }).click();
 }
 
@@ -49,7 +52,7 @@ test.describe("agregar y eliminar equipos (RF-23)", () => {
     await addTeam(page, "Halcones");
 
     await expect(teamItem(page, "Halcones")).toBeVisible();
-    await expect(teamsSection(page).getByLabel("Nombre del equipo")).toHaveValue("");
+    await expect(teamsSection(page).getByLabel("Nuevo equipo")).toHaveValue("");
     await expect(
       teamItem(page, "Los Tigres").getByRole("img", { name: "Escudo genérico de Los Tigres" }),
     ).toHaveText("L");
@@ -66,7 +69,7 @@ test.describe("agregar y eliminar equipos (RF-23)", () => {
     await expect(
       teamsSection(page).getByText("Ya existe un equipo con ese nombre en la liga."),
     ).toBeVisible();
-    await expect(teamsSection(page).getByLabel("Nombre del equipo")).toHaveValue(" los tigres ");
+    await expect(teamsSection(page).getByLabel("Nuevo equipo")).toHaveValue(" los tigres ");
     expect(await teamNames(league.id)).toEqual(["Los Tigres"]);
   });
 
@@ -127,10 +130,10 @@ test.describe("agregar y eliminar equipos (RF-23)", () => {
     await page.reload();
 
     await expect(teamsSection(page)).toContainText(LOCKED);
-    await expect(teamsSection(page).getByLabel("Nombre del equipo")).toHaveCount(0);
+    await expect(teamsSection(page).getByLabel("Nuevo equipo")).toHaveCount(0);
     const item = await openTeam(page, "Los Tigres");
     await expect(item.getByRole("button", { name: "Eliminar equipo" })).toHaveCount(0);
-    await expect(item.getByRole("button", { name: "Guardar nombre" })).toBeVisible();
+    await expect(teamDetails(item).getByRole("button", { name: "Guardar nombre" })).toBeVisible();
   });
 });
 
@@ -141,8 +144,8 @@ test.describe("editar el nombre de un equipo (RF-25)", () => {
     await page.reload();
 
     const item = await openTeam(page, "Los Tigres");
-    await item.getByLabel("Nombre").fill("Tigres del Sur");
-    await item.getByRole("button", { name: "Guardar nombre" }).click();
+    await teamDetails(item).getByLabel("Nombre del equipo").fill("Tigres del Sur");
+    await teamDetails(item).getByRole("button", { name: "Guardar nombre" }).click();
 
     await expect(teamItem(page, "Tigres del Sur")).toBeVisible();
     expect(await teamNames(league.id)).toEqual(["Tigres del Sur"]);
@@ -155,8 +158,8 @@ test.describe("editar el nombre de un equipo (RF-25)", () => {
     await page.reload();
 
     const item = await openTeam(page, "Los Tigres");
-    await item.getByLabel("Nombre").fill("HALCONES");
-    await item.getByRole("button", { name: "Guardar nombre" }).click();
+    await teamDetails(item).getByLabel("Nombre del equipo").fill("HALCONES");
+    await teamDetails(item).getByRole("button", { name: "Guardar nombre" }).click();
 
     await expect(item.getByText("Ya existe un equipo con ese nombre en la liga.")).toBeVisible();
     expect(await teamNames(league.id)).toEqual(["Halcones", "Los Tigres"]);
@@ -173,9 +176,11 @@ test("en una liga finalizada los equipos se ven pero no se editan (RF-76)", asyn
 
   await page.goto(`/mis-ligas/${league.id}`);
 
-  await expect(teamItem(page, "Los Tigres")).toBeVisible();
-  await expect(teamItem(page, "Los Tigres").locator("summary")).toHaveCount(0);
-  await expect(teamsSection(page).getByLabel("Nombre del equipo")).toHaveCount(0);
+  const item = teamItem(page, "Los Tigres");
+  await item.locator("summary").first().click();
+  await expect(item.getByRole("region", { name: "Jugadores" })).toBeVisible();
+  await expect(teamDetails(item)).toHaveCount(0);
+  await expect(teamsSection(page).getByLabel("Nuevo equipo")).toHaveCount(0);
 });
 
 test("la sección de equipos cabe en 360 px con un equipo abierto (RNF-3)", async ({

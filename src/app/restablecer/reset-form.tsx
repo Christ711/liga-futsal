@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { FormField } from "@/components/auth/form-field";
+import { FormField } from "@/components/forms/form-field";
 import { Button } from "@/components/ui/button";
 
 import { resetPasswordAction } from "./actions";

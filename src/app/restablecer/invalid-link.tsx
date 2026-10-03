@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { FormAlert } from "@/components/auth/form-alert";
+import { FormAlert } from "@/components/forms/form-alert";
 import { Button } from "@/components/ui/button";
 
 /** Aviso de link vencido o ya usado, con acceso a solicitar uno nuevo (RF-11). */

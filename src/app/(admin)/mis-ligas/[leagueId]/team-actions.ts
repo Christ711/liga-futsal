@@ -1,10 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
 
-import { errorMessages, type Result } from "@/domain/result";
+import type { Result } from "@/domain/result";
 import { createTeam } from "@/server/use-cases/create-team";
 import { deleteTeam } from "@/server/use-cases/delete-team";
 import { removeTeamCrest } from "@/server/use-cases/remove-team-crest";
@@ -12,26 +11,9 @@ import { setTeamCrest } from "@/server/use-cases/set-team-crest";
 import { updateTeam } from "@/server/use-cases/update-team";
 
 import type { NoticeFormState } from "../../../form-state";
+import { invalidInput, refreshed, toFormState } from "./action-state";
 
 const nameSchema = z.object({ name: z.string() });
-
-const invalidInput = (): NoticeFormState => ({
-  ok: false,
-  error: { code: "INVALID_INPUT", message: errorMessages.INVALID_INPUT },
-  values: {},
-});
-
-/** Convierte el resultado de un caso de uso en el estado del formulario y refresca la liga. */
-function toFormState(
-  leagueId: string,
-  result: Result<null>,
-  values: Record<string, string>,
-  notice: string,
-): NoticeFormState {
-  if (!result.ok) return { ok: false, error: result.error, values };
-  revalidatePath(`/mis-ligas/${leagueId}`);
-  return { ok: true, notice };
-}
 
 export async function createTeamAction(
   leagueId: string,
@@ -57,9 +39,7 @@ export async function updateTeamAction(
 }
 
 export async function deleteTeamAction(leagueId: string, teamId: string): Promise<Result<null>> {
-  const result = await deleteTeam(leagueId, teamId, await headers());
-  if (result.ok) revalidatePath(`/mis-ligas/${leagueId}`);
-  return result;
+  return refreshed(leagueId, await deleteTeam(leagueId, teamId, await headers()));
 }
 
 export async function setTeamCrestAction(
