@@ -322,22 +322,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 
 ## Fase 4 - Fechas, partidos y tablas
 
-- [ ] T63 - Crear el caso de uso de generar una fecha
+- [x] T63 - Crear el caso de uso de generar una fecha
       RF: RF-41, RF-42, RF-44, RF-45, RF-99, RF-100
       Archivos: src/server/use-cases/generate-matchday.ts, tests/integration/generate-matchday.test.ts
       Hecho cuando: los tests crean la fecha con todos sus partidos pendientes y el orden del dominio, y rechazan menos de 3 equipos, una fecha abierta existente y un día repetido.
 
-- [ ] T64 - Crear el diálogo de generar fecha y la lista de fechas con número y estado
+- [x] T64 - Crear el diálogo de generar fecha y la lista de fechas con número y estado
       RF: RF-43, RF-48, RF-97, RF-104, RF-105
       Archivos: src/components/matchday/generate-matchday-dialog.tsx, src/components/league/matchdays-section.tsx, src/app/(admin)/mis-ligas/[leagueId]/matchday-actions.ts, tests/e2e/matchdays.spec.ts
       Hecho cuando: el diálogo propone el día actual, la fecha creada aparece con su número y estado "Abierta", y una fecha con día anterior toma el número intermedio.
 
-- [ ] T65 - Cambiar el día de juego de una fecha
+- [x] T65 - Cambiar el día de juego de una fecha
       RF: RF-43, RF-98, RF-99
       Archivos: src/server/use-cases/update-matchday-date.ts, src/app/(admin)/mis-ligas/[leagueId]/matchday-actions.ts, tests/e2e/matchdays.spec.ts
       Hecho cuando: el E2E cambia el día y la numeración se reordena, y un día repetido se rechaza.
 
-- [ ] T66 - Eliminar una fecha con confirmación
+- [x] T66 - Eliminar una fecha con confirmación
       RF: RF-50, RF-51
       Archivos: src/server/use-cases/delete-matchday.ts, src/app/(admin)/mis-ligas/[leagueId]/matchday-actions.ts, tests/e2e/matchdays.spec.ts
       Hecho cuando: el diálogo indica cuántos partidos terminados se perderán y, tras confirmar, la fecha, sus partidos y sus goles ya no existen y las demás fechas se renumeran.

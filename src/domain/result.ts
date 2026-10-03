@@ -7,6 +7,7 @@
 /** Catálogo de códigos de rechazo con su mensaje en español. Cada tarea agrega los de sus RF. */
 export const errorMessages = {
   CREST_INVALID: "El escudo debe ser una imagen PNG, JPG o WebP de hasta 2 MB.",
+  DUPLICATE_PLAY_DATE: "Ya hay una fecha de la liga ese día.",
   DUPLICATE_NAME: "Ese nombre ya está en uso.",
   EMAIL_ALREADY_REGISTERED: "Ya existe una cuenta con ese correo.",
   FORBIDDEN: "No tienes permiso para modificar esta liga.",
@@ -14,6 +15,7 @@ export const errorMessages = {
   INVALID_EMAIL: "Escribe un correo válido.",
   INVALID_INPUT: "Revisa los datos ingresados.",
   INVALID_INVITE_CODE: "Código de invitación incorrecto",
+  INVALID_PLAY_DATE: "Elige un día válido.",
   INVALID_POINTS: "Los puntos deben ser un número entero mayor que 0.",
   INVALID_SEMESTER: "El semestre no tiene un formato válido.",
   LEAGUE_FINALIZED: "La liga está finalizada y ya no se puede modificar.",

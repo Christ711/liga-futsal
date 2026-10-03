@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { checkAddGoal, checkFinishMatch, type Match } from "./matches";
-import { matchdayStatus, matchesToLock, numberMatchdays } from "./matchdays";
+import { matchdayStatus, matchesToLock, numberMatchdays, validatePlayDate } from "./matchdays";
 
 const day = (id: string, playDate: string) => ({ id, playDate });
 
@@ -163,4 +163,25 @@ describe("matchesToLock", () => {
   it("no bloquea nada si todos los partidos siguen pendientes", () => {
     expect(matchesToLock([withId("m1", pendingGame), withId("m2", pendingGame)])).toEqual([]);
   });
+});
+
+describe("validatePlayDate (RF-97, RF-98)", () => {
+  it("acepta un día real en formato AAAA-MM-DD", () => {
+    expect(validatePlayDate(" 2026-10-03 ")).toEqual({ ok: true, data: "2026-10-03" });
+    expect(validatePlayDate("2028-02-29")).toEqual({ ok: true, data: "2028-02-29" });
+  });
+
+  it.each(["", "2026-2-1", "03-10-2026", "2026-02-30", "2027-02-29", "2026-13-01", "hoy"])(
+    "rechaza %j",
+    (value) => {
+      expect(validatePlayDate(value)).toEqual({
+        ok: false,
+        error: {
+          code: "INVALID_PLAY_DATE",
+          message: "Elige un día válido.",
+          fields: { playDate: "Elige un día válido." },
+        },
+      });
+    },
+  );
 });
