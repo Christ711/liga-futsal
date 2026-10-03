@@ -1,3 +1,28 @@
+import { fail, ok, type Result } from "./result";
+
+const DAY_FORMAT = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/**
+ * Valida un día de juego `YYYY-MM-DD` que exista en el calendario (RF-97,
+ * RF-98; plan D15). El 30 de febrero, por ejemplo, se rechaza.
+ */
+export function validatePlayDate(value: string): Result<string> {
+  const day = value.trim();
+  const match = DAY_FORMAT.exec(day);
+  if (match) {
+    const [, year, month, date] = match.map(Number);
+    const calendar = new Date(Date.UTC(year!, month! - 1, date!));
+    if (
+      calendar.getUTCFullYear() === year &&
+      calendar.getUTCMonth() === month! - 1 &&
+      calendar.getUTCDate() === date
+    ) {
+      return ok(day);
+    }
+  }
+  return fail("INVALID_PLAY_DATE", { fields: { playDate: "Elige un día válido." } });
+}
+
 /**
  * Numera las fechas de una liga desde 1 según el orden cronológico de su día de
  * juego (RF-43). El número no se guarda: se calcula cada vez, así que borrar una

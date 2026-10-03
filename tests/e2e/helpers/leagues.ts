@@ -87,16 +87,45 @@ export async function seedPlayer(leagueId: string, teamId: string, name: string)
   return { id, name };
 }
 
-/** Crea una fecha de la liga, directo en la base. */
-export async function seedMatchday(leagueId: string, playDate = "2026-09-01") {
+/** Crea una fecha de la liga, directo en la base; con `finalized` simula que ya se finalizó. */
+export async function seedMatchday(
+  leagueId: string,
+  playDate = "2026-09-01",
+  options: { finalized?: boolean } = {},
+) {
   const id = crypto.randomUUID();
-  await queryDatabase(`INSERT INTO matchday (id, "leagueId", "playDate") VALUES ($1, $2, $3)`, [
-    id,
-    leagueId,
-    playDate,
-  ]);
+  await queryDatabase(
+    `INSERT INTO matchday (id, "leagueId", "playDate", "finalizedAt") VALUES ($1, $2, $3, $4)`,
+    [id, leagueId, playDate, options.finalized ? new Date() : null],
+  );
   return { id };
 }
+
+/** Crea un partido de una fecha, directo en la base. */
+export async function seedMatch(
+  matchdayId: string,
+  teams: { teamAId: string; teamBId: string },
+  options: { position?: number; finished?: boolean } = {},
+) {
+  const id = crypto.randomUUID();
+  await queryDatabase(
+    `INSERT INTO match (id, "matchdayId", position, "teamAId", "teamBId", status)
+     VALUES ($1, $2, $3, $4, $5, $6::"MatchStatus")`,
+    [
+      id,
+      matchdayId,
+      options.position ?? 1,
+      teams.teamAId,
+      teams.teamBId,
+      options.finished ? "FINISHED" : "PENDING",
+    ],
+  );
+  return { id };
+}
+
+/** Día de hoy en la zona horaria de la app, como `YYYY-MM-DD` (ADR 015). */
+export const todayInSantiago = () =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "America/Santiago" }).format(new Date());
 
 /** Partido terminado con un gol del jugador, en una fecha nueva de la liga. */
 export async function seedGoal(

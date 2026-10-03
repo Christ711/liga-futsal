@@ -2,7 +2,7 @@ import "server-only";
 
 import { checkLeagueEditable, type LeagueStatus } from "@/domain/league-rules";
 import { fail, ok, type Result } from "@/domain/result";
-import type { League, Player, PointDeduction, Team } from "@/generated/prisma/client";
+import type { League, Matchday, Player, PointDeduction, Team } from "@/generated/prisma/client";
 import { db } from "@/server/db/client";
 
 type Options = { mustBeInProgress?: boolean };
@@ -76,4 +76,18 @@ export async function requireOwnedDeduction(
   });
   if (!deduction) return fail("NOT_FOUND");
   return ok({ league: league.data, deduction });
+}
+
+/** Autoriza una operación sobre una fecha de la liga; una de otra liga se trata como inexistente. */
+export async function requireOwnedMatchday(
+  userId: string,
+  leagueId: string,
+  matchdayId: string,
+  options: Options = {},
+): Promise<Result<{ league: League; matchday: Matchday }>> {
+  const league = await requireOwnedLeague(userId, leagueId, options);
+  if (!league.ok) return league;
+  const matchday = await db.matchday.findFirst({ where: { id: matchdayId, leagueId } });
+  if (!matchday) return fail("NOT_FOUND");
+  return ok({ league: league.data, matchday });
 }

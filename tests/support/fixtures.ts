@@ -48,3 +48,18 @@ export async function createFinishedMatch(leagueId: string, teamAId: string, tea
 export async function createGoal(matchId: string, teamId: string, scorerId: string | null) {
   return db.goal.create({ data: { matchId, teamId, scorerId } });
 }
+
+/** Fecha de la liga en un día dado; con `finalized` simula que ya se finalizó. */
+export async function createMatchday(
+  leagueId: string,
+  playDate: string,
+  options: { finalized?: boolean } = {},
+) {
+  return db.matchday.create({
+    data: {
+      leagueId,
+      playDate: new Date(`${playDate}T00:00:00Z`),
+      finalizedAt: options.finalized ? new Date() : null,
+    },
+  });
+}
