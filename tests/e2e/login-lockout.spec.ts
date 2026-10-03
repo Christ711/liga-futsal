@@ -1,15 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-import { apiPost, createAccount, formAlert } from "./helpers/accounts";
+import { apiPost, createAccount, formAlert, signIn } from "./helpers/accounts";
 
 const LOCKOUT_MESSAGE = "Demasiados intentos fallidos. Vuelve a intentarlo en 15 minutos.";
-
-async function signIn(page: import("@playwright/test").Page, email: string, password: string) {
-  await page.goto("/ingresar");
-  await page.getByLabel("Correo").fill(email);
-  await page.getByLabel("Contraseña").fill(password);
-  await page.getByRole("button", { name: "Ingresar" }).click();
-}
 
 test("tras 5 intentos fallidos, rechaza incluso la contraseña correcta (RF-7)", async ({
   page,

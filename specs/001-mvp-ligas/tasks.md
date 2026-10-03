@@ -228,22 +228,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/app/restablecer/page.tsx, src/app/restablecer/actions.ts, src/server/use-cases/reset-password.ts, tests/e2e/password-reset.spec.ts
       Hecho cuando: el E2E restablece con el link, una segunda sesión abierta queda cerrada, reutilizar el link se rechaza, y un link cuyo vencimiento se fija en el pasado directamente en la base se rechaza.
 
-- [ ] T45 - Crear `requireOwnedLeague` para autorizar por dueño y estado
+- [x] T45 - Crear `requireOwnedLeague` para autorizar por dueño y estado
       RF: RF-13, RF-76
       Archivos: src/server/authz.ts, tests/integration/authz.test.ts
       Hecho cuando: los tests devuelven la liga al dueño, `FORBIDDEN` a otro ayudante, `NOT_FOUND` a una liga inexistente y `LEAGUE_FINALIZED` si se exige liga en curso.
 
-- [ ] T46 - Crear el cambio de contraseña en `/cuenta`
+- [x] T46 - Crear el cambio de contraseña en `/cuenta`
       RF: RF-4, RF-89, RF-90
       Archivos: src/app/(admin)/cuenta/page.tsx, src/app/(admin)/cuenta/actions.ts, src/server/use-cases/change-password.ts, tests/e2e/account.spec.ts
       Hecho cuando: el E2E cambia la contraseña con la actual correcta y cierra la sesión del otro contexto, y con la actual incorrecta se rechaza.
 
-- [ ] T47 - Crear el cambio de correo en `/cuenta`
+- [x] T47 - Crear el cambio de correo en `/cuenta`
       RF: RF-87, RF-88, RF-90
       Archivos: src/app/(admin)/cuenta/actions.ts, src/server/use-cases/change-email.ts, tests/e2e/account.spec.ts
       Hecho cuando: el E2E cambia el correo sin recibir mensaje en Mailpit, se rechaza con contraseña incorrecta y con un correo que ya usa otra cuenta.
 
-- [ ] T48 - Crear la eliminación de cuenta
+- [x] T48 - Crear la eliminación de cuenta
       RF: RF-91, RF-92
       Archivos: src/app/(admin)/cuenta/actions.ts, src/server/use-cases/delete-account.ts, src/server/queries/account.ts, tests/e2e/account.spec.ts
       Hecho cuando: el diálogo indica la cantidad de ligas, y tras confirmar la cuenta, sus ligas y escudos ya no existen y la sesión quedó cerrada.

@@ -7,6 +7,7 @@
 /** Catálogo de códigos de rechazo con su mensaje en español. Cada tarea agrega los de sus RF. */
 export const errorMessages = {
   EMAIL_ALREADY_REGISTERED: "Ya existe una cuenta con ese correo.",
+  FORBIDDEN: "No tienes permiso para modificar esta liga.",
   INVALID_CREDENTIALS: "Correo o contraseña incorrectos.",
   INVALID_EMAIL: "Escribe un correo válido.",
   INVALID_INPUT: "Revisa los datos ingresados.",
@@ -20,6 +21,7 @@ export const errorMessages = {
   NAME_REQUIRED: "El nombre es obligatorio.",
   NAME_TOO_LONG: "El nombre es demasiado largo.",
   NOT_ENOUGH_TEAMS: "Se necesitan al menos 3 equipos para generar una fecha.",
+  NOT_FOUND: "No encontramos lo que buscas.",
   PASSWORD_TOO_SHORT: "La contraseña debe tener al menos 8 caracteres.",
   PLAYER_HAS_GOALS:
     "El jugador tiene goles registrados y no se puede eliminar. Puedes editar su nombre.",
@@ -30,6 +32,7 @@ export const errorMessages = {
   TOO_MANY_LOGIN_ATTEMPTS: "Demasiados intentos fallidos. Vuelve a intentarlo en 15 minutos.",
   UNAUTHENTICATED: "Inicia sesión para continuar.",
   UNEXPECTED_ERROR: "Ocurrió un error inesperado. Intenta de nuevo.",
+  WRONG_CURRENT_PASSWORD: "La contraseña actual es incorrecta.",
 } as const satisfies Record<string, string>;
 
 export type ErrorCode = keyof typeof errorMessages;

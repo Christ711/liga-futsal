@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { createAccount, formAlert, queryDatabase, uniqueEmail } from "./helpers/accounts";
+import { createAccount, formAlert, queryDatabase, signIn, uniqueEmail } from "./helpers/accounts";
 import { countEmailsTo, firstLink, waitForEmailTo } from "./helpers/mailpit";
 
 const NEUTRAL_MESSAGE = "Si el correo existe, te enviamos un link";
@@ -11,13 +11,6 @@ async function requestReset(page: Page, email: string) {
   await page.getByLabel("Correo").fill(email);
   await page.getByRole("button", { name: "Enviar link" }).click();
   await expect(page.getByRole("status")).toContainText(NEUTRAL_MESSAGE);
-}
-
-async function signIn(page: Page, email: string, password: string) {
-  await page.goto("/ingresar");
-  await page.getByLabel("Correo").fill(email);
-  await page.getByLabel("Contraseña").fill(password);
-  await page.getByRole("button", { name: "Ingresar" }).click();
 }
 
 test("con un correo registrado muestra el mensaje neutro y envía el link (RF-9, RF-10)", async ({
