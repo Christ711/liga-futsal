@@ -38,6 +38,14 @@ export async function createAccount(request: APIRequestContext) {
   return { email, password: PASSWORD };
 }
 
+/** Inicia sesión por la interfaz, como lo hace un ayudante. */
+export async function signIn(page: Page, email: string, password: string) {
+  await page.goto("/ingresar");
+  await page.getByLabel("Correo").fill(email);
+  await page.getByLabel("Contraseña").fill(password);
+  await page.getByRole("button", { name: "Ingresar" }).click();
+}
+
 /** Consulta directa a la base de E2E, para comprobar lo que quedó guardado. */
 export async function queryDatabase<T extends pg.QueryResultRow>(
   sql: string,

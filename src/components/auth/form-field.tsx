@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type FormFieldProps = Omit<ComponentProps<typeof Input>, "id"> & {
+type FormFieldProps = ComponentProps<typeof Input> & {
   name: string;
   label: string;
   /** Mensaje de error del campo; si existe, el campo se marca como inválido. */
@@ -12,15 +12,18 @@ type FormFieldProps = Omit<ComponentProps<typeof Input>, "id"> & {
   hint?: string;
 };
 
-/** Campo de formulario con su etiqueta y su mensaje, pensado para el celular. */
-export function FormField({ name, label, error, hint, ...inputProps }: FormFieldProps) {
-  const messageId = `${name}-message`;
+/**
+ * Campo de formulario con su etiqueta y su mensaje, pensado para el celular.
+ * El `id` es el `name`, salvo que la página tenga dos campos con el mismo nombre.
+ */
+export function FormField({ name, id = name, label, error, hint, ...inputProps }: FormFieldProps) {
+  const messageId = `${id}-message`;
   const message = error ?? hint;
   return (
     <div className="grid gap-2">
-      <Label htmlFor={name}>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       <Input
-        id={name}
+        id={id}
         name={name}
         // 16 px evita que iOS haga zoom al enfocar; 44 px de alto para el dedo.
         className="h-11 text-base"

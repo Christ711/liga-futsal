@@ -1,15 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-import { createAccount, formAlert, queryDatabase } from "./helpers/accounts";
+import { createAccount, formAlert, queryDatabase, signIn } from "./helpers/accounts";
 
 const THIRTY_DAYS_SECONDS = 30 * 24 * 60 * 60;
-
-async function signIn(page: import("@playwright/test").Page, email: string, password: string) {
-  await page.goto("/ingresar");
-  await page.getByLabel("Correo").fill(email);
-  await page.getByLabel("Contraseña").fill(password);
-  await page.getByRole("button", { name: "Ingresar" }).click();
-}
 
 const sessionCookie = async (page: import("@playwright/test").Page) =>
   (await page.context().cookies()).find((cookie) => cookie.name.endsWith("session_token"));
