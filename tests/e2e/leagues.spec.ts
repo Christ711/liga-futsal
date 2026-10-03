@@ -288,7 +288,7 @@ test("las páginas de nueva liga y de administración caben en 360 px (RNF-3)", 
 }) => {
   const owner = await signInNewAccount(page, request);
   const league = await seedLeague(owner.email, {
-    name: "Liga de futsal de la sección 12 del curso de los martes",
+    name: `Liga de futsal de la sección 12 del curso ${crypto.randomUUID().slice(0, 8)}`,
   });
   const scrollWidth = () => page.evaluate(() => document.documentElement.scrollWidth);
 

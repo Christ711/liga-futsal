@@ -96,7 +96,7 @@ test("la lista de ligas cabe en 360 px sin desplazamiento horizontal (RNF-3)", a
 }) => {
   const account = await signInNewAccount(page, request);
   await seedLeague(account.email, {
-    name: "Liga de futsal de la sección 12 del curso de los martes",
+    name: `Liga de futsal de la sección 12 del curso ${crypto.randomUUID().slice(0, 8)}`,
     semester: previousSemester(),
   });
 
