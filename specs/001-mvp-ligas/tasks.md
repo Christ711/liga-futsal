@@ -462,10 +462,11 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/queries/my-leagues.ts, src/app/(admin)/mis-ligas/page.tsx, src/app/(admin)/mis-ligas/[leagueId]/owned-league.ts, src/app/(admin)/mis-ligas/[leagueId]/layout.tsx, tests/e2e/admin.spec.ts
       Hecho cuando: el E2E con una cuenta administradora ve en "Mis ligas" la liga de otro ayudante sin datos de su dueño, la abre con el aviso "Estás editando la liga de otro ayudante", genera una fecha y anota un gol; un ayudante que no es administrador sigue siendo llevado a la vista pública.
 
-- [ ] T90 - (manual, autor) Cargar `ADMIN_EMAILS` en Vercel [AÑADIDO]
+- [x] T90 - (manual, autor) Cargar `ADMIN_EMAILS` en Vercel [AÑADIDO]
       RF: RF-112
       Archivos: ninguno (configuración de Vercel)
       Hecho cuando: Production y Preview tienen `ADMIN_EMAILS` con el correo del autor, y con esa cuenta se abre en producción la administración de una liga de otro ayudante.
+      Resultado: 2026-10-05, el autor creó la cuenta con el correo de `ADMIN_EMAILS` y editó en producción una liga creada por otra cuenta de ayudante.
 
 - [x] T91 - Quitar el cambio de correo de `/cuenta` [AÑADIDO]
       RF: RF-87, RF-88 (eliminados), RF-90
