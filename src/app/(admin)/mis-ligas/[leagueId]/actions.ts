@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { errorMessages, type Result } from "@/domain/result";
 import { deleteLeague } from "@/server/use-cases/delete-league";
+import { finalizeLeague } from "@/server/use-cases/finalize-league";
 import { updateLeague } from "@/server/use-cases/update-league";
 
 import type { NoticeFormState } from "../../../form-state";
@@ -37,4 +38,13 @@ export async function deleteLeagueAction(leagueId: string): Promise<Result<never
   const result = await deleteLeague(leagueId, await headers());
   if (!result.ok) return result;
   redirect("/mis-ligas");
+}
+
+export async function finalizeLeagueAction(leagueId: string): Promise<Result<null>> {
+  const result = await finalizeLeague(leagueId, await headers());
+  if (result.ok) {
+    revalidatePath(`/mis-ligas/${leagueId}`);
+    revalidatePath("/mis-ligas");
+  }
+  return result;
 }

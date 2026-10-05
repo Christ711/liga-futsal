@@ -389,27 +389,27 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 
 ## Fase 5 - Parte pública y finalización de liga
 
-- [ ] T76 - Crear la portada con ligas en curso e historial por semestre
+- [x] T76 - Crear la portada con ligas en curso e historial por semestre
       RF: RF-12, RF-80, RF-108
       Archivos: src/app/(public)/page.tsx, src/server/queries/home.ts, tests/e2e/public.spec.ts
       Hecho cuando: el E2E ve "No hay ligas en curso por ahora" sin ligas, y con ligas de dos semestres las ve agrupadas del más reciente al más antiguo, sin ninguna acción de edición.
 
-- [ ] T77 - Crear la vista pública de una liga en curso
+- [x] T77 - Crear la vista pública de una liga en curso
       RF: RF-14, RF-81, RF-83
       Archivos: src/app/(public)/ligas/[leagueId]/page.tsx, src/server/queries/public-league.ts, tests/e2e/public.spec.ts
       Hecho cuando: sin sesión el E2E ve tabla, goleadores y fechas con número, día, estado y marcadores, ve un partido recién terminado al recargar, y el HTML no contiene el correo del dueño.
 
-- [ ] T78 - Crear el caso de uso de finalizar una liga con snapshot
+- [x] T78 - Crear el caso de uso de finalizar una liga con snapshot
       RF: RF-74, RF-75, RF-76, RF-77
       Archivos: src/server/use-cases/finalize-league.ts, src/domain/snapshot.ts, tests/integration/finalize-league.test.ts
       Hecho cuando: los tests guardan el snapshot con ambas tablas, descuentos y equipo de cada goleador, borran fechas, partidos, goles y descuentos, conservan equipos, jugadores y escudos, aceptan una liga sin fechas y rechazan cualquier edición posterior.
 
-- [ ] T79 - Crear el diálogo de finalizar liga
+- [x] T79 - Crear el diálogo de finalizar liga
       RF: RF-73
       Archivos: src/components/league/finalize-league-dialog.tsx, src/app/(admin)/mis-ligas/[leagueId]/actions.ts, tests/e2e/finalize-league.spec.ts
       Hecho cuando: el diálogo advierte que no se puede deshacer y cuántos partidos pendientes se descartarán, y al confirmar la liga pasa a finalizadas.
 
-- [ ] T80 - Crear la vista pública de una liga finalizada
+- [x] T80 - Crear la vista pública de una liga finalizada
       RF: RF-82
       Archivos: src/app/(public)/ligas/[leagueId]/page.tsx, src/components/league/finalized-league.tsx, tests/e2e/finalize-league.spec.ts
       Hecho cuando: el E2E ve en el historial la tabla final, los goleadores con su equipo y los equipos con sus jugadores y escudos.

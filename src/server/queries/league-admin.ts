@@ -59,6 +59,10 @@ export async function getLeagueAdmin(leagueId: string) {
         : hasOpenMatchday
           ? ("MATCHDAY_OPEN" as const)
           : null,
+    // RF-73: partidos pendientes que se descartarían al finalizar la liga.
+    pendingCount: matchdays
+      .flatMap((matchday) => matchday.matches)
+      .filter((match) => match.status === "PENDING").length,
     // RF-43, RF-48, RF-104, RF-105: número y estado se calculan, no se guardan (plan D3).
     matchdays: numberMatchdays(
       matchdays.map((matchday) => {
