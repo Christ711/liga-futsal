@@ -29,7 +29,7 @@ function contrast(a: Rgb, b: Rgb): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-const isGreen = ([r, g, b]: Rgb) => g > r + 40 && g > b + 10;
+const isBlue = ([r, g, b]: Rgb) => b > r + 60 && b > g + 40;
 
 async function openSignIn(page: Page) {
   await page.goto("/ingresar");
@@ -41,11 +41,11 @@ async function openSignIn(page: Page) {
   };
 }
 
-test("el color principal es verde en botones y cabecera (plan D22)", async ({ page }) => {
+test("el color principal es azul en botones y cabecera (plan D22)", async ({ page }) => {
   const { header, button } = await openSignIn(page);
 
-  expect(isGreen(await rgbOf(button, "background-color"))).toBe(true);
-  expect(isGreen(await rgbOf(header, "background-color"))).toBe(true);
+  expect(isBlue(await rgbOf(button, "background-color"))).toBe(true);
+  expect(isBlue(await rgbOf(header, "background-color"))).toBe(true);
 });
 
 test("el fondo es gris claro y las tarjetas son blancas", async ({ page }) => {

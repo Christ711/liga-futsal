@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
-/** Botones sobre la cabecera verde: texto blanco y fondo translúcido (plan D22). */
+/** Botones sobre la cabecera de color: texto blanco y fondo translúcido (plan D22). */
 const HEADER_LINK =
   "px-1.5 text-primary-foreground hover:bg-white/15 hover:text-primary-foreground";
 const HEADER_BUTTON =

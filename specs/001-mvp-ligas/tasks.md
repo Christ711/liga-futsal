@@ -478,10 +478,10 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: tests/integration/finish-match.test.ts
       Hecho cuando: en un partido terminado no bloqueado, quitar un gol y reasignar otro al otro equipo cambia la tabla de posiciones y la de goleadores calculadas sobre los datos guardados.
 
-- [x] T93 - Definir la paleta de color verde con los tokens de shadcn/ui [AÑADIDO]
+- [x] T93 - Definir la paleta de color azul con los tokens de shadcn/ui [AÑADIDO]
       RF: [SIN RF] (plan D22)
       Archivos: src/app/globals.css, src/components/layout/site-header.tsx
-      Hecho cuando: botones principales, cabecera y elementos activos usan el primario verde, el fondo es gris claro con tarjetas blancas, el texto mantiene un contraste de al menos 4,5:1 y la suite E2E sigue en verde.
+      Hecho cuando: botones principales, cabecera y elementos activos usan el primario azul, el fondo es gris claro con tarjetas blancas, el texto mantiene un contraste de al menos 4,5:1 y la suite E2E sigue en verde.
 
 - [x] T94 - Dividir la administración de la liga en subpáginas con menú lateral [AÑADIDO]
       RF: [SIN RF] (plan D22; mantiene RF-93, RF-94 y RF-106)
