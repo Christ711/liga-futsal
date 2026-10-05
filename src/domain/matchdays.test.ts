@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { checkAddGoal, checkFinishMatch, type Match } from "./matches";
-import { matchdayStatus, matchesToLock, numberMatchdays, validatePlayDate } from "./matchdays";
+import {
+  checkFinalizeMatchday,
+  matchdayStatus,
+  matchesToLock,
+  numberMatchdays,
+  validatePlayDate,
+} from "./matchdays";
 
 const day = (id: string, playDate: string) => ({ id, playDate });
 
@@ -184,4 +190,32 @@ describe("validatePlayDate (RF-97, RF-98)", () => {
       });
     },
   );
+});
+
+describe("checkFinalizeMatchday (RF-49, RF-101, RF-102)", () => {
+  const finished = { status: "finished" as const, locked: false };
+  const locked = { status: "finished" as const, locked: true };
+  const pending = { status: "pending" as const, locked: false };
+
+  it("permite finalizar una fecha abierta, aunque tenga partidos pendientes", () => {
+    expect(checkFinalizeMatchday({ finalized: false, matches: [finished, pending] })).toEqual({
+      ok: true,
+      data: null,
+    });
+  });
+
+  it("permite volver a finalizar una fecha incompleta (RF-49)", () => {
+    expect(checkFinalizeMatchday({ finalized: true, matches: [locked, pending] }).ok).toBe(true);
+  });
+
+  it("permite volver a finalizarla para bloquear los pendientes que ya se jugaron (RF-102)", () => {
+    expect(checkFinalizeMatchday({ finalized: true, matches: [locked, finished] }).ok).toBe(true);
+  });
+
+  it("rechaza una fecha finalizada sin pendientes ni partidos por bloquear", () => {
+    expect(checkFinalizeMatchday({ finalized: true, matches: [locked, locked] })).toMatchObject({
+      ok: false,
+      error: { code: "MATCHDAY_ALREADY_FINALIZED" },
+    });
+  });
 });

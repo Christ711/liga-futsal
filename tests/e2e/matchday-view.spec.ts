@@ -272,3 +272,155 @@ test("la vista de la fecha y el panel de goles caben en 360 px (RNF-3)", async (
   await expect(page.getByRole("dialog")).toBeVisible();
   expect(await scrollWidth()).toBeLessThanOrEqual(360);
 });
+
+test.describe("tablas desde la vista de la fecha (RF-60 a RF-62, RF-70, RF-71)", () => {
+  const standingsRow = (page: Page, team: string) =>
+    page
+      .getByRole("table", { name: "Tabla de posiciones" })
+      .getByRole("row")
+      .filter({ has: page.getByRole("cell", { name: team, exact: true }) });
+
+  test("termina un partido y ve la tabla y los goleadores actualizados sin salir de la fecha", async ({
+    page,
+    request,
+  }) => {
+    const { url } = await openMatchday(page, request);
+    const card = matchCard(page, 1);
+    await card.getByRole("button", { name: "Agregar gol" }).click();
+    await page
+      .getByRole("dialog", { name: "Gol en Tigres contra Leones" })
+      .getByRole("button", { name: "Juan", exact: true })
+      .click();
+    await card.getByRole("button", { name: "Terminar partido" }).click();
+    await expect(card).toContainText("Terminado");
+
+    await page.getByRole("tab", { name: "Tabla" }).click();
+
+    await expect(page).toHaveURL(new RegExp(`${url}$`));
+    const tigres = standingsRow(page, "Tigres").getByRole("cell");
+    await expect(tigres.nth(0)).toHaveText("1");
+    await expect(tigres.nth(2)).toHaveText("1");
+    await expect(tigres.last()).toHaveText("3");
+    await expect(standingsRow(page, "Leones").getByRole("cell").last()).toHaveText("0");
+    await page.getByRole("tab", { name: "Goleadores" }).click();
+    const scorers = page.getByRole("table", { name: "Goleadores" });
+    await expect(scorers.getByRole("row").nth(1)).toContainText("Juan");
+    await expect(scorers.getByRole("row").nth(1)).toContainText("Tigres");
+    await expect(scorers.getByRole("row").nth(1).getByRole("cell").last()).toHaveText("1");
+  });
+
+  test("con 8 equipos de 30 caracteres la tabla cabe en 360 px y el asterisco muestra cada descuento", async ({
+    page,
+    request,
+  }) => {
+    const owner = await signInNewAccount(page, request);
+    const league = await seedLeague(owner.email);
+    const teams = [];
+    for (let index = 1; index <= 8; index++) {
+      teams.push(
+        await seedTeam(league.id, `Club Deportivo Universitario ${index}`.padEnd(30, "x")),
+      );
+    }
+    await queryDatabase(
+      `INSERT INTO point_deduction (id, "teamId", points, reason) VALUES ($1, $2, 2, 'Atraso'), ($3, $2, 1, 'Tarjetas')`,
+      [crypto.randomUUID(), teams[0]!.id, crypto.randomUUID()],
+    );
+    const matchday = await seedMatchday(league.id, "2026-09-05");
+    await seedMatch(matchday.id, { teamAId: teams[0]!.id, teamBId: teams[1]!.id });
+    await page.goto(`/mis-ligas/${league.id}/fechas/${matchday.id}`);
+
+    await page.getByRole("tab", { name: "Tabla" }).click();
+
+    await expect(
+      page.getByRole("table", { name: "Tabla de posiciones" }).getByRole("row"),
+    ).toHaveCount(9);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      360,
+    );
+    const penalized = standingsRow(page, teams[0]!.name);
+    await expect(penalized.getByRole("cell").last()).toHaveText("-3*");
+    const notes = page.getByRole("list", { name: "Descuentos de puntos" });
+    await expect(notes).toContainText(`${teams[0]!.name}: 2 puntos por Atraso`);
+    await expect(notes).toContainText(`${teams[0]!.name}: 1 punto por Tarjetas`);
+  });
+
+  test("la ruta GET de las tablas responde 401 sin sesión y 403 a otro ayudante", async ({
+    page,
+    request,
+    browser,
+    playwright,
+  }) => {
+    const { league } = await openMatchday(page, request);
+    const path = `/api/leagues/${league.id}/tables`;
+
+    expect((await page.request.get(path)).status()).toBe(200);
+    const anonymous = await playwright.request.newContext({
+      baseURL: test.info().project.use.baseURL,
+    });
+    expect((await anonymous.get(path)).status()).toBe(401);
+    await anonymous.dispose();
+    const other = await createAccount(request);
+    const otherContext = await browser.newContext();
+    const otherPage = await otherContext.newPage();
+    await signIn(otherPage, other.email, other.password);
+    await otherPage.getByRole("button", { name: "Cerrar sesión" }).waitFor();
+    expect((await otherPage.request.get(path)).status()).toBe(403);
+    await otherContext.close();
+  });
+});
+
+test.describe("finalizar la fecha (RF-49, RF-101 a RF-106)", () => {
+  async function finalize(page: Page, warning: string) {
+    await page.getByRole("button", { name: "Finalizar fecha" }).click();
+    const dialog = page.getByRole("alertdialog");
+    await expect(dialog).toContainText("Los partidos terminados ya no podrán modificarse.");
+    await expect(dialog).toContainText(warning);
+    await dialog.getByRole("button", { name: "Finalizar fecha" }).click();
+    await expect(dialog).toBeHidden();
+  }
+
+  test("finaliza con 2 pendientes, bloquea los terminados, juega los pendientes y la vuelve a finalizar", async ({
+    page,
+    request,
+  }) => {
+    const { url, first } = await openMatchday(page, request);
+    await queryDatabase(`UPDATE match SET status = 'FINISHED' WHERE id = $1`, [first.id]);
+    await page.goto(url);
+
+    await finalize(page, "Quedarán 2 partidos pendientes, que podrás jugar más adelante.");
+    const last = page.getByRole("dialog", { name: "¿Era la última fecha del semestre?" });
+    await last.getByRole("button", { name: "No, seguir" }).click();
+
+    await expect(page.getByRole("main")).toContainText("Incompleta (2)");
+    await expect(matchCard(page, 1)).toContainText("Bloqueado");
+    await expect(matchCard(page, 1).getByRole("button", { name: "Agregar gol" })).toHaveCount(0);
+    for (const position of [2, 3]) {
+      await matchCard(page, position).getByRole("button", { name: "Terminar partido" }).click();
+      await expect(matchCard(page, position)).toContainText("Terminado");
+    }
+    await finalize(page, "No quedan partidos pendientes.");
+    await page
+      .getByRole("dialog", { name: "¿Era la última fecha del semestre?" })
+      .getByRole("button", { name: "No, seguir" })
+      .click();
+
+    await expect(page.getByRole("main")).toContainText("Finalizada");
+    await expect(matchCard(page, 3)).toContainText("Bloqueado");
+    await expect(page.getByRole("button", { name: "Finalizar fecha" })).toHaveCount(0);
+  });
+
+  test("después de finalizar pregunta si era la última fecha y ofrece finalizar la liga (RF-106)", async ({
+    page,
+    request,
+  }) => {
+    const { league } = await openMatchday(page, request);
+
+    await finalize(page, "Quedarán 3 partidos pendientes, que podrás jugar más adelante.");
+
+    const last = page.getByRole("dialog", { name: "¿Era la última fecha del semestre?" });
+    await expect(last.getByRole("link", { name: "Finalizar la liga" })).toHaveAttribute(
+      "href",
+      `/mis-ligas/${league.id}#finalizar-liga`,
+    );
+  });
+});

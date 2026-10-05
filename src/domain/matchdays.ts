@@ -72,3 +72,16 @@ export function matchesToLock(
     .filter((match) => match.status === "finished" && !match.locked)
     .map((match) => match.id);
 }
+
+/**
+ * Finalizar una fecha se permite mientras está abierta, le quedan pendientes
+ * (RF-49, RF-101) o tiene partidos terminados sin bloquear, por ejemplo los
+ * pendientes que se jugaron después de finalizarla (RF-102).
+ */
+export function checkFinalizeMatchday(matchday: {
+  finalized: boolean;
+  matches: readonly { status: "pending" | "finished"; locked: boolean }[];
+}): Result<null> {
+  const somethingLeft = matchday.matches.some((match) => !match.locked);
+  return matchday.finalized && !somethingLeft ? fail("MATCHDAY_ALREADY_FINALIZED") : ok(null);
+}

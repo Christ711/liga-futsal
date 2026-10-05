@@ -3,10 +3,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
+import Link from "next/link";
+
 import { FormAlert } from "@/components/forms/form-alert";
+import { FinalizeMatchdayDialog } from "@/components/matchday/finalize-matchday-dialog";
 import { GoalSheet } from "@/components/matchday/goal-sheet";
 import { MatchCard } from "@/components/matchday/match-card";
+import { MatchdayStatusBadge } from "@/components/matchday/status-badge";
+import { DeductionNotes } from "@/components/standings/deduction-note";
+import { StandingsTable } from "@/components/standings/standings-table";
+import { TopScorersTable } from "@/components/standings/top-scorers-table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { checkFinalizeMatchday, matchdayStatus } from "@/domain/matchdays";
 import type { AppError, Result } from "@/domain/result";
+import type { StandingsRow, TopScorerRow } from "@/domain/standings";
+import { formatDay } from "@/lib/dates";
 import {
   withGoalAdded,
   withGoalReassigned,
@@ -21,6 +32,7 @@ import {
 
 import {
   addGoalAction,
+  finalizeMatchdayAction,
   finishMatchAction,
   moveMatchAction,
   reassignGoalAction,
@@ -40,14 +52,25 @@ const MUTATION_KEY = ["matchday-change"];
 type SheetState =
   { mode: "add"; match: ViewMatch } | { mode: "reassign"; match: ViewMatch; goal: ViewGoal } | null;
 
+export type LeagueTables = { standings: StandingsRow[]; topScorers: TopScorerRow[] };
+
 /**
- * Vista de la fecha en la cancha (RF-52 a RF-58, RF-84). Cada cambio se ve al
- * instante y se revierte si el servidor lo rechaza; al terminar se vuelve a
- * leer la fecha y se invalidan las tablas de la liga (ADR 011).
+ * Vista de la fecha en la cancha (RF-52 a RF-61, RF-84, RF-101 a RF-106). Cada
+ * cambio se ve al instante y se revierte si el servidor lo rechaza; al terminar
+ * se vuelve a leer la fecha y se invalidan las tablas de la liga (ADR 011).
  */
-export function MatchdayMatches({ initialView }: { initialView: MatchdayView }) {
+export function MatchdayScreen({
+  leagueName,
+  initialView,
+  initialTables,
+}: {
+  leagueName: string;
+  initialView: MatchdayView;
+  initialTables: LeagueTables;
+}) {
   const { leagueId, matchday } = initialView;
   const queryKey = ["matchday", leagueId, matchday.id];
+  const tablesKey = ["tables", leagueId];
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [sheet, setSheet] = useState<SheetState>(null);
@@ -60,6 +83,17 @@ export function MatchdayMatches({ initialView }: { initialView: MatchdayView }) 
       return response.json();
     },
     initialData: initialView,
+  });
+
+  // RF-61: las tablas se consultan sin salir de la fecha y se actualizan tras cada cambio.
+  const { data: tables } = useQuery({
+    queryKey: tablesKey,
+    queryFn: async (): Promise<LeagueTables> => {
+      const response = await fetch(`/api/leagues/${leagueId}/tables`);
+      if (!response.ok) throw new Error(`Las tablas respondieron ${response.status}.`);
+      return response.json();
+    },
+    initialData: initialTables,
   });
 
   /** Mutación optimista: aplica el cambio en la caché, llama a la acción y revierte si falla. */
@@ -94,7 +128,7 @@ export function MatchdayMatches({ initialView }: { initialView: MatchdayView }) 
         // Con varios cambios en vuelo, se vuelve a leer solo al terminar el último.
         if (queryClient.isMutating({ mutationKey: MUTATION_KEY }) === 1) {
           void queryClient.invalidateQueries({ queryKey });
-          void queryClient.invalidateQueries({ queryKey: ["tables", leagueId] });
+          void queryClient.invalidateQueries({ queryKey: tablesKey });
         }
       },
     });
@@ -131,6 +165,25 @@ export function MatchdayMatches({ initialView }: { initialView: MatchdayView }) 
   );
 
   const teamById = new Map(view.teams.map((team) => [team.id, team]));
+  const { status, pendingCount } = matchdayStatus({
+    finalized: view.matchday.finalized,
+    matches: view.matches,
+  });
+  const canFinalize = checkFinalizeMatchday({
+    finalized: view.matchday.finalized,
+    matches: view.matches,
+  }).ok;
+
+  async function finalize(): Promise<Result<null>> {
+    const result = await finalizeMatchdayAction(leagueId, matchday.id);
+    if (result.ok) {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey }),
+        queryClient.invalidateQueries({ queryKey: tablesKey }),
+      ]);
+    }
+    return result;
+  }
 
   function pick(target: GoalTarget) {
     if (!sheet) return;
@@ -152,29 +205,73 @@ export function MatchdayMatches({ initialView }: { initialView: MatchdayView }) 
       : `Reasignar gol de ${sheet.goal.scorer?.name ?? "Gol sin autor"}`;
 
   return (
-    <div className="grid gap-3">
-      {error ? <FormAlert>{error}</FormAlert> : null}
-      <ol aria-label="Partidos de la fecha" className="grid gap-3">
-        {view.matches.map((match, index) => (
-          <MatchCard
-            key={match.id}
-            match={match}
-            teamA={teamById.get(match.teamAId)!}
-            teamB={teamById.get(match.teamBId)!}
-            isFirst={index === 0}
-            isLast={index === view.matches.length - 1}
-            editable={view.editable}
-            actions={{
-              onAddGoal: () => setSheet({ mode: "add", match }),
-              onFinish: () => finish.mutate(match.id),
-              onRevert: () => revert.mutate(match.id),
-              onMove: (direction) => move.mutate({ matchId: match.id, direction }),
-              onRemoveGoal: (goal) => removeGoal.mutate(goal.id),
-              onReassignGoal: (goal) => setSheet({ mode: "reassign", match, goal }),
-            }}
-          />
-        ))}
-      </ol>
+    <div className="grid gap-5">
+      <div className="grid gap-1">
+        <Link
+          href={`/mis-ligas/${leagueId}`}
+          className="text-sm wrap-anywhere text-muted-foreground underline"
+        >
+          {leagueName}
+        </Link>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <h1 className="text-2xl font-semibold">Fecha {view.matchday.number}</h1>
+          <MatchdayStatusBadge status={status} pendingCount={pendingCount} />
+        </div>
+        <p className="text-sm text-muted-foreground first-letter:uppercase">
+          {formatDay(view.matchday.playDate)}
+        </p>
+      </div>
+
+      <Tabs defaultValue="partidos" className="gap-4">
+        <TabsList className="grid h-11 w-full grid-cols-3">
+          <TabsTrigger value="partidos">Partidos</TabsTrigger>
+          <TabsTrigger value="tabla">Tabla</TabsTrigger>
+          <TabsTrigger value="goleadores">Goleadores</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="partidos" className="grid gap-3">
+          {error ? <FormAlert>{error}</FormAlert> : null}
+          <ol aria-label="Partidos de la fecha" className="grid gap-3">
+            {view.matches.map((match, index) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+                teamA={teamById.get(match.teamAId)!}
+                teamB={teamById.get(match.teamBId)!}
+                isFirst={index === 0}
+                isLast={index === view.matches.length - 1}
+                editable={view.editable}
+                actions={{
+                  onAddGoal: () => setSheet({ mode: "add", match }),
+                  onFinish: () => finish.mutate(match.id),
+                  onRevert: () => revert.mutate(match.id),
+                  onMove: (direction) => move.mutate({ matchId: match.id, direction }),
+                  onRemoveGoal: (goal) => removeGoal.mutate(goal.id),
+                  onReassignGoal: (goal) => setSheet({ mode: "reassign", match, goal }),
+                }}
+              />
+            ))}
+          </ol>
+          {view.editable ? (
+            <FinalizeMatchdayDialog
+              leagueId={leagueId}
+              canFinalize={canFinalize}
+              pendingCount={pendingCount}
+              onFinalize={finalize}
+            />
+          ) : null}
+        </TabsContent>
+
+        <TabsContent value="tabla" className="grid gap-3">
+          <StandingsTable rows={tables.standings} />
+          <DeductionNotes rows={tables.standings} />
+        </TabsContent>
+
+        <TabsContent value="goleadores">
+          <TopScorersTable rows={tables.topScorers} />
+        </TabsContent>
+      </Tabs>
+
       <GoalSheet
         open={sheet !== null}
         onOpenChange={(open) => {
