@@ -42,6 +42,8 @@ export default defineConfig({
             SMTP_HOST: "127.0.0.1",
             SMTP_PORT: "1025",
             MAIL_FROM: "Liga Futsal <liga-futsal@example.com>",
+            // Con mayúsculas y espacios a propósito: la app normaliza la lista (RF-112).
+            ADMIN_EMAILS: " Admin-De-Pruebas@Example.com ",
           },
           // Comparten una base: los archivos corren de a uno para no pisarse.
           fileParallelism: false,
