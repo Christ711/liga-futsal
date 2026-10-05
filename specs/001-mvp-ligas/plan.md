@@ -17,11 +17,11 @@ Una sola app Next.js (App Router) en Vercel sobre Postgres en Neon, con Prisma, 
 - `result`: tipo `Result<T>` con `{ ok: true, data } | { ok: false, error: { code, message, fields? } }` y el catálogo de códigos de rechazo con sus mensajes en español (ADR 010).
 
 ### Servidor (`src/server`)
-- `env`: valida todas las variables de entorno al arrancar con Zod y falla si falta alguna.
+- `env` [MODIFICADO]: valida todas las variables de entorno al arrancar con Zod y falla si falta alguna obligatoria; `ADMIN_EMAILS` es opcional (D21). (Anterior: valida todas las variables de entorno al arrancar con Zod y falla si falta alguna.)
 - `time`: único lector del reloj; entrega "hoy" (`YYYY-MM-DD`) y "ahora" en `America/Santiago` (ADR 015).
 - `db`: cliente de Prisma con el adaptador de Neon; convierte `Date` de columnas `date` a `YYYY-MM-DD` y viceversa.
 - `auth`: configuración de Better Auth (sesión de 30 días sin renovación, recuperación de 1 hora, revocación de sesiones, sin registro de IP), hooks de código de invitación y de bloqueo por intentos, y el helper `requireSession()`.
-- `authz`: `requireOwnedLeague(leagueId, { mustBeInProgress })`, que devuelve la liga o un rechazo `NOT_FOUND`, `FORBIDDEN` o `LEAGUE_FINALIZED`. Lo usan todos los casos de uso y las rutas GET privadas.
+- `authz` [MODIFICADO]: `requireOwnedLeague(userId, leagueId, { mustBeInProgress })`, que devuelve la liga a su dueño o a una cuenta administradora (D21), o un rechazo `NOT_FOUND`, `FORBIDDEN` o `LEAGUE_FINALIZED`; las verificaciones por equipo, jugador, fecha, partido, gol y descuento se apoyan en ella. Lo usan todos los casos de uso y las rutas GET privadas. (Anterior: `requireOwnedLeague(leagueId, { mustBeInProgress })`, que devuelve la liga o un rechazo `NOT_FOUND`, `FORBIDDEN` o `LEAGUE_FINALIZED`. Lo usan todos los casos de uso y las rutas GET privadas.)
 - `email`: envío por SMTP (ADR 006) y plantilla del correo de recuperación en español.
 - `crests`: valida el contenido real del archivo, lo reduce a 256 px y lo recodifica a WebP, y calcula su hash (ADR 007).
 - `use-cases`: un archivo por operación de escritura (lista en la tabla de cobertura). Cada uno sigue el orden de ADR 008: sesión, dueño, carga, reglas de dominio, persistencia en transacción cuando toca varias tablas.
@@ -171,6 +171,12 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 - Por qué: tests independientes entre sí, sin datos sobrantes, y rápidos.
 - Alternativa descartada: crear todo por la interfaz en cada test. Por qué no: tests lentos y un fallo en la creación de ligas rompería todos los demás.
 
+### D21. Administradores por la variable `ADMIN_EMAILS`, evaluada en `requireOwnedLeague` [AÑADIDO]
+- Decisión: `ADMIN_EMAILS` es una lista opcional de correos separados por coma, normalizados a minúsculas (RF-112). `requireOwnedLeague` deja pasar al dueño o a la cuenta de la sesión cuyo correo está en la lista (RF-13, RF-109), y se evalúa en cada petición, así que quitar un correo de la lista surte efecto de inmediato. "Mis ligas" agrega para el administrador las ligas de los demás sin datos de sus dueños (RF-110, RF-14), y el layout de la liga muestra el aviso de RF-111 cuando el administrador no es el dueño.
+- Por qué: toda la autorización ya pasa por `requireOwnedLeague`, así que un solo punto habilita al administrador en todos los casos de uso y rutas GET; no requiere migración, y la lista se cambia en Vercel sin tocar código, lo que permite sumar al profesor con su propia cuenta sin compartir contraseñas.
+- Alternativa descartada: columna `isAdmin` en `user`. Por qué no: exige migración y entrar a Neon con SQL para nombrar o quitar administradores.
+- Alternativa descartada: el plugin de administración de Better Auth. Por qué no: agrega roles, bloqueos y suplantación de usuarios que la spec no pide, con tablas y endpoints extra que proteger.
+
 ## Estrategia de tests
 
 **Unitarios (Vitest, `src/domain/**/*.test.ts`)** — sin base ni Next.js:
@@ -184,6 +190,7 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 
 **Integración de casos de uso (Vitest contra Postgres de Docker o CI)**:
 - Autorización: cada caso de uso de escritura con un ayudante que no es dueño devuelve `FORBIDDEN` sin modificar datos (RF-13).
+- Administración [AÑADIDO]: `requireOwnedLeague` acepta un correo de `ADMIN_EMAILS` en una liga ajena y lo rechaza al quitarlo de la lista; un E2E con una cuenta administradora carga una fecha en la liga de otro ayudante, ve el aviso de RF-111 y la lista de RF-110 (D21).
 - Transacciones: finalizar liga, eliminar fecha, eliminar equipo y eliminar cuenta dejan la base consistente.
 - Índices únicos traducidos a `DUPLICATE_NAME` y `DUPLICATE_PLAY_DATE`.
 
@@ -202,6 +209,7 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 - RNF-2: test que limita la red a 150 ms y 1,6 Mbps y la CPU a 4 veces, con caché vacía, y mide hasta que la tabla es visible; corre en CI contra el build local y se ejecuta una vez a mano contra producción para la medición registrada.
 
 ## Riesgos
+- **Cuenta administradora comprometida [AÑADIDO].** Quien obtenga su contraseña puede modificar o eliminar cualquier liga. Lo acotan el bloqueo por intentos (RF-7), que la lista vive solo en la configuración (principio 5) y que quitar el correo de la lista corta el acceso de inmediato (D21).
 - **El hook de registro de Better Auth podría no recibir campos extra del cuerpo.** Si el esquema de su endpoint descarta `inviteCode` antes del hook, D9 no funciona tal cual. Se verifica con el E2E de llamada directa sin código en la primera tarea de autenticación; si falla, el endpoint HTTP de registro se desactiva con `disabledPaths` y el registro se hace solo por la Server Action.
 - **Despertar de Neon en la primera visita.** Con la base suspendida, la primera carga pública suma el despertar del cómputo; si la medición en producción de RNF-2 no cumple, se reabre D13.
 - **Tabla de posiciones en 360 px.** Nueve columnas (equipo y ocho números) caben justo; nombres de hasta 30 caracteres deben truncarse con elipsis y mostrarse completos al tocar.
@@ -224,7 +232,7 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 | RF-10 | `auth` `sendResetPassword` → `server/email` |
 | RF-11 | `resetPasswordTokenExpiresIn: 3600`; token de un solo uso de Better Auth; `use-cases/reset-password` |
 | RF-12 | Rutas `(public)` sin componentes de acción; layout `(admin)` exige sesión |
-| RF-13 | `server/authz` en todos los casos de uso y rutas GET privadas; principio 3 |
+| RF-13 [MODIFICADO] | `server/authz` en todos los casos de uso y rutas GET privadas, dueño o administrador; principio 3; D21 |
 | RF-14 | `server/queries` sin campos de `user` en vistas públicas; E2E de visibilidad |
 | RF-15 | `use-cases/create-league` |
 | RF-16 | `domain/semester` y esquema Zod |
@@ -304,7 +312,7 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 | RF-90 | `use-cases/change-email`, `change-password` |
 | RF-91 | `queries` cuenta ligas; AlertDialog en `/cuenta` |
 | RF-92 | `use-cases/delete-account`; D12 |
-| RF-93 | Layout de `/mis-ligas/[leagueId]` redirige a `/ligas/[leagueId]` si no es dueño |
+| RF-93 [MODIFICADO] | Layout de `/mis-ligas/[leagueId]` redirige a `/ligas/[leagueId]` si no es dueño ni administrador; D21 |
 | RF-94 | `queries/my-leagues` con `domain/semester` y "hoy" |
 | RF-95 | `queries` cuenta jugadores; AlertDialog de eliminar equipo |
 | RF-96 | `use-cases/delete-team` (cascada a jugadores y escudo) |
@@ -320,5 +328,9 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 | RF-106 | Diálogo posterior a `finalize-matchday` con enlace a finalizar liga |
 | RF-107 | `domain/standings` |
 | RF-108 | `/` con mensaje de lista vacía |
+| RF-109 [AÑADIDO] | `server/authz` (`requireOwnedLeague` acepta administradores); D21 |
+| RF-110 [AÑADIDO] | `queries/my-leagues` agrega las ligas de los demás para el administrador; D21 |
+| RF-111 [AÑADIDO] | Layout de `/mis-ligas/[leagueId]` con el aviso; D21 |
+| RF-112 [AÑADIDO] | `env` (`ADMIN_EMAILS`) y `server/authz`; D21 |
 
 Todos los RF de la spec 001 tienen fila; no hay huecos.

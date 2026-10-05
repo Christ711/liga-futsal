@@ -1,7 +1,7 @@
 import type { APIRequestContext, Page } from "@playwright/test";
 import pg from "pg";
 
-import { e2eDatabaseUrl, e2eInviteCode } from "../../../playwright.config";
+import { e2eAdminEmail, e2eDatabaseUrl, e2eInviteCode } from "../../../playwright.config";
 
 export const PASSWORD = "contraseña-segura";
 
@@ -36,6 +36,21 @@ export async function createAccount(request: APIRequestContext) {
     );
   }
   return { email, password: PASSWORD };
+}
+
+/**
+ * Inicia sesión con la cuenta administradora de `ADMIN_EMAILS` (RF-112). La
+ * crea si todavía no existe; con `--repeat-each` puede existir de antes.
+ */
+export async function signInAsAdmin(page: Page, request: APIRequestContext) {
+  const response = await apiPost(request, "/api/auth/sign-up/email", {
+    data: { email: e2eAdminEmail, password: PASSWORD, name: "", inviteCode: e2eInviteCode },
+  });
+  if (!response.ok() && !(await response.text()).includes("USER_ALREADY_EXISTS")) {
+    throw new Error(`No se pudo crear la cuenta administradora: ${response.status()}`);
+  }
+  await signIn(page, e2eAdminEmail, PASSWORD);
+  await page.getByRole("button", { name: "Cerrar sesión" }).waitFor();
 }
 
 /** Inicia sesión por la interfaz, como lo hace un ayudante. */

@@ -6,7 +6,8 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 ## Usuarios / actores
 - Ayudante: se registra con un código de invitación y gestiona solo las ligas que creó: equipos, jugadores, fechas, goles, descuentos, traspasos, finalización y eliminación.
 - Visitante (alumnos, profesor, cualquiera con el link): consulta sin iniciar sesión las ligas en curso, el historial y sus tablas; no puede modificar nada.
-- Profesor: no usa la app para editar; guarda el código de invitación y lo entrega a los ayudantes nuevos.
+- Profesor [MODIFICADO]: consulta como visitante y guarda el código de invitación, que entrega a los ayudantes nuevos; si su cuenta está en la lista de administradores, edita como administrador. (Anterior: no usa la app para editar; guarda el código de invitación y lo entrega a los ayudantes nuevos.)
+- Administrador [AÑADIDO]: cuenta cuyo correo está en la lista de administradores de la configuración de la app; gestiona cualquier liga como si fuera su dueño. Uso previsto: cargar las fechas ya jugadas de ligas de otros ayudantes y, más adelante, la cuenta del profesor.
 
 ## Historias de usuario
 - H1: Como ayudante quiero registrarme con el código de invitación para gestionar la liga de mi sección.
@@ -20,6 +21,7 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - H9: Como ayudante quiero finalizar la liga al cierre del semestre para dejarla en el historial.
 - H10: Como visitante quiero ver la tabla de posiciones y la de goleadores sin iniciar sesión para saber cómo va mi equipo.
 - H11: Como ayudante quiero cambiar mi correo o mi contraseña, o eliminar mi cuenta, para controlar mis datos.
+- H12 [AÑADIDO]: Como administrador quiero editar cualquier liga para cargar las fechas ya jugadas y corregir datos cuando haga falta.
 
 ## Requisitos funcionales
 
@@ -45,9 +47,13 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 
 ### Autorización y visibilidad
 - RF-12: MIENTRAS no hay sesión iniciada, EL SISTEMA no mostrará ninguna acción de creación, edición ni eliminación.
-- RF-13: SI una solicitud de modificación llega sin sesión o de un ayudante que no es dueño de la liga afectada, ENTONCES EL SISTEMA la rechazará sin modificar ningún dato.
+- RF-13 [MODIFICADO]: SI una solicitud de modificación llega sin sesión, o de una cuenta que no es dueña de la liga afectada ni administradora, ENTONCES EL SISTEMA la rechazará sin modificar ningún dato. (Anterior: SI una solicitud de modificación llega sin sesión o de un ayudante que no es dueño de la liga afectada, ENTONCES EL SISTEMA la rechazará sin modificar ningún dato.)
 - RF-14: EL SISTEMA no mostrará en ninguna vista el correo ni otro dato de las cuentas de ayudante a quien no sea el titular de la cuenta.
-- RF-93: MIENTRAS un ayudante con sesión ve una liga de la que no es dueño, EL SISTEMA le mostrará solo la vista pública de esa liga, sin acciones de creación, edición ni eliminación.
+- RF-93 [MODIFICADO]: MIENTRAS un ayudante con sesión que no es administrador ve una liga de la que no es dueño, EL SISTEMA le mostrará solo la vista pública de esa liga, sin acciones de creación, edición ni eliminación. (Anterior: MIENTRAS un ayudante con sesión ve una liga de la que no es dueño, EL SISTEMA le mostrará solo la vista pública de esa liga, sin acciones de creación, edición ni eliminación.)
+- RF-109 [AÑADIDO]: MIENTRAS una cuenta con sesión es administradora, EL SISTEMA le permitirá hacer en cualquier liga todo lo que puede hacer su dueño.
+- RF-110 [AÑADIDO]: CUANDO una cuenta administradora abre la lista de sus ligas, EL SISTEMA le mostrará también las ligas de los demás ayudantes, separadas en curso y finalizadas, sin datos de sus dueños.
+- RF-111 [AÑADIDO]: MIENTRAS una cuenta administradora administra una liga de la que no es dueña, EL SISTEMA mostrará el aviso "Estás editando la liga de otro ayudante".
+- RF-112 [AÑADIDO]: EL SISTEMA considerará administradora a una cuenta solo si su correo está en la lista de administradores de la configuración de la app, y no permitirá nombrar administradores desde la interfaz.
 
 ### Ligas
 - RF-15: CUANDO un ayudante crea una liga con nombre y semestre, EL SISTEMA la registrará en curso y con ese ayudante como único dueño.
@@ -206,9 +212,12 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - Dos ligas con el mismo nombre en semestres distintos: se permiten.
 - Nombre con mayúsculas o espacios distintos a uno existente ("tigres " frente a "Tigres"): se considera duplicado.
 - Solicitud de recuperación repetida: cada link nuevo es válido 1 hora y de un solo uso.
+- Administrador y dueño editan la misma liga a la vez [AÑADIDO]: se conserva el último cambio recibido (RF-85).
+- Administrador que elimina su propia cuenta [AÑADIDO]: solo se borran las ligas de las que es dueño (RF-92).
+- Administrador que cambia su correo [AÑADIDO]: deja de ser administrador hasta que la lista de la configuración incluya el correo nuevo (RF-112).
 
 ## Fuera de alcance
-- Cuenta, panel o rol de profesor; el código de invitación es fijo y solo se cambia en la configuración de la app.
+- Panel o rol de profesor distinto del administrador, y gestionar administradores desde la interfaz [MODIFICADO]: el código de invitación es fijo, y tanto el código como la lista de administradores solo se cambian en la configuración de la app. (Anterior: Cuenta, panel o rol de profesor; el código de invitación es fijo y solo se cambia en la configuración de la app.)
 - Registro libre sin código de invitación.
 - Verificación del correo al registrarse.
 - Más de un editor por liga o coayudantes.
@@ -244,3 +253,4 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 ## Historial de cambios
 - 2026-10-02 - RF-44, el escenario de 4 equipos de RF-45 y el caso límite de 3 equipos: el orden de la fecha pasa de "sin consecutivos si existe" a "con el mínimo posible de consecutivos" - con 4 equipos no existe ningún orden sin partidos consecutivos del mismo equipo (comprobado por búsqueda exhaustiva), así que la regla anterior nunca aplicaba a ligas de 3 o 4 equipos y su escenario era imposible.
 - 2026-10-02 - Tercer escenario de desempate de RF-66: A pasa de sumar 4 a sumar 6 puntos entre los empatados - la combinación 4, 1 y 1 no puede producirse con ningún conjunto de partidos entre tres equipos; la regla no cambia.
+- 2026-10-05 - Actores Administrador y Profesor, H12, RF-13, RF-93, RF-109 a RF-112, fuera de alcance y tres casos límite: se agrega una cuenta administradora definida en la configuración que puede gestionar cualquier liga - el profesor pidió cargar rápido las fechas ya jugadas este semestre en ligas creadas por otros ayudantes, y que la cuenta pueda quedar después para él. Acompaña la enmienda del principio 3 de la constitución.

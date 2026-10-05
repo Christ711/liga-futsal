@@ -11,6 +11,7 @@ import type {
   PointDeduction,
   Team,
 } from "@/generated/prisma/client";
+import { isAdminEmail } from "@/server/auth/admin";
 import { db } from "@/server/db/client";
 
 type Options = { mustBeInProgress?: boolean };
@@ -19,10 +20,18 @@ type Options = { mustBeInProgress?: boolean };
 export const leagueStatus = (league: Pick<League, "status">): LeagueStatus =>
   league.status === "FINALIZED" ? "finalized" : "in_progress";
 
+/** La cuenta es administradora según `ADMIN_EMAILS` (RF-112, plan D21). */
+export async function isAdmin(userId: string): Promise<boolean> {
+  const user = await db.user.findUnique({ where: { id: userId }, select: { email: true } });
+  return user !== null && isAdminEmail(user.email);
+}
+
 /**
- * Autoriza una operación sobre una liga (principio 3): solo su dueño la
- * recibe (RF-13). Con `mustBeInProgress`, una liga finalizada se rechaza
- * porque ya no admite cambios (RF-76). La sesión la obtiene quien llama.
+ * Autoriza una operación sobre una liga (principio 3): la recibe su dueño o
+ * una cuenta administradora (RF-13, RF-109). Con `mustBeInProgress`, una liga
+ * finalizada se rechaza porque ya no admite cambios (RF-76). La sesión la
+ * obtiene quien llama. Las demás verificaciones de este módulo se apoyan en
+ * esta, así que el administrador queda habilitado en todas.
  */
 export async function requireOwnedLeague(
   userId: string,
@@ -31,7 +40,8 @@ export async function requireOwnedLeague(
 ): Promise<Result<League>> {
   const league = await db.league.findUnique({ where: { id: leagueId } });
   if (!league) return fail("NOT_FOUND");
-  if (league.ownerId !== userId) return fail("FORBIDDEN");
+  // El correo solo se consulta si no es el dueño: el caso común no paga la consulta.
+  if (league.ownerId !== userId && !(await isAdmin(userId))) return fail("FORBIDDEN");
   if (mustBeInProgress) {
     const editable = checkLeagueEditable({ status: leagueStatus(league) });
     if (!editable.ok) return editable;

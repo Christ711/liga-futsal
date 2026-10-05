@@ -41,6 +41,18 @@ const envSchema = z
     SMTP_PASSWORD: z.string().min(1).optional(),
     // Remitente de los correos, por ejemplo "Liga Futsal <cuenta@gmail.com>".
     MAIL_FROM: z.string({ error: "falta; el remitente de los correos" }).min(3, { error: "falta" }),
+    // Correos de las cuentas administradoras, separados por coma (RF-112, plan D21).
+    // Opcional: sin ella no hay administradores.
+    ADMIN_EMAILS: z
+      .string()
+      .optional()
+      .transform((value) =>
+        (value ?? "")
+          .split(",")
+          .map((email) => email.trim().toLowerCase())
+          .filter((email) => email !== ""),
+      )
+      .pipe(z.array(z.email({ error: "debe ser una lista de correos separados por coma" }))),
   })
   .refine((env) => Boolean(env.SMTP_USER) === Boolean(env.SMTP_PASSWORD), {
     path: ["SMTP_PASSWORD"],

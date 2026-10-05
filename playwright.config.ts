@@ -8,6 +8,9 @@ export const e2eDatabaseUrl =
   process.env.E2E_DATABASE_URL ?? "postgresql://postgres@127.0.0.1:5433/liga_e2e";
 
 /** Código de invitación de las pruebas E2E; los tests lo importan desde aquí. */
+/** Correo de la cuenta administradora de los E2E (RF-112). */
+export const e2eAdminEmail = "admin-e2e@example.com";
+
 export const e2eInviteCode = "codigo-de-pruebas-e2e";
 
 export default defineConfig({
@@ -50,6 +53,7 @@ export default defineConfig({
       SMTP_HOST: "127.0.0.1",
       SMTP_PORT: "1025",
       MAIL_FROM: "Liga Futsal <liga-futsal@example.com>",
+      ADMIN_EMAILS: e2eAdminEmail,
     },
   },
 });

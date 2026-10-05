@@ -4,7 +4,8 @@ import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { requireSession } from "@/server/auth/session";
-import { getMyLeagues } from "@/server/queries/my-leagues";
+import { isAdminEmail } from "@/server/auth/admin";
+import { getMyLeagues, getOtherLeagues } from "@/server/queries/my-leagues";
 
 export const metadata: Metadata = { title: "Mis ligas - Liga Futsal" };
 
@@ -12,6 +13,8 @@ export default async function MyLeaguesPage() {
   const session = await requireSession();
   const { inProgress, finalized } = await getMyLeagues(session.user.id);
   const empty = inProgress.length === 0 && finalized.length === 0;
+  // RF-110: el administrador también ve las ligas de los demás ayudantes.
+  const others = isAdminEmail(session.user.email) ? await getOtherLeagues(session.user.id) : null;
 
   return (
     <main className="mx-auto grid w-full max-w-lg gap-6 px-4 py-8">
@@ -35,16 +38,7 @@ export default async function MyLeaguesPage() {
         <>
           <LeagueGroup id="en-curso" title="En curso" emptyText="No tienes ligas en curso.">
             {inProgress.map((league) => (
-              <LeagueItem key={league.id} league={league}>
-                {league.semesterOver ? (
-                  <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
-                    <span className="font-medium text-amber-700">El semestre terminó</span>
-                    <Link href={`/mis-ligas/${league.id}#finalizar-liga`} className="underline">
-                      Finalizar liga
-                    </Link>
-                  </p>
-                ) : null}
-              </LeagueItem>
+              <InProgressItem key={league.id} league={league} />
             ))}
           </LeagueGroup>
           <LeagueGroup
@@ -58,7 +52,50 @@ export default async function MyLeaguesPage() {
           </LeagueGroup>
         </>
       )}
+
+      {others ? (
+        <>
+          <LeagueGroup
+            id="otras-en-curso"
+            title="Otras ligas en curso"
+            emptyText="No hay ligas en curso de otros ayudantes."
+          >
+            {others.inProgress.map((league) => (
+              <InProgressItem key={league.id} league={league} />
+            ))}
+          </LeagueGroup>
+          <LeagueGroup
+            id="otras-finalizadas"
+            title="Otras ligas finalizadas"
+            emptyText="No hay ligas finalizadas de otros ayudantes."
+          >
+            {others.finalized.map((league) => (
+              <LeagueItem key={league.id} league={league} />
+            ))}
+          </LeagueGroup>
+        </>
+      ) : null}
     </main>
+  );
+}
+
+/** Liga en curso, con el aviso de semestre terminado y acceso a finalizarla (RF-94). */
+function InProgressItem({
+  league,
+}: {
+  league: { id: string; name: string; semester: string; semesterOver: boolean };
+}) {
+  return (
+    <LeagueItem league={league}>
+      {league.semesterOver ? (
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
+          <span className="font-medium text-amber-700">El semestre terminó</span>
+          <Link href={`/mis-ligas/${league.id}#finalizar-liga`} className="underline">
+            Finalizar liga
+          </Link>
+        </p>
+      ) : null}
+    </LeagueItem>
   );
 }
 

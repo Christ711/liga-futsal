@@ -451,6 +451,21 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/domain/scheduling.ts, src/domain/scheduling.test.ts
       Hecho cuando: con 100 semillas, los órdenes de 3 y 4 equipos tienen exactamente 2 pares de partidos consecutivos que comparten un equipo y los de 5 a 8 equipos tienen 0.
 
+- [x] T88 - Leer `ADMIN_EMAILS` y aceptar administradores en `requireOwnedLeague` [AÑADIDO]
+      RF: RF-13, RF-109, RF-112
+      Archivos: src/server/env.ts, src/server/env.test.ts, src/server/authz.ts, tests/integration/authz.test.ts, .env.example, vitest.config.ts, playwright.config.ts, .github/workflows/ci.yml
+      Hecho cuando: los tests devuelven una liga ajena a una cuenta cuyo correo está en la lista (sin importar mayúsculas ni espacios), responden `FORBIDDEN` a la misma cuenta sin estar en la lista, y `env` acepta `ADMIN_EMAILS` ausente o vacía.
+
+- [x] T89 - Mostrar al administrador las ligas de los demás y el aviso en las ligas ajenas [AÑADIDO]
+      RF: RF-93, RF-109, RF-110, RF-111
+      Archivos: src/server/queries/my-leagues.ts, src/app/(admin)/mis-ligas/page.tsx, src/app/(admin)/mis-ligas/[leagueId]/owned-league.ts, src/app/(admin)/mis-ligas/[leagueId]/layout.tsx, tests/e2e/admin.spec.ts
+      Hecho cuando: el E2E con una cuenta administradora ve en "Mis ligas" la liga de otro ayudante sin datos de su dueño, la abre con el aviso "Estás editando la liga de otro ayudante", genera una fecha y anota un gol; un ayudante que no es administrador sigue siendo llevado a la vista pública.
+
+- [ ] T90 - (manual, autor) Cargar `ADMIN_EMAILS` en Vercel [AÑADIDO]
+      RF: RF-112
+      Archivos: ninguno (configuración de Vercel)
+      Hecho cuando: Production y Preview tienen `ADMIN_EMAILS` con el correo del autor, y con esa cuenta se abre en producción la administración de una liga de otro ayudante.
+
 ## Trazabilidad
 | RF | Tareas |
 |---|---|
@@ -466,7 +481,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 | RF-10 | T42, T43 |
 | RF-11 | T44 |
 | RF-12 | T49, T76, T81 |
-| RF-13 | T45, T81 |
+| RF-13 | T45, T81, T88 |
 | RF-14 | T77, T81 |
 | RF-15 | T51 |
 | RF-16 | T19, T51 |
@@ -546,7 +561,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 | RF-90 | T46, T47 |
 | RF-91 | T48 |
 | RF-92 | T48 |
-| RF-93 | T52, T81 |
+| RF-93 | T52, T81, T89 |
 | RF-94 | T20, T50 |
 | RF-95 | T55 |
 | RF-96 | T55 |
@@ -562,3 +577,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 | RF-106 | T75 |
 | RF-107 | T31 |
 | RF-108 | T76 |
+| RF-109 | T88, T89 |
+| RF-110 | T89 |
+| RF-111 | T89 |
+| RF-112 | T88, T90 |

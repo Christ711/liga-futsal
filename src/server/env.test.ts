@@ -70,6 +70,23 @@ describe("parseEnv", () => {
     expect(parseEnv({ ...valid, SMTP_PORT: "465" }).SMTP_PORT).toBe(465);
   });
 
+  it("sin ADMIN_EMAILS no hay administradores", () => {
+    expect(parseEnv(valid).ADMIN_EMAILS).toEqual([]);
+    expect(parseEnv({ ...valid, ADMIN_EMAILS: "" }).ADMIN_EMAILS).toEqual([]);
+  });
+
+  it("lee ADMIN_EMAILS separados por coma, en minúsculas y sin espacios (RF-112)", () => {
+    expect(
+      parseEnv({ ...valid, ADMIN_EMAILS: " Admin@Example.com , profe@uni.cl ,, " }).ADMIN_EMAILS,
+    ).toEqual(["admin@example.com", "profe@uni.cl"]);
+  });
+
+  it("falla nombrando ADMIN_EMAILS si un elemento no es un correo", () => {
+    expect(() => parseEnv({ ...valid, ADMIN_EMAILS: "admin@example.com, no-es-correo" })).toThrow(
+      /ADMIN_EMAILS/,
+    );
+  });
+
   it("devuelve las variables validadas cuando están completas", () => {
     const env = parseEnv({ ...valid, BETTER_AUTH_URL: "https://liga-futsal-nine.vercel.app" });
 
@@ -77,6 +94,7 @@ describe("parseEnv", () => {
       ...valid,
       SMTP_PORT: 1025,
       BETTER_AUTH_URL: "https://liga-futsal-nine.vercel.app",
+      ADMIN_EMAILS: [],
     });
   });
 });
