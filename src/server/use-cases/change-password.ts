@@ -37,7 +37,7 @@ export async function changePassword(
   return ok(null);
 }
 
-export const wrongCurrentPassword = () =>
+const wrongCurrentPassword = () =>
   fail("WRONG_CURRENT_PASSWORD", {
     fields: { currentPassword: "La contraseña actual es incorrecta." },
   });

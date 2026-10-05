@@ -126,10 +126,10 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 - Por qué: no se necesitan para ningún RF y reducen datos asociados a personas (principio 4).
 - Alternativa descartada: dejar el comportamiento por defecto. Por qué no: acumula IPs y navegadores de los ayudantes sin uso.
 
-### D12. Cambio de correo y eliminación de cuenta como casos de uso propios
-- Decisión: `changeEmail` verifica la contraseña actual con el verificador de hash de Better Auth y luego actualiza el correo sin verificación (RF-87, RF-88, RF-90); `deleteAccount` borra el usuario en una transacción (cascada a ligas y sesiones) y limpia la cookie (RF-92).
-- Por qué: el cambio de correo de Better Auth no pide contraseña actual, y su borrado de usuario exige una sesión reciente, que con sesiones de 30 días fallaría a menudo.
-- Alternativa descartada: los endpoints `changeEmail` y `deleteUser` de Better Auth tal cual. Por qué no: no cumplen RF-87 y RF-90, y el requisito de sesión reciente rompe RF-91.
+### D12. Eliminación de cuenta como caso de uso propio [MODIFICADO] (Anterior: Cambio de correo y eliminación de cuenta como casos de uso propios)
+- Decisión [MODIFICADO]: `deleteAccount` borra el usuario en una transacción (cascada a ligas y sesiones) y limpia la cookie (RF-92); el cambio de correo ya no existe (RF-87 eliminado). (Anterior: `changeEmail` verifica la contraseña actual con el verificador de hash de Better Auth y luego actualiza el correo sin verificación (RF-87, RF-88, RF-90); `deleteAccount` borra el usuario en una transacción (cascada a ligas y sesiones) y limpia la cookie (RF-92).)
+- Por qué [MODIFICADO]: el borrado de usuario de Better Auth exige una sesión reciente, que con sesiones de 30 días fallaría a menudo. (Anterior: el cambio de correo de Better Auth no pide contraseña actual, y su borrado de usuario exige una sesión reciente, que con sesiones de 30 días fallaría a menudo.)
+- Alternativa descartada [MODIFICADO]: el endpoint `deleteUser` de Better Auth tal cual. Por qué no: el requisito de sesión reciente rompe RF-91. (Anterior: los endpoints `changeEmail` y `deleteUser` de Better Auth tal cual. Por qué no: no cumplen RF-87 y RF-90, y el requisito de sesión reciente rompe RF-91.)
 
 ### D13. Páginas públicas renderizadas en cada petición
 - Decisión: la portada y la liga pública se renderizan dinámicamente en cada visita, sin caché de página.
@@ -306,10 +306,10 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 | RF-84 | `use-cases/revert-match`; `domain/matches` |
 | RF-85 | Escrituras sin control de versión (último cambio gana) |
 | RF-86 | `revokeSessionsOnPasswordReset: true` |
-| RF-87 | `use-cases/change-email`; D12 |
-| RF-88 | `use-cases/change-email` (correo único) |
+| RF-87 [ELIMINADO] | (sin cobertura: se quitan `use-cases/change-email` y su formulario) |
+| RF-88 [ELIMINADO] | (sin cobertura: se quita con RF-87) |
 | RF-89 | `use-cases/change-password` → `auth.api.changePassword` con `revokeOtherSessions` |
-| RF-90 | `use-cases/change-email`, `change-password` |
+| RF-90 [MODIFICADO] | `use-cases/change-password` |
 | RF-91 | `queries` cuenta ligas; AlertDialog en `/cuenta` |
 | RF-92 | `use-cases/delete-account`; D12 |
 | RF-93 [MODIFICADO] | Layout de `/mis-ligas/[leagueId]` redirige a `/ligas/[leagueId]` si no es dueño ni administrador; D21 |
