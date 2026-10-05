@@ -63,3 +63,22 @@ export async function createMatchday(
     },
   });
 }
+
+/** Partido de una fecha con su estado y bloqueo. */
+export async function createMatch(
+  matchdayId: string,
+  teamAId: string,
+  teamBId: string,
+  options: { position?: number; finished?: boolean; locked?: boolean } = {},
+) {
+  return db.match.create({
+    data: {
+      matchdayId,
+      teamAId,
+      teamBId,
+      position: options.position ?? 1,
+      status: options.finished ? "FINISHED" : "PENDING",
+      locked: options.locked ?? false,
+    },
+  });
+}

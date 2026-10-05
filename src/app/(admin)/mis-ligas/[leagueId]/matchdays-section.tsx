@@ -1,8 +1,11 @@
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+
 import { PageSection } from "@/components/layout/page-section";
+import { MatchdayStatusBadge } from "@/components/matchday/status-badge";
 import type { MatchdayStatus } from "@/domain/matchdays";
 import { errorMessages } from "@/domain/result";
 import { formatDay } from "@/lib/dates";
-import { cn } from "@/lib/utils";
 import { today } from "@/server/time";
 
 import {
@@ -19,19 +22,6 @@ type Matchday = {
   status: MatchdayStatus;
   pendingCount: number;
   finishedCount: number;
-};
-
-/** Texto del estado de una fecha (RF-48, RF-104, RF-105). */
-function statusLabel(matchday: Matchday): string {
-  if (matchday.status === "open") return "Abierta";
-  if (matchday.status === "incomplete") return `Incompleta (${matchday.pendingCount})`;
-  return "Finalizada";
-}
-
-const STATUS_STYLES: Record<MatchdayStatus, string> = {
-  open: "border-blue-200 bg-blue-50 text-blue-800",
-  incomplete: "border-amber-200 bg-amber-50 text-amber-800",
-  finalized: "border-border bg-muted text-muted-foreground",
 };
 
 /** Fechas de la liga numeradas por día de juego, con su estado (RF-41 a RF-51, RF-97 a RF-105). */
@@ -63,14 +53,16 @@ export function MatchdaysSection({
               <li
                 key={matchday.id}
                 aria-labelledby={`matchday-${matchday.id}-label`}
-                className="rounded-xl border"
+                className="overflow-hidden rounded-xl border"
               >
-                {finalized ? (
-                  <MatchdayRow matchday={matchday} />
-                ) : (
-                  <details className="group/matchday">
-                    <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                      <MatchdayRow matchday={matchday} editable />
+                <MatchdayLink leagueId={leagueId} matchday={matchday} />
+                {finalized ? null : (
+                  <details className="group/matchday border-t">
+                    <summary className="flex min-h-11 cursor-pointer list-none items-center px-4 text-sm text-muted-foreground [&::-webkit-details-marker]:hidden">
+                      <span className="underline">
+                        <span className="group-open/matchday:hidden">Cambiar día o eliminar</span>
+                        <span className="hidden group-open/matchday:inline">Cerrar</span>
+                      </span>
                     </summary>
                     <div className="border-t px-4 py-4">
                       <MatchdayEditor
@@ -97,33 +89,25 @@ export function MatchdaysSection({
   );
 }
 
-function MatchdayRow({ matchday, editable = false }: { matchday: Matchday; editable?: boolean }) {
+/** Fila de la fecha: lleva a su vista con los partidos (RF-52). */
+function MatchdayLink({ leagueId, matchday }: { leagueId: string; matchday: Matchday }) {
   return (
-    <div className="flex items-start gap-3 px-4 py-3">
-      <div className="grid min-w-0 flex-1 gap-1">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+    <Link
+      href={`/mis-ligas/${leagueId}/fechas/${matchday.id}`}
+      className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+    >
+      <span className="grid min-w-0 flex-1 gap-1">
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span id={`matchday-${matchday.id}-label`} className="font-medium">
             Fecha {matchday.number}
           </span>
-          <span
-            className={cn(
-              "rounded-full border px-2 py-0.5 text-xs font-medium",
-              STATUS_STYLES[matchday.status],
-            )}
-          >
-            {statusLabel(matchday)}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground first-letter:uppercase">
-          {formatDay(matchday.playDate)}
-        </p>
-      </div>
-      {editable ? (
-        <span className="text-sm text-muted-foreground underline">
-          <span className="group-open/matchday:hidden">Editar</span>
-          <span className="hidden group-open/matchday:inline">Cerrar</span>
+          <MatchdayStatusBadge status={matchday.status} pendingCount={matchday.pendingCount} />
         </span>
-      ) : null}
-    </div>
+        <span className="text-sm text-muted-foreground first-letter:uppercase">
+          {formatDay(matchday.playDate)}
+        </span>
+      </span>
+      <ChevronRight aria-hidden className="size-5 shrink-0 text-muted-foreground" />
+    </Link>
   );
 }

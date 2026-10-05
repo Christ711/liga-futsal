@@ -342,27 +342,27 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/use-cases/delete-matchday.ts, src/app/(admin)/mis-ligas/[leagueId]/matchday-actions.ts, tests/e2e/matchdays.spec.ts
       Hecho cuando: el diálogo indica cuántos partidos terminados se perderán y, tras confirmar, la fecha, sus partidos y sus goles ya no existen y las demás fechas se renumeran.
 
-- [ ] T67 - Crear la vista de la fecha con lectura hidratada y ruta GET
+- [x] T67 - Crear la vista de la fecha con lectura hidratada y ruta GET
       RF: RF-47, RF-52
       Archivos: src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/page.tsx, src/app/api/leagues/[leagueId]/matchdays/[matchdayId]/route.ts, src/server/queries/matchday.ts, src/components/matchday/match-card.tsx
       Hecho cuando: la vista muestra los partidos en orden con equipos, marcador y estado, y la ruta GET responde 403 a otro ayudante y 401 sin sesión.
 
-- [ ] T68 - Reordenar los partidos de una fecha
+- [x] T68 - Reordenar los partidos de una fecha
       RF: RF-46
       Archivos: src/server/use-cases/reorder-matches.ts, src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/actions.ts, src/components/matchday/match-card.tsx, tests/e2e/matchday-view.spec.ts
       Hecho cuando: el E2E sube un partido una posición y el nuevo orden persiste al recargar.
 
-- [ ] T69 - Anotar un gol en 2 toques con actualización optimista
+- [x] T69 - Anotar un gol en 2 toques con actualización optimista
       RF: RF-53, RF-54, RF-55, RF-56
       Archivos: src/server/use-cases/add-goal.ts, src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/actions.ts, src/components/matchday/goal-sheet.tsx, tests/e2e/matchday-view.spec.ts
       Hecho cuando: el E2E anota un gol con exactamente 2 toques eligiendo entre jugadores de ambos equipos o "Gol sin autor", ve el marcador al instante y lo sigue viendo tras recargar.
 
-- [ ] T70 - Quitar y reasignar goles
+- [x] T70 - Quitar y reasignar goles
       RF: RF-57
       Archivos: src/server/use-cases/remove-goal.ts, src/server/use-cases/reassign-goal.ts, src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/actions.ts, src/components/matchday/goal-list.tsx, tests/e2e/matchday-view.spec.ts
       Hecho cuando: el E2E quita un gol, reasigna otro a un jugador del otro equipo y el marcador refleja ambos cambios.
 
-- [ ] T71 - Terminar un partido y devolverlo a pendiente
+- [x] T71 - Terminar un partido y devolverlo a pendiente
       RF: RF-58, RF-59, RF-60, RF-84
       Archivos: src/server/use-cases/finish-match.ts, src/server/use-cases/revert-match.ts, src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/actions.ts, tests/integration/finish-match.test.ts
       Hecho cuando: terminar un partido (incluido un 0-0) hace que la tabla calculada sobre los datos persistidos lo cuente, y devolverlo a pendiente lo excluye conservando sus goles.
