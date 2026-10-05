@@ -1,16 +1,7 @@
 import { expect, test, type APIRequestContext, type Browser, type Page } from "@playwright/test";
 
-import {
-  createAccount,
-  formAlert,
-  queryDatabase,
-  signIn,
-  signInNewAccount,
-  signOut,
-  uniqueEmail,
-} from "./helpers/accounts";
+import { formAlert, queryDatabase, signIn, signInNewAccount } from "./helpers/accounts";
 import { seedLeague, seedTeamWithCrest } from "./helpers/leagues";
-import { countEmailsTo } from "./helpers/mailpit";
 
 const NEW_PASSWORD = "otra-contraseña-segura";
 
@@ -45,13 +36,6 @@ async function changePassword(page: Page, current: string, next: string) {
   await form.getByLabel("Contraseña actual").fill(current);
   await form.getByLabel("Contraseña nueva").fill(next);
   await form.getByRole("button", { name: "Cambiar contraseña" }).click();
-}
-
-async function changeEmail(page: Page, email: string, password: string) {
-  const form = section(page, "Cambiar correo");
-  await form.getByLabel("Correo nuevo").fill(email);
-  await form.getByLabel("Contraseña actual").fill(password);
-  await form.getByRole("button", { name: "Cambiar correo" }).click();
 }
 
 async function createLeagueWithCrest(email: string, status: "IN_PROGRESS" | "FINALIZED") {
@@ -131,89 +115,15 @@ test.describe("cambio de contraseña", () => {
   });
 });
 
-test.describe("cambio de correo", () => {
-  test("con la contraseña correcta cambia el correo sin enviar mensajes (RF-87)", async ({
-    page,
-    request,
-  }) => {
-    const account = await openAccount(page, request);
-    const newEmail = uniqueEmail();
+test("la cuenta muestra su correo pero no ofrece cambiarlo (RF-87 eliminado)", async ({
+  page,
+  request,
+}) => {
+  const account = await openAccount(page, request);
 
-    await changeEmail(page, newEmail, account.password);
-
-    await expect(section(page, "Cambiar correo").getByRole("status")).toHaveText(
-      "Correo actualizado.",
-    );
-    await expect(page.getByText(newEmail)).toBeVisible();
-    expect(await queryDatabase('SELECT 1 FROM "user" WHERE email = $1', [newEmail])).toHaveLength(
-      1,
-    );
-    // Se da tiempo a un envío que no debe ocurrir antes de afirmar que no llegó nada.
-    await page.waitForTimeout(1500);
-    expect(await countEmailsTo(newEmail)).toBe(0);
-    expect(await countEmailsTo(account.email)).toBe(0);
-
-    // Desde ahora se ingresa con el correo nuevo.
-    await signOut(page);
-    await signIn(page, account.email, account.password);
-    await expect(formAlert(page)).toHaveText("Correo o contraseña incorrectos.");
-    await signIn(page, newEmail, account.password);
-    await expect(page.getByRole("button", { name: "Cerrar sesión" })).toBeVisible();
-  });
-
-  test("guarda el correo nuevo en minúsculas y sin espacios", async ({ page, request }) => {
-    const account = await openAccount(page, request);
-    const newEmail = uniqueEmail();
-
-    await changeEmail(page, `  ${newEmail.toUpperCase()} `, account.password);
-
-    await expect(section(page, "Cambiar correo").getByRole("status")).toBeVisible();
-    expect(await queryDatabase('SELECT 1 FROM "user" WHERE email = $1', [newEmail])).toHaveLength(
-      1,
-    );
-  });
-
-  test("con la contraseña incorrecta se rechaza sin cambiar el correo (RF-90)", async ({
-    page,
-    request,
-  }) => {
-    const account = await openAccount(page, request);
-    const newEmail = uniqueEmail();
-
-    await changeEmail(page, newEmail, "no-es-la-actual");
-
-    await expect(
-      section(page, "Cambiar correo").getByText("La contraseña actual es incorrecta."),
-    ).toBeVisible();
-    await expect(section(page, "Cambiar correo").getByLabel("Correo nuevo")).toHaveValue(newEmail);
-    expect(
-      await queryDatabase('SELECT 1 FROM "user" WHERE email = $1', [account.email]),
-    ).toHaveLength(1);
-  });
-
-  test("rechaza un correo que ya usa otra cuenta (RF-88)", async ({ page, request }) => {
-    const other = await createAccount(request);
-    const account = await openAccount(page, request);
-
-    await changeEmail(page, other.email, account.password);
-
-    await expect(
-      section(page, "Cambiar correo").getByText("Ya existe una cuenta con ese correo."),
-    ).toBeVisible();
-    expect(
-      await queryDatabase('SELECT 1 FROM "user" WHERE email = $1', [account.email]),
-    ).toHaveLength(1);
-  });
-
-  test("rechaza un correo con formato inválido", async ({ page, request }) => {
-    const account = await openAccount(page, request);
-
-    await changeEmail(page, "no-es-un-correo", account.password);
-
-    await expect(
-      section(page, "Cambiar correo").getByText("Escribe un correo válido."),
-    ).toBeVisible();
-  });
+  await expect(page.getByText(account.email)).toBeVisible();
+  await expect(section(page, "Cambiar correo")).toHaveCount(0);
+  await expect(page.getByLabel("Correo nuevo")).toHaveCount(0);
 });
 
 test.describe("eliminación de cuenta", () => {

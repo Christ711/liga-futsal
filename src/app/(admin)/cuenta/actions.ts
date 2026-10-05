@@ -1,12 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { errorMessages, type Result } from "@/domain/result";
-import { changeEmail } from "@/server/use-cases/change-email";
 import { changePassword } from "@/server/use-cases/change-password";
 import { deleteAccount } from "@/server/use-cases/delete-account";
 
@@ -33,22 +31,6 @@ export async function changePasswordAction(
     ok: true,
     notice: "Contraseña actualizada. Cerramos tu sesión en los demás dispositivos.",
   };
-}
-
-const emailSchema = z.object({ email: z.string(), currentPassword: z.string() });
-
-export async function changeEmailAction(
-  _previous: NoticeFormState,
-  formData: FormData,
-): Promise<NoticeFormState> {
-  const parsed = emailSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return invalidInput();
-
-  const result = await changeEmail(parsed.data, await headers());
-  if (!result.ok) return { ok: false, error: result.error, values: { email: parsed.data.email } };
-  // La página muestra el correo de la cuenta; se vuelve a renderizar con el nuevo.
-  revalidatePath("/cuenta");
-  return { ok: true, notice: "Correo actualizado." };
 }
 
 export async function deleteAccountAction(): Promise<Result<never>> {

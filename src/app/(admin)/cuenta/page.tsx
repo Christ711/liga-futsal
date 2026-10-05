@@ -4,7 +4,6 @@ import { PageSection } from "@/components/layout/page-section";
 import { requireSession } from "@/server/auth/session";
 import { getAccountSummary } from "@/server/queries/account";
 
-import { ChangeEmailForm } from "./change-email-form";
 import { ChangePasswordForm } from "./change-password-form";
 import { DeleteAccountDialog } from "./delete-account-dialog";
 
@@ -23,13 +22,6 @@ export default async function AccountPage() {
           <span className="font-medium wrap-anywhere text-foreground">{summary.email}</span>
         </p>
       </div>
-      <PageSection
-        id="cambiar-correo"
-        title="Cambiar correo"
-        description="Desde ahora ingresarás con el correo nuevo. No te enviaremos un mensaje para verificarlo."
-      >
-        <ChangeEmailForm />
-      </PageSection>
       <PageSection
         id="cambiar-contrasena"
         title="Cambiar contraseña"

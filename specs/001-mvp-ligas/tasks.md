@@ -238,7 +238,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/app/(admin)/cuenta/page.tsx, src/app/(admin)/cuenta/actions.ts, src/server/use-cases/change-password.ts, tests/e2e/account.spec.ts
       Hecho cuando: el E2E cambia la contraseña con la actual correcta y cierra la sesión del otro contexto, y con la actual incorrecta se rechaza.
 
-- [x] T47 - Crear el cambio de correo en `/cuenta`
+- [ ] ~~T47 - Crear el cambio de correo en `/cuenta`~~ [OBSOLETA] (se quita en T91: RF-87 y RF-88 eliminados)
       RF: RF-87, RF-88, RF-90
       Archivos: src/app/(admin)/cuenta/actions.ts, src/server/use-cases/change-email.ts, tests/e2e/account.spec.ts
       Hecho cuando: el E2E cambia el correo sin recibir mensaje en Mailpit, se rechaza con contraseña incorrecta y con un correo que ya usa otra cuenta.
@@ -441,10 +441,11 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: tests/e2e/main-flow.spec.ts
       Hecho cuando: un solo E2E a 360 px registra con código, crea liga, 4 equipos y jugadores, genera fecha, anota goles, termina un partido, ve la tabla pública sin sesión y finaliza la fecha.
 
-- [ ] T86 - (manual, autor) Publicar en producción y registrar la medición de RNF-2
+- [x] T86 - (manual, autor) Publicar en producción y registrar la medición de RNF-2
       RF: [SIN RF] (criterios de finalización de la spec 001)
       Archivos: ninguno (resultado en la descripción del PR de validación)
       Hecho cuando: la app responde en su URL de producción y `tests/e2e/performance.spec.ts` contra producción, con la base suspendida, queda registrado con su tiempo medido.
+      Resultado: 2026-10-05, liga `cmuvl8nz9000004l25do20pa1` en producción con Neon suspendida, tabla visible en 1778 ms (límite 3000 ms).
 
 - [x] T87 - Ordenar los partidos con el mínimo posible de partidos consecutivos del mismo equipo
       RF: RF-44
@@ -465,6 +466,16 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       RF: RF-112
       Archivos: ninguno (configuración de Vercel)
       Hecho cuando: Production y Preview tienen `ADMIN_EMAILS` con el correo del autor, y con esa cuenta se abre en producción la administración de una liga de otro ayudante.
+
+- [x] T91 - Quitar el cambio de correo de `/cuenta` [AÑADIDO]
+      RF: RF-87, RF-88 (eliminados), RF-90
+      Archivos: src/app/(admin)/cuenta/page.tsx, src/app/(admin)/cuenta/actions.ts, src/app/(admin)/cuenta/change-email-form.tsx, src/server/use-cases/change-email.ts, tests/e2e/account.spec.ts
+      Hecho cuando: `/cuenta` muestra el correo del titular pero ya no ofrece cambiarlo, el caso de uso y su acción no existen, y los E2E de cambio de correo se reemplazan por uno que verifica que la opción no aparece.
+
+- [x] T92 - Cubrir el recálculo de las tablas al modificar un gol de un partido terminado [AÑADIDO]
+      RF: RF-60
+      Archivos: tests/integration/finish-match.test.ts
+      Hecho cuando: en un partido terminado no bloqueado, quitar un gol y reasignar otro al otro equipo cambia la tabla de posiciones y la de goleadores calculadas sobre los datos guardados.
 
 ## Trazabilidad
 | RF | Tareas |
@@ -528,7 +539,7 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 | RF-57 | T22, T70 |
 | RF-58 | T22, T71 |
 | RF-59 | T29, T71 |
-| RF-60 | T71, T73 |
+| RF-60 | T71, T73, T92 |
 | RF-61 | T73 |
 | RF-62 | T29, T72 |
 | RF-63 | T29 |
@@ -555,10 +566,10 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 | RF-84 | T22, T71 |
 | RF-85 | T82 |
 | RF-86 | T44 |
-| RF-87 | T47 |
-| RF-88 | T47 |
+| RF-87 | (eliminado; se quita en T91) |
+| RF-88 | (eliminado; se quita en T91) |
 | RF-89 | T46 |
-| RF-90 | T46, T47 |
+| RF-90 | T46, T91 |
 | RF-91 | T48 |
 | RF-92 | T48 |
 | RF-93 | T52, T81, T89 |

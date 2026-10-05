@@ -20,7 +20,7 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - H8: Como ayudante quiero aplicar descuentos de puntos y traspasar jugadores para reflejar las decisiones del profesor.
 - H9: Como ayudante quiero finalizar la liga al cierre del semestre para dejarla en el historial.
 - H10: Como visitante quiero ver la tabla de posiciones y la de goleadores sin iniciar sesión para saber cómo va mi equipo.
-- H11: Como ayudante quiero cambiar mi correo o mi contraseña, o eliminar mi cuenta, para controlar mis datos.
+- H11 [MODIFICADO]: Como ayudante quiero cambiar mi contraseña o eliminar mi cuenta, para controlar mis datos. (Anterior: Como ayudante quiero cambiar mi correo o mi contraseña, o eliminar mi cuenta, para controlar mis datos.)
 - H12 [AÑADIDO]: Como administrador quiero editar cualquier liga para cargar las fechas ya jugadas y corregir datos cuando haga falta.
 
 ## Requisitos funcionales
@@ -38,10 +38,10 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - RF-10: CUANDO alguien solicita recuperar la contraseña de un correo registrado, EL SISTEMA enviará a ese correo un link para definir una contraseña nueva.
 - RF-11: SI el link de recuperación tiene más de 1 hora o ya se usó, ENTONCES EL SISTEMA rechazará el cambio de contraseña e invitará a solicitar un link nuevo.
 - RF-86: CUANDO se define una contraseña nueva mediante el link de recuperación, EL SISTEMA cerrará todas las sesiones abiertas de esa cuenta.
-- RF-87: CUANDO un ayudante con sesión cambia su correo indicando su contraseña actual correcta, EL SISTEMA actualizará el correo sin enviar ningún mensaje de verificación.
-- RF-88: SI el correo nuevo ya pertenece a otra cuenta, ENTONCES EL SISTEMA rechazará el cambio de correo.
+- RF-87 [ELIMINADO]: CUANDO un ayudante con sesión cambia su correo indicando su contraseña actual correcta, EL SISTEMA actualizará el correo sin enviar ningún mensaje de verificación. Motivo: cambiar el correo aporta poco, a un administrador le quita ese rol hasta actualizar la configuración, y el caso raro se resuelve en la base.
+- RF-88 [ELIMINADO]: SI el correo nuevo ya pertenece a otra cuenta, ENTONCES EL SISTEMA rechazará el cambio de correo. Motivo: sin cambio de correo (RF-87 eliminado) no aplica.
 - RF-89: CUANDO un ayudante con sesión cambia su contraseña indicando la actual correcta, EL SISTEMA la actualizará y cerrará sus sesiones en los demás dispositivos.
-- RF-90: SI la contraseña actual indicada es incorrecta, ENTONCES EL SISTEMA rechazará el cambio de correo o de contraseña.
+- RF-90 [MODIFICADO]: SI la contraseña actual indicada es incorrecta, ENTONCES EL SISTEMA rechazará el cambio de contraseña. (Anterior: SI la contraseña actual indicada es incorrecta, ENTONCES EL SISTEMA rechazará el cambio de correo o de contraseña.)
 - RF-91: CUANDO un ayudante pide eliminar su cuenta, EL SISTEMA pedirá confirmación advirtiendo cuántas ligas, en curso y finalizadas, se eliminarán con ella.
 - RF-92: CUANDO un ayudante confirma la eliminación de su cuenta, EL SISTEMA borrará la cuenta junto con todas sus ligas, sus datos y sus escudos, y cerrará todas sus sesiones.
 
@@ -214,7 +214,7 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - Solicitud de recuperación repetida: cada link nuevo es válido 1 hora y de un solo uso.
 - Administrador y dueño editan la misma liga a la vez [AÑADIDO]: se conserva el último cambio recibido (RF-85).
 - Administrador que elimina su propia cuenta [AÑADIDO]: solo se borran las ligas de las que es dueño (RF-92).
-- Administrador que cambia su correo [AÑADIDO]: deja de ser administrador hasta que la lista de la configuración incluya el correo nuevo (RF-112).
+- Administrador que cambia su correo [ELIMINADO]: deja de ser administrador hasta que la lista de la configuración incluya el correo nuevo (RF-112). Motivo: la interfaz ya no permite cambiar el correo (RF-87 eliminado).
 
 ## Fuera de alcance
 - Panel o rol de profesor distinto del administrador, y gestionar administradores desde la interfaz [MODIFICADO]: el código de invitación es fijo, y tanto el código como la lista de administradores solo se cambian en la configuración de la app. (Anterior: Cuenta, panel o rol de profesor; el código de invitación es fijo y solo se cambia en la configuración de la app.)
@@ -238,7 +238,7 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - Modificar partidos bloqueados de una fecha finalizada.
 - Reasignar goles a jugadores que ya no pertenecen a ninguno de los dos equipos del partido.
 - Dos fechas de la misma liga en el mismo día de juego.
-- Verificar el correo nuevo al cambiarlo.
+- Cambiar el correo de una cuenta desde la interfaz [MODIFICADO]: si hace falta, se cambia directamente en la base de datos. (Anterior: Verificar el correo nuevo al cambiarlo.)
 
 ## Criterios de finalización
 - Cada RF tiene al menos un test automatizado que lo cubre y pasa en CI (reglas de dominio con test unitario; flujos con test E2E, según la constitución).
@@ -254,3 +254,4 @@ Cada sección de fútbol y futsal del curso juega una liga interna semestral a c
 - 2026-10-02 - RF-44, el escenario de 4 equipos de RF-45 y el caso límite de 3 equipos: el orden de la fecha pasa de "sin consecutivos si existe" a "con el mínimo posible de consecutivos" - con 4 equipos no existe ningún orden sin partidos consecutivos del mismo equipo (comprobado por búsqueda exhaustiva), así que la regla anterior nunca aplicaba a ligas de 3 o 4 equipos y su escenario era imposible.
 - 2026-10-02 - Tercer escenario de desempate de RF-66: A pasa de sumar 4 a sumar 6 puntos entre los empatados - la combinación 4, 1 y 1 no puede producirse con ningún conjunto de partidos entre tres equipos; la regla no cambia.
 - 2026-10-05 - Actores Administrador y Profesor, H12, RF-13, RF-93, RF-109 a RF-112, fuera de alcance y tres casos límite: se agrega una cuenta administradora definida en la configuración que puede gestionar cualquier liga - el profesor pidió cargar rápido las fechas ya jugadas este semestre en ligas creadas por otros ayudantes, y que la cuenta pueda quedar después para él. Acompaña la enmienda del principio 3 de la constitución.
+- 2026-10-06 - H11 y RF-90 modificados, RF-87 y RF-88 eliminados, un caso límite eliminado y fuera de alcance: se quita el cambio de correo y queda solo el de contraseña - cambiar el correo aporta poco, a un administrador le quitaría ese rol hasta actualizar `ADMIN_EMAILS`, y el caso raro se resuelve en la base de datos.
