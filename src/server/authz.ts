@@ -2,7 +2,15 @@ import "server-only";
 
 import { checkLeagueEditable, type LeagueStatus } from "@/domain/league-rules";
 import { fail, ok, type Result } from "@/domain/result";
-import type { League, Matchday, Player, PointDeduction, Team } from "@/generated/prisma/client";
+import type {
+  Goal,
+  League,
+  Match,
+  Matchday,
+  Player,
+  PointDeduction,
+  Team,
+} from "@/generated/prisma/client";
 import { db } from "@/server/db/client";
 
 type Options = { mustBeInProgress?: boolean };
@@ -90,4 +98,34 @@ export async function requireOwnedMatchday(
   const matchday = await db.matchday.findFirst({ where: { id: matchdayId, leagueId } });
   if (!matchday) return fail("NOT_FOUND");
   return ok({ league: league.data, matchday });
+}
+
+/** Autoriza una operación sobre un partido de una fecha de la liga. */
+export async function requireOwnedMatch(
+  userId: string,
+  leagueId: string,
+  matchId: string,
+  options: Options = {},
+): Promise<Result<{ league: League; match: Match }>> {
+  const league = await requireOwnedLeague(userId, leagueId, options);
+  if (!league.ok) return league;
+  const match = await db.match.findFirst({ where: { id: matchId, matchday: { leagueId } } });
+  if (!match) return fail("NOT_FOUND");
+  return ok({ league: league.data, match });
+}
+
+/** Autoriza una operación sobre un gol de un partido de la liga. */
+export async function requireOwnedGoal(
+  userId: string,
+  leagueId: string,
+  goalId: string,
+  options: Options = {},
+): Promise<Result<{ league: League; goal: Goal }>> {
+  const league = await requireOwnedLeague(userId, leagueId, options);
+  if (!league.ok) return league;
+  const goal = await db.goal.findFirst({
+    where: { id: goalId, match: { matchday: { leagueId } } },
+  });
+  if (!goal) return fail("NOT_FOUND");
+  return ok({ league: league.data, goal });
 }
