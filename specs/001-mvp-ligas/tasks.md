@@ -478,6 +478,21 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: tests/integration/finish-match.test.ts
       Hecho cuando: en un partido terminado no bloqueado, quitar un gol y reasignar otro al otro equipo cambia la tabla de posiciones y la de goleadores calculadas sobre los datos guardados.
 
+- [x] T93 - Definir la paleta de color verde con los tokens de shadcn/ui [AÑADIDO]
+      RF: [SIN RF] (plan D22)
+      Archivos: src/app/globals.css, src/components/layout/site-header.tsx
+      Hecho cuando: botones principales, cabecera y elementos activos usan el primario verde, el fondo es gris claro con tarjetas blancas, el texto mantiene un contraste de al menos 4,5:1 y la suite E2E sigue en verde.
+
+- [x] T94 - Dividir la administración de la liga en subpáginas con menú lateral [AÑADIDO]
+      RF: [SIN RF] (plan D22; mantiene RF-93, RF-94 y RF-106)
+      Archivos: src/app/(admin)/mis-ligas/[leagueId]/layout.tsx, src/app/(admin)/mis-ligas/[leagueId]/equipos/page.tsx, src/app/(admin)/mis-ligas/[leagueId]/fechas/page.tsx, src/app/(admin)/mis-ligas/[leagueId]/descuentos/page.tsx, src/app/(admin)/mis-ligas/[leagueId]/ajustes/page.tsx, src/components/layout/league-nav.tsx, tests/e2e/league-navigation.spec.ts
+      Hecho cuando: el menú lleva a Resumen, Equipos, Fechas, Descuentos y Ajustes con la vista actual marcada; a 360 px se abre y se cierra con su botón sin desplazamiento horizontal; en pantallas anchas queda fijo; los accesos a finalizar la liga llevan a Ajustes, y los E2E existentes siguen en verde con las rutas nuevas.
+
+- [x] T95 - Crear la vista Resumen de la liga [AÑADIDO]
+      RF: [SIN RF] (plan D22)
+      Archivos: src/app/(admin)/mis-ligas/[leagueId]/page.tsx, src/server/queries/league-admin.ts, tests/e2e/league-navigation.spec.ts
+      Hecho cuando: el E2E ve el estado de la liga, llega a la fecha abierta en un toque, copia el link público con un botón, y en una liga de un semestre terminado ve el aviso con acceso a finalizarla.
+
 ## Trazabilidad
 | RF | Tareas |
 |---|---|

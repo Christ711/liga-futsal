@@ -30,7 +30,7 @@ export async function updateLeagueAction(
 
   const result = await updateLeague(leagueId, parsed.data, await headers());
   if (!result.ok) return { ok: false, error: result.error, values: parsed.data };
-  revalidatePath(`/mis-ligas/${leagueId}`);
+  revalidatePath(`/mis-ligas/${leagueId}`, "layout");
   return { ok: true, notice: "Cambios guardados." };
 }
 
@@ -43,7 +43,7 @@ export async function deleteLeagueAction(leagueId: string): Promise<Result<never
 export async function finalizeLeagueAction(leagueId: string): Promise<Result<null>> {
   const result = await finalizeLeague(leagueId, await headers());
   if (result.ok) {
-    revalidatePath(`/mis-ligas/${leagueId}`);
+    revalidatePath(`/mis-ligas/${leagueId}`, "layout");
     revalidatePath("/mis-ligas");
   }
   return result;

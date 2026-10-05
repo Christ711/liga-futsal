@@ -82,7 +82,7 @@ export function FinalizeMatchdayDialog({
               No, seguir
             </Button>
             <Button asChild size="lg" className="h-11 w-full sm:w-auto">
-              <Link href={`/mis-ligas/${leagueId}#finalizar-liga`}>Finalizar la liga</Link>
+              <Link href={`/mis-ligas/${leagueId}/ajustes#finalizar-liga`}>Finalizar la liga</Link>
             </Button>
           </DialogFooter>
         </DialogContent>

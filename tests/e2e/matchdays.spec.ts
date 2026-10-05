@@ -31,7 +31,7 @@ async function generate(page: Page, playDate?: string) {
 test.describe("generar una fecha (RF-42, RF-43, RF-48, RF-97)", () => {
   test("el diálogo propone el día de hoy", async ({ page, request }) => {
     const { league } = await leagueWithTeams(page, request);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     await section(page).getByRole("button", { name: "Generar fecha" }).click();
 
@@ -45,7 +45,7 @@ test.describe("generar una fecha (RF-42, RF-43, RF-48, RF-97)", () => {
     request,
   }) => {
     const { league } = await leagueWithTeams(page, request);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     const dialog = await generate(page, "2026-10-03");
 
@@ -66,7 +66,7 @@ test.describe("generar una fecha (RF-42, RF-43, RF-48, RF-97)", () => {
     const { league } = await leagueWithTeams(page, request);
     await seedMatchday(league.id, "2026-09-05", { finalized: true });
     await seedMatchday(league.id, "2026-09-19", { finalized: true });
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     await generate(page, "2026-09-12");
 
@@ -79,7 +79,7 @@ test.describe("generar una fecha (RF-42, RF-43, RF-48, RF-97)", () => {
   test("rechaza un día que ya tiene otra fecha (RF-99)", async ({ page, request }) => {
     const { league } = await leagueWithTeams(page, request);
     await seedMatchday(league.id, "2026-09-05", { finalized: true });
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     const dialog = await generate(page, "2026-09-05");
 
@@ -93,7 +93,7 @@ test.describe("generar una fecha (RF-42, RF-43, RF-48, RF-97)", () => {
   }) => {
     const { league } = await leagueWithTeams(page, request, 2);
 
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     await expect(section(page)).toContainText(
       "Se necesitan al menos 3 equipos para generar una fecha.",
@@ -105,7 +105,7 @@ test.describe("generar una fecha (RF-42, RF-43, RF-48, RF-97)", () => {
     const { league } = await leagueWithTeams(page, request);
     await seedMatchday(league.id, "2026-09-05");
 
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     await expect(section(page)).toContainText("Hay una fecha abierta. Primero finaliza esa fecha.");
     await expect(section(page).getByRole("button", { name: "Generar fecha" })).toBeDisabled();
@@ -125,7 +125,7 @@ test("muestra las fechas incompletas con sus pendientes y las finalizadas (RF-10
   const finalized = await seedMatchday(league.id, "2026-09-12", { finalized: true });
   await seedMatch(finalized.id, { teamAId: tigres!.id, teamBId: leones!.id }, { finished: true });
 
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/fechas`);
 
   await expect(matchdayItem(page, 1)).toContainText("Incompleta (2)");
   await expect(matchdayItem(page, 2)).toContainText("Finalizada");
@@ -144,7 +144,7 @@ test.describe("cambiar el día de una fecha (RF-43, RF-98, RF-99)", () => {
     const { league } = await leagueWithTeams(page, request);
     await seedMatchday(league.id, "2026-09-05", { finalized: true });
     await seedMatchday(league.id, "2026-09-12", { finalized: true });
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     await changeDay(page, 1, "2026-09-26");
 
@@ -156,7 +156,7 @@ test.describe("cambiar el día de una fecha (RF-43, RF-98, RF-99)", () => {
     const { league } = await leagueWithTeams(page, request);
     await seedMatchday(league.id, "2026-09-05", { finalized: true });
     await seedMatchday(league.id, "2026-09-12", { finalized: true });
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     const item = await changeDay(page, 1, "2026-09-12");
 
@@ -182,7 +182,7 @@ test.describe("eliminar una fecha (RF-50, RF-51)", () => {
     );
     await seedMatch(first.id, { teamAId: tigres!.id, teamBId: halcones!.id }, { position: 3 });
     await seedMatchday(league.id, "2026-09-12");
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     const item = matchdayItem(page, 1);
     await item.locator("summary").click();
@@ -202,7 +202,7 @@ test.describe("eliminar una fecha (RF-50, RF-51)", () => {
   test("una fecha sin partidos terminados lo dice en el diálogo", async ({ page, request }) => {
     const { league } = await leagueWithTeams(page, request);
     await seedMatchday(league.id, "2026-09-05");
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/fechas`);
 
     const item = matchdayItem(page, 1);
     await item.locator("summary").click();
@@ -215,7 +215,7 @@ test.describe("eliminar una fecha (RF-50, RF-51)", () => {
 test("la sección de fechas y su diálogo caben en 360 px (RNF-3)", async ({ page, request }) => {
   const { league } = await leagueWithTeams(page, request);
   await seedMatchday(league.id, "2026-09-05", { finalized: true });
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/fechas`);
   const scrollWidth = () => page.evaluate(() => document.documentElement.scrollWidth);
 
   await matchdayItem(page, 1).locator("summary").click();

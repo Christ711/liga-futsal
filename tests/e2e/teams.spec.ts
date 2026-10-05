@@ -28,7 +28,7 @@ async function addTeam(page: Page, name: string) {
 async function openLeague(page: Page, request: import("@playwright/test").APIRequestContext) {
   const owner = await signInNewAccount(page, request);
   const league = await seedLeague(owner.email);
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
   return league;
 }
 
@@ -174,7 +174,7 @@ test("en una liga finalizada los equipos se ven pero no se editan (RF-76)", asyn
   const league = await seedLeague(owner.email, { status: "FINALIZED" });
   await seedTeam(league.id, "Los Tigres");
 
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
 
   const item = teamItem(page, "Los Tigres");
   await item.locator("summary").first().click();

@@ -29,25 +29,33 @@
 }
 
 :root {
+  /*
+   * Paleta de la app (plan D22): primario verde esmeralda sobre fondo gris
+   * claro con tarjetas blancas. Para probar otra paleta basta con cambiar los
+   * tokens de esta sección; el texto debe mantener un contraste de 4,5:1.
+   */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.975 0.004 165);
+  --foreground: oklch(0.21 0.02 165);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.21 0.02 165);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.21 0.02 165);
+  /* emerald-700: 5,5:1 con texto blanco. */
+  --primary: oklch(0.508 0.118 165.612);
+  --primary-foreground: oklch(1 0 0);
+  /* emerald-100 con texto emerald-900, para acciones secundarias. */
+  --secondary: oklch(0.95 0.052 163.051);
+  --secondary-foreground: oklch(0.378 0.077 168.94);
+  --muted: oklch(0.955 0.006 165);
+  --muted-foreground: oklch(0.47 0.02 165);
+  /* Fondo de lo activo o resaltado, como la vista actual del menú. */
+  --accent: oklch(0.979 0.021 166.113);
+  --accent-foreground: oklch(0.378 0.077 168.94);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.91 0.008 165);
+  --input: oklch(0.89 0.01 165);
+  --ring: oklch(0.596 0.145 163.225);
 }
 
 .dark {

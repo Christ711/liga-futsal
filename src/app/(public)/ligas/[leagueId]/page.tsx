@@ -100,7 +100,7 @@ function MatchdayResults({ matchday, open }: { matchday: PublicMatchday; open: b
     <details
       open={open}
       aria-label={`Fecha ${matchday.number}`}
-      className="group/fecha overflow-hidden rounded-xl border"
+      className="group/fecha overflow-hidden rounded-xl border bg-card"
     >
       <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
         <span className="grid min-w-0 flex-1 gap-1">

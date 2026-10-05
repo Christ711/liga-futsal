@@ -53,7 +53,7 @@ test.describe("agregar y editar jugadores", () => {
     request,
   }) => {
     const { league, tigres } = await openLeague(page, request);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/equipos`);
 
     const players = await openPlayers(page, "Tigres");
     await addPlayer(players, "  Ana Pérez ");
@@ -69,7 +69,7 @@ test.describe("agregar y editar jugadores", () => {
   test("renombra un jugador (RF-34)", async ({ page, request }) => {
     const { league, tigres } = await openLeague(page, request);
     await seedPlayer(league.id, tigres.id, "Ana Pérez");
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/equipos`);
 
     const players = await openPlayers(page, "Tigres");
     const item = await openPlayer(players, "Ana Pérez");
@@ -86,7 +86,7 @@ test.describe("agregar y editar jugadores", () => {
   }) => {
     const { league, tigres, leones } = await openLeague(page, request);
     await seedPlayer(league.id, leones.id, "Juan Soto");
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/equipos`);
 
     const players = await openPlayers(page, "Tigres");
     await addPlayer(players, "JUAN SOTO");
@@ -100,7 +100,7 @@ test.describe("agregar y editar jugadores", () => {
 
   test("rechaza un nombre vacío o de 41 caracteres (RF-36)", async ({ page, request }) => {
     const { league, tigres } = await openLeague(page, request);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/equipos`);
     const players = await openPlayers(page, "Tigres");
 
     await addPlayer(players, "  ");
@@ -116,7 +116,7 @@ test.describe("eliminar jugadores", () => {
   test("elimina un jugador sin goles (RF-38)", async ({ page, request }) => {
     const { league, tigres } = await openLeague(page, request);
     await seedPlayer(league.id, tigres.id, "Ana Pérez");
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/equipos`);
 
     const players = await openPlayers(page, "Tigres");
     const item = await openPlayer(players, "Ana Pérez");
@@ -141,7 +141,7 @@ test.describe("eliminar jugadores", () => {
       { teamAId: tigres.id, teamBId: leones.id },
       { id: player.id, teamId: tigres.id },
     );
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/equipos`);
 
     const players = await openPlayers(page, "Tigres");
     const item = await openPlayer(players, "Goleador");
@@ -157,7 +157,7 @@ test.describe("eliminar jugadores", () => {
 test("traspasa un jugador a otro equipo de la liga (RF-39)", async ({ page, request }) => {
   const { league, tigres, leones } = await openLeague(page, request);
   await seedPlayer(league.id, tigres.id, "Ana Pérez");
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
 
   const players = await openPlayers(page, "Tigres");
   const item = await openPlayer(players, "Ana Pérez");
@@ -179,7 +179,7 @@ test("en una liga finalizada la lista de jugadores se ve pero no se edita (RF-76
   const league = await seedLeague(owner.email, { status: "FINALIZED" });
   const team = await seedTeam(league.id, "Tigres");
   await seedPlayer(league.id, team.id, "Ana Pérez");
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
 
   const players = await openPlayers(page, "Tigres");
 
@@ -194,7 +194,7 @@ test("un equipo abierto con un jugador en edición cabe en 360 px (RNF-3)", asyn
 }) => {
   const { league, tigres } = await openLeague(page, request);
   await seedPlayer(league.id, tigres.id, "Bartolomé Fernández Riquelme Undurraga");
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
 
   const players = await openPlayers(page, "Tigres");
   await openPlayer(players, "Bartolomé Fernández Riquelme Undurraga");

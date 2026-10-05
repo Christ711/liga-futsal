@@ -60,11 +60,9 @@ export type LeagueTables = { standings: StandingsRow[]; topScorers: TopScorerRow
  * se vuelve a leer la fecha y se invalidan las tablas de la liga (ADR 011).
  */
 export function MatchdayScreen({
-  leagueName,
   initialView,
   initialTables,
 }: {
-  leagueName: string;
   initialView: MatchdayView;
   initialTables: LeagueTables;
 }) {
@@ -208,10 +206,10 @@ export function MatchdayScreen({
     <div className="grid gap-5">
       <div className="grid gap-1">
         <Link
-          href={`/mis-ligas/${leagueId}`}
-          className="text-sm wrap-anywhere text-muted-foreground underline"
+          href={`/mis-ligas/${leagueId}/fechas`}
+          className="text-sm text-muted-foreground underline"
         >
-          {leagueName}
+          Volver a las fechas
         </Link>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h1 className="text-2xl font-semibold">Fecha {view.matchday.number}</h1>

@@ -75,7 +75,7 @@ test("una liga en curso de un semestre terminado muestra el aviso con acceso a f
   await expect(previousItem).toContainText("El semestre terminó");
   await expect(previousItem.getByRole("link", { name: "Finalizar liga" })).toHaveAttribute(
     "href",
-    `/mis-ligas/${previous.id}#finalizar-liga`,
+    `/mis-ligas/${previous.id}/ajustes#finalizar-liga`,
   );
   await expect(currentItem).not.toContainText("El semestre terminó");
 });

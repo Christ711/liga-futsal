@@ -43,7 +43,7 @@ export function MatchdaysSection({
       : "Cada fecha es todos contra todos.";
 
   return (
-    <PageSection id="fechas" title="Fechas" description={description}>
+    <PageSection id="fechas" title="Fechas" description={description} level={1}>
       <div className="grid gap-4">
         {matchdays.length === 0 ? (
           <p className="text-sm text-muted-foreground">Todavía no hay fechas.</p>
@@ -53,7 +53,7 @@ export function MatchdaysSection({
               <li
                 key={matchday.id}
                 aria-labelledby={`matchday-${matchday.id}-label`}
-                className="overflow-hidden rounded-xl border"
+                className="overflow-hidden rounded-xl border bg-card"
               >
                 <MatchdayLink leagueId={leagueId} matchday={matchday} />
                 {finalized ? null : (
@@ -94,7 +94,7 @@ function MatchdayLink({ leagueId, matchday }: { leagueId: string; matchday: Matc
   return (
     <Link
       href={`/mis-ligas/${leagueId}/fechas/${matchday.id}`}
-      className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+      className="flex items-center gap-3 px-4 py-3 hover:bg-accent"
     >
       <span className="grid min-w-0 flex-1 gap-1">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">

@@ -134,6 +134,7 @@ test.describe("administración de la liga", () => {
     const league = await seedLeague(owner.email);
     await page.goto(`/mis-ligas/${league.id}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(league.name);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
     await expect(details(page)).toBeVisible();
 
     const other = await createAccount(request);
@@ -159,11 +160,12 @@ test.describe("editar una liga", () => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email);
     const newName = uniqueLeagueName();
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await editLeague(page, { name: newName, semester: previousSemester() });
 
     await expect(details(page).getByRole("status")).toHaveText("Cambios guardados.");
+    await page.goto(`/mis-ligas/${league.id}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(newName);
     expect(await leagueRow(league.id)).toMatchObject({
       name: newName,
@@ -178,7 +180,7 @@ test.describe("editar una liga", () => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email);
     const taken = await seedLeague(owner.email);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await editLeague(page, { name: taken.name.toLowerCase() });
 
@@ -196,7 +198,7 @@ test.describe("editar una liga", () => {
   }) => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await editLeague(page, { name: league.name.toUpperCase() });
 
@@ -206,7 +208,7 @@ test.describe("editar una liga", () => {
   test("rechaza un semestre inválido sin cambiar nada (RF-16)", async ({ page, request }) => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await editLeague(page, { semester: "26-2" });
 
@@ -221,8 +223,9 @@ test.describe("editar una liga", () => {
     const league = await seedLeague(owner.email, { status: "FINALIZED" });
 
     await page.goto(`/mis-ligas/${league.id}`);
-
     await expect(page.getByRole("main")).toContainText("Finalizada");
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
+
     await expect(page.getByRole("button", { name: "Guardar cambios" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Eliminar liga" })).toBeVisible();
   });
@@ -235,7 +238,7 @@ test.describe("eliminar una liga", () => {
   }) => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await page.getByRole("button", { name: "Eliminar liga" }).click();
 
@@ -255,7 +258,7 @@ test.describe("eliminar una liga", () => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email);
     const team = await seedTeamWithCrest(league.id);
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await page.getByRole("button", { name: "Eliminar liga" }).click();
     await page.getByRole("alertdialog").getByRole("button", { name: "Eliminar liga" }).click();
@@ -272,7 +275,7 @@ test.describe("eliminar una liga", () => {
   test("también se puede eliminar una liga finalizada (RF-78)", async ({ page, request }) => {
     const owner = await signInNewAccount(page, request);
     const league = await seedLeague(owner.email, { status: "FINALIZED" });
-    await page.goto(`/mis-ligas/${league.id}`);
+    await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
     await page.getByRole("button", { name: "Eliminar liga" }).click();
     await page.getByRole("alertdialog").getByRole("button", { name: "Eliminar liga" }).click();
@@ -294,7 +297,7 @@ test("las páginas de nueva liga y de administración caben en 360 px (RNF-3)", 
 
   await page.goto("/mis-ligas/nueva");
   expect(await scrollWidth()).toBeLessThanOrEqual(360);
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/ajustes`);
   expect(await scrollWidth()).toBeLessThanOrEqual(360);
   await page.getByRole("button", { name: "Eliminar liga" }).click();
   await expect(page.getByRole("alertdialog")).toBeVisible();

@@ -42,7 +42,7 @@ export function TeamsSection({
       : errorMessages.TEAMS_LOCKED;
 
   return (
-    <PageSection id="equipos" title="Equipos" description={description}>
+    <PageSection id="equipos" title="Equipos" description={description} level={1}>
       <div className="grid gap-4">
         {teams.length === 0 ? (
           <p className="text-sm text-muted-foreground">Todavía no hay equipos.</p>
@@ -52,7 +52,7 @@ export function TeamsSection({
               <li
                 key={team.id}
                 aria-labelledby={`team-${team.id}-label`}
-                className="rounded-xl border"
+                className="rounded-xl border bg-card"
               >
                 <details className="group/team">
                   <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
