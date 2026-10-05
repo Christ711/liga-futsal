@@ -426,17 +426,17 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
 
 ## Fase 6 - Requisitos no funcionales y entrega
 
-- [ ] T83 - Verificar el ancho de 360 px en todas las páginas
+- [x] T83 - Verificar el ancho de 360 px en todas las páginas
       RF: [SIN RF] (RNF-3)
       Archivos: tests/e2e/responsive.spec.ts
       Hecho cuando: en cada página principal, pública y autenticada, `document.documentElement.scrollWidth` no supera 360.
 
-- [ ] T84 - Medir la carga de la tabla pública con red y CPU limitadas
+- [x] T84 - Medir la carga de la tabla pública con red y CPU limitadas
       RF: [SIN RF] (RNF-2)
       Archivos: tests/e2e/performance.spec.ts
       Hecho cuando: con 150 ms de latencia, 1,6 Mbps y CPU 4 veces más lenta, con caché vacía, la tabla es visible en menos de 3 s contra el build local, y el test acepta `BASE_URL` para correr contra producción.
 
-- [ ] T85 - Cubrir el flujo principal de los criterios de finalización
+- [x] T85 - Cubrir el flujo principal de los criterios de finalización
       RF: [SIN RF] (criterios de finalización de la spec 001)
       Archivos: tests/e2e/main-flow.spec.ts
       Hecho cuando: un solo E2E a 360 px registra con código, crea liga, 4 equipos y jugadores, genera fecha, anota goles, termina un partido, ve la tabla pública sin sesión y finaliza la fecha.
