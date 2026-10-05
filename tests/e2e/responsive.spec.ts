@@ -75,14 +75,18 @@ test("las páginas autenticadas caben en 360 px sin desplazamiento horizontal (R
     "/mis-ligas",
     "/mis-ligas/nueva",
     `/mis-ligas/${league.id}`,
+    `/mis-ligas/${league.id}/equipos`,
+    `/mis-ligas/${league.id}/fechas`,
     `/mis-ligas/${league.id}/fechas/${matchday.id}`,
+    `/mis-ligas/${league.id}/descuentos`,
+    `/mis-ligas/${league.id}/ajustes`,
     "/cuenta",
   ]) {
     expect(await widthOf(page, path), path).toBeLessThanOrEqual(360);
   }
 
   // Con todo desplegado: un equipo y un jugador en edición, y las pestañas de la fecha.
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
   const team = page
     .getByRole("region", { name: "Equipos" })
     .getByRole("listitem", { name: LONG_TEAM(1), exact: true });

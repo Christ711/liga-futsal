@@ -29,25 +29,33 @@
 }
 
 :root {
+  /*
+   * Paleta de la app (plan D22): primario azul sobre fondo gris
+   * claro con tarjetas blancas. Para probar otra paleta basta con cambiar los
+   * tokens de esta sección; el texto debe mantener un contraste de 4,5:1.
+   */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.975 0.005 255);
+  --foreground: oklch(0.21 0.03 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.21 0.03 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.21 0.03 260);
+  /* blue-700: 6,7:1 con texto blanco. */
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(1 0 0);
+  /* blue-100 con texto blue-900, para acciones secundarias. */
+  --secondary: oklch(0.932 0.032 255.585);
+  --secondary-foreground: oklch(0.379 0.146 265.522);
+  --muted: oklch(0.955 0.008 255);
+  --muted-foreground: oklch(0.47 0.03 257);
+  /* Fondo de lo activo o resaltado, como la vista actual del menú. */
+  --accent: oklch(0.97 0.014 254.604);
+  --accent-foreground: oklch(0.379 0.146 265.522);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.91 0.01 255);
+  --input: oklch(0.89 0.012 255);
+  --ring: oklch(0.546 0.245 262.881);
 }
 
 .dark {

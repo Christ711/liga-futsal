@@ -30,7 +30,7 @@ Una sola app Next.js (App Router) en Vercel sobre Postgres en Neon, con Prisma, 
 ### Interfaz (`src/app`, `src/components`)
 - Rutas públicas `(public)`: `/` (portada), `/ligas/[leagueId]` (liga en curso o finalizada), `/escudos/[teamId]/[hash]` (ruta que sirve el escudo).
 - Rutas de cuenta: `/ingresar`, `/registro`, `/recuperar`, `/restablecer`, `/cuenta`.
-- Rutas autenticadas `(admin)`: `/mis-ligas`, `/mis-ligas/nueva`, `/mis-ligas/[leagueId]` (equipos, jugadores, descuentos, fechas), `/mis-ligas/[leagueId]/fechas/[matchdayId]` (vista de la fecha). El layout de `(admin)` exige sesión y monta el proveedor de TanStack Query.
+- Rutas autenticadas `(admin)` [MODIFICADO]: `/mis-ligas`, `/mis-ligas/nueva`, y la administración de cada liga dividida en subpáginas (D22): `/mis-ligas/[leagueId]` (resumen), `/mis-ligas/[leagueId]/equipos` (equipos, escudos y jugadores), `/mis-ligas/[leagueId]/fechas` (lista de fechas) con `/mis-ligas/[leagueId]/fechas/[matchdayId]` (vista de la fecha), `/mis-ligas/[leagueId]/descuentos` y `/mis-ligas/[leagueId]/ajustes` (datos de la liga, finalizar y eliminar). El layout de `(admin)` exige sesión y monta el proveedor de TanStack Query; el de cada liga, el menú lateral. (Anterior: Rutas autenticadas `(admin)`: `/mis-ligas`, `/mis-ligas/nueva`, `/mis-ligas/[leagueId]` (equipos, jugadores, descuentos, fechas), `/mis-ligas/[leagueId]/fechas/[matchdayId]` (vista de la fecha). El layout de `(admin)` exige sesión y monta el proveedor de TanStack Query.)
 - Rutas GET privadas para TanStack Query (ADR 011): `/api/leagues/[leagueId]/matchdays/[matchdayId]` y `/api/leagues/[leagueId]/tables`.
 - `src/app/**/actions.ts`: Server Actions que validan la entrada con Zod y llaman al caso de uso; no contienen reglas.
 - `components/ui`: componentes de shadcn/ui (AlertDialog, Dialog, Sheet, Select, Button, Input, Tabs, Sonner).
@@ -177,6 +177,12 @@ LeagueSnapshot    leagueId (PK) → League (cascade), standings (jsonb), topScor
 - Alternativa descartada: columna `isAdmin` en `user`. Por qué no: exige migración y entrar a Neon con SQL para nombrar o quitar administradores.
 - Alternativa descartada: el plugin de administración de Better Auth. Por qué no: agrega roles, bloqueos y suplantación de usuarios que la spec no pide, con tablas y endpoints extra que proteger.
 
+
+### D22. Administración de la liga en subpáginas con menú lateral, y color principal azul [AÑADIDO]
+- Decisión: la administración de una liga se divide en cinco subpáginas con URL propia: Resumen (estado de la liga, la fecha abierta con acceso directo, el link público para copiar y el aviso de RF-94), Equipos, Fechas, Descuentos y Ajustes (datos de la liga, finalizar y eliminar). Un menú lateral las une: en el celular se abre con un botón y se superpone al contenido; en pantallas anchas queda fijo a la izquierda. Los accesos a finalizar la liga de RF-94 y RF-106 llevan a Ajustes. El color se define con los tokens de shadcn/ui en `globals.css`: primario azul, fondo gris claro y tarjetas blancas, con contraste de texto de al menos 4,5:1; cambiar de paleta toca solo ese archivo.
+- Por qué: con equipos, jugadores, fechas, descuentos y ajustes en una sola página, la administración se volvió larga de recorrer en el celular; con subpáginas, el botón Atrás funciona, cada página carga menos y se pueden compartir links directos. El usuario prefirió el menú desplegable a una barra inferior porque esta estorba al desplazarse, y pidió color para no dejar todo en blanco y negro; entre verde y azul, comparados en las mismas pantallas, eligió azul.
+- Alternativa descartada: barra de navegación inferior fija. Por qué no: estorba al hacer scroll.
+- Alternativa descartada: pestañas sobre una sola página. Por qué no: las cinco no caben a 360 px sin desplazamiento lateral, y en el cliente no tendrían URL propia ni botón Atrás.
 ## Estrategia de tests
 
 **Unitarios (Vitest, `src/domain/**/*.test.ts`)** — sin base ni Next.js:

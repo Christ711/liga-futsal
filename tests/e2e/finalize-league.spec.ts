@@ -41,7 +41,7 @@ test("el diálogo advierte que no se puede deshacer y cuántos pendientes se des
   request,
 }) => {
   const { league } = await leagueToFinalize(page, request);
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/ajustes`);
 
   const dialog = await finalize(page);
   await expect(dialog).toContainText("Esta acción no se puede deshacer.");
@@ -51,8 +51,9 @@ test("el diálogo advierte que no se puede deshacer y cuántos pendientes se des
   await dialog.getByRole("button", { name: "Finalizar liga" }).click();
 
   await expect(dialog).toBeHidden();
-  await expect(page.getByRole("main")).toContainText("Finalizada");
   await expect(page.getByRole("region", { name: "Finalizar liga" })).toHaveCount(0);
+  await page.goto(`/mis-ligas/${league.id}`);
+  await expect(page.getByRole("main")).toContainText("Finalizada");
   await page.goto("/mis-ligas");
   await expect(
     page.getByRole("region", { name: "Finalizadas", exact: true }).getByRole("link", {
@@ -64,7 +65,7 @@ test("el diálogo advierte que no se puede deshacer y cuántos pendientes se des
 test("los enlaces a finalizar la liga llevan a su sección", async ({ page, request }) => {
   const { league } = await leagueToFinalize(page, request);
 
-  await page.goto(`/mis-ligas/${league.id}#finalizar-liga`);
+  await page.goto(`/mis-ligas/${league.id}/ajustes#finalizar-liga`);
 
   await expect(page.locator("#finalizar-liga")).toHaveText("Finalizar liga");
 });
@@ -75,9 +76,9 @@ test("la vista pública de la liga finalizada muestra la tabla final, los golead
   browser,
 }) => {
   const { league } = await leagueToFinalize(page, request);
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/ajustes`);
   await (await finalize(page)).getByRole("button", { name: "Finalizar liga" }).click();
-  await expect(page.getByRole("main")).toContainText("Finalizada");
+  await expect(page.getByRole("region", { name: "Finalizar liga" })).toHaveCount(0);
 
   const visitor = await browser.newContext();
   const publicPage = await visitor.newPage();

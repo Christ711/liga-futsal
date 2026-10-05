@@ -15,7 +15,8 @@ export const invalidInput = (): NoticeFormState => ({
 
 /**
  * Convierte el resultado de un caso de uso en el estado del formulario y, si
- * funcionó, vuelve a renderizar la administración de la liga.
+ * funcionó, vuelve a renderizar la administración de la liga con todas sus
+ * subpáginas (plan D22).
  */
 export function toFormState(
   leagueId: string,
@@ -24,12 +25,12 @@ export function toFormState(
   notice: string,
 ): NoticeFormState {
   if (!result.ok) return { ok: false, error: result.error, values };
-  revalidatePath(`/mis-ligas/${leagueId}`);
+  revalidatePath(`/mis-ligas/${leagueId}`, "layout");
   return { ok: true, notice };
 }
 
 /** Resultado de una acción confirmada en un diálogo; si funcionó, refresca la liga. */
 export function refreshed(leagueId: string, result: Result<null>): Result<null> {
-  if (result.ok) revalidatePath(`/mis-ligas/${leagueId}`);
+  if (result.ok) revalidatePath(`/mis-ligas/${leagueId}`, "layout");
   return result;
 }

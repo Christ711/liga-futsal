@@ -47,6 +47,7 @@ test("el administrador carga una fecha y un gol en la liga de otro ayudante (RF-
 
   await expect(page).toHaveURL(new RegExp(`/mis-ligas/${league.id}$`));
   await expect(page.getByRole("status").filter({ hasText: NOTICE })).toBeVisible();
+  await page.goto(`/mis-ligas/${league.id}/fechas`);
   const matchdays = page.getByRole("region", { name: "Fechas" });
   await matchdays.getByRole("button", { name: "Generar fecha" }).click();
   const dialog = page.getByRole("dialog", { name: "Generar fecha" });

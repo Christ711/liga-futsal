@@ -65,7 +65,7 @@ function LeagueSection({
                 <li key={league.id}>
                   <Link
                     href={`/ligas/${league.id}`}
-                    className="flex items-center gap-3 rounded-xl border px-4 py-3 font-medium hover:bg-muted/50"
+                    className="flex items-center gap-3 rounded-xl border bg-card px-4 py-3 font-medium hover:bg-accent"
                   >
                     <span className="min-w-0 flex-1 wrap-anywhere">{league.name}</span>
                     <ChevronRight aria-hidden className="size-5 shrink-0 text-muted-foreground" />

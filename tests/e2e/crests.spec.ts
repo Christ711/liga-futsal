@@ -19,7 +19,7 @@ async function openTeamEditor(page: Page, request: import("@playwright/test").AP
   const owner = await signInNewAccount(page, request);
   const league = await seedLeague(owner.email);
   const team = await seedTeam(league.id, "Los Tigres");
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/equipos`);
   const item = teamItem(page, "Los Tigres");
   await item.locator("summary").first().click();
   return { item, team };

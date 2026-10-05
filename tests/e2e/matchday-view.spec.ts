@@ -69,7 +69,7 @@ test("muestra los partidos en su orden con sus equipos, marcador y estado (RF-47
 
 test("desde la liga se llega a la vista de la fecha", async ({ page, request }) => {
   const { league, url } = await openMatchday(page, request);
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/fechas`);
 
   await page.getByRole("link", { name: /Fecha 1/ }).click();
 
@@ -420,7 +420,7 @@ test.describe("finalizar la fecha (RF-49, RF-101 a RF-106)", () => {
     const last = page.getByRole("dialog", { name: "¿Era la última fecha del semestre?" });
     await expect(last.getByRole("link", { name: "Finalizar la liga" })).toHaveAttribute(
       "href",
-      `/mis-ligas/${league.id}#finalizar-liga`,
+      `/mis-ligas/${league.id}/ajustes#finalizar-liga`,
     );
   });
 });

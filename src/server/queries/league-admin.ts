@@ -2,8 +2,10 @@ import "server-only";
 
 import { MIN_TEAMS_FOR_MATCHDAY } from "@/domain/league-rules";
 import { matchdayStatus, numberMatchdays } from "@/domain/matchdays";
+import { isSemesterOver } from "@/domain/semester";
 import { db } from "@/server/db/client";
 import { fromDbDay } from "@/server/db/days";
+import { today } from "@/server/time";
 
 /** Datos de la página de administración de una liga; la autorización ya la hizo el layout. */
 export async function getLeagueAdmin(leagueId: string) {
@@ -49,6 +51,9 @@ export async function getLeagueAdmin(leagueId: string) {
     name: league.name,
     semester: league.semester,
     finalized,
+    // RF-94: en curso, pero de un semestre que ya terminó.
+    semesterOver: !finalized && isSemesterOver(league.semester, today()),
+    playerCount: league.teams.reduce((sum, team) => sum + team.players.length, 0),
     // RF-23, RF-24: equipos solo mientras la liga está en curso y sin fechas.
     canChangeTeams: !finalized && matchdays.length === 0,
     // RF-41, RF-100: el motivo por el que no se puede generar una fecha, si lo hay.

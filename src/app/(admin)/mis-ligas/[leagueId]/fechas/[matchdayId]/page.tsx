@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** Vista de una fecha para usar en la cancha (RF-52). La autoriza el layout de la liga. */
 export default async function MatchdayPage({ params }: Props) {
   const { leagueId, matchdayId } = await params;
-  const league = await loadOwnedLeague(leagueId);
+  await loadOwnedLeague(leagueId);
   const [view, tables] = await Promise.all([
     getMatchdayView(leagueId, matchdayId),
     getLeagueTables(leagueId),
@@ -27,7 +27,7 @@ export default async function MatchdayPage({ params }: Props) {
 
   return (
     <main className="mx-auto grid w-full max-w-lg px-4 py-6">
-      <MatchdayScreen leagueName={league.name} initialView={view} initialTables={tables} />
+      <MatchdayScreen initialView={view} initialTables={tables} />
     </main>
   );
 }

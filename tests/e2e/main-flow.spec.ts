@@ -31,7 +31,17 @@ test("un ayudante nuevo lleva una fecha completa desde el registro hasta la tabl
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(leagueName);
   const leagueUrl = page.url();
 
+  // El menú de la liga lleva a cada vista (plan D22).
+  const goTo = async (section: string) => {
+    await page.getByRole("button", { name: "Menú de la liga" }).click();
+    await page
+      .getByRole("navigation", { name: "Secciones de la liga" })
+      .getByRole("link", { name: section, exact: true })
+      .click();
+  };
+
   // Cuatro equipos con un jugador cada uno (RF-23, RF-33).
+  await goTo("Equipos");
   const teams = page.getByRole("region", { name: "Equipos" });
   const roster = { Tigres: "Juan", Leones: "Pedro", Pumas: "Diego", Halcones: "Tomás" };
   for (const [team, player] of Object.entries(roster)) {
@@ -47,6 +57,7 @@ test("un ayudante nuevo lleva una fecha completa desde el registro hasta la tabl
   }
 
   // Generar la fecha: todos contra todos, 6 partidos (RF-42, RF-97).
+  await goTo("Fechas");
   const matchdays = page.getByRole("region", { name: "Fechas" });
   await matchdays.getByRole("button", { name: "Generar fecha" }).click();
   const generate = page.getByRole("dialog", { name: "Generar fecha" });
@@ -102,7 +113,7 @@ test("un ayudante nuevo lleva una fecha completa desde el registro hasta la tabl
   await expect(page.getByRole("main")).toContainText("Incompleta (5)");
   await expect(first).toContainText("Bloqueado");
 
-  await page.goto(leagueUrl);
+  await page.goto(`${leagueUrl}/fechas`);
   await expect(matchdays.getByRole("listitem", { name: "Fecha 1" })).toContainText(
     "Incompleta (5)",
   );

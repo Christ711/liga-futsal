@@ -30,14 +30,14 @@ export function DeductionsSection({
       : "Se restan de los puntos del equipo en la tabla, que pueden quedar negativos.";
 
   return (
-    <PageSection id="descuentos" title="Descuentos de puntos" description={description}>
+    <PageSection id="descuentos" title="Descuentos de puntos" description={description} level={1}>
       <div className="grid gap-4">
         {deductions.length === 0 ? (
           <p className="text-sm text-muted-foreground">No hay descuentos aplicados.</p>
         ) : (
           <ul aria-label="Descuentos aplicados" className="grid gap-2">
             {deductions.map((deduction) => (
-              <li key={deduction.id} className="rounded-xl border">
+              <li key={deduction.id} className="rounded-xl border bg-card">
                 {finalized ? (
                   <DeductionRow deduction={deduction} />
                 ) : (

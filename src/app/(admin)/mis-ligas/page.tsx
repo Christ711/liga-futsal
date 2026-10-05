@@ -28,7 +28,7 @@ export default async function MyLeaguesPage() {
       </div>
 
       {empty ? (
-        <div className="grid justify-items-start gap-3 rounded-xl border p-6">
+        <div className="grid justify-items-start gap-3 rounded-xl border bg-card p-6">
           <p>Todavía no tienes ligas.</p>
           <Button asChild size="lg" className="h-11">
             <Link href="/mis-ligas/nueva">Crear liga</Link>
@@ -90,7 +90,7 @@ function InProgressItem({
       {league.semesterOver ? (
         <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
           <span className="font-medium text-amber-700">El semestre terminó</span>
-          <Link href={`/mis-ligas/${league.id}#finalizar-liga`} className="underline">
+          <Link href={`/mis-ligas/${league.id}/ajustes#finalizar-liga`} className="underline">
             Finalizar liga
           </Link>
         </p>
@@ -132,7 +132,7 @@ function LeagueItem({
   children?: ReactNode;
 }) {
   return (
-    <li className="rounded-xl border px-4 py-3">
+    <li className="rounded-xl border bg-card px-4 py-3">
       <Link
         href={`/mis-ligas/${league.id}`}
         className="font-medium wrap-anywhere underline-offset-4 hover:underline"

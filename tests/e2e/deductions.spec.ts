@@ -23,7 +23,7 @@ async function openLeague(page: Page, request: APIRequestContext) {
   const league = await seedLeague(owner.email);
   const tigres = await seedTeam(league.id, "Tigres");
   await seedTeam(league.id, "Leones");
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/descuentos`);
   return { league, tigres };
 }
 
@@ -82,7 +82,7 @@ test("sin equipos no ofrece aplicar descuentos", async ({ page, request }) => {
   const owner = await signInNewAccount(page, request);
   const league = await seedLeague(owner.email);
 
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/descuentos`);
 
   await expect(section(page)).toContainText("Agrega equipos para poder aplicar descuentos.");
   await expect(section(page).getByRole("button", { name: "Aplicar descuento" })).toHaveCount(0);
@@ -96,7 +96,7 @@ test("una liga finalizada ya no ofrece descuentos: quedaron en su tabla final (R
   const league = await seedLeague(owner.email, { status: "FINALIZED" });
   await seedTeam(league.id, "Tigres");
 
-  await page.goto(`/mis-ligas/${league.id}`);
+  await page.goto(`/mis-ligas/${league.id}/descuentos`);
 
   await expect(page.getByRole("main")).toContainText("Finalizada");
   await expect(section(page)).toHaveCount(0);

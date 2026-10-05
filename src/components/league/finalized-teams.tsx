@@ -17,7 +17,7 @@ export function FinalizedTeams({
         <li
           key={team.id}
           aria-labelledby={`equipo-final-${team.id}`}
-          className="grid gap-2 rounded-xl border px-4 py-3"
+          className="grid gap-2 rounded-xl border bg-card px-4 py-3"
         >
           <span className="flex items-center gap-3">
             <Crest teamId={team.id} name={team.name} crestHash={team.crestHash} size={32} />
