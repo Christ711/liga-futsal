@@ -19,6 +19,7 @@ export const errorMessages = {
   INVALID_POINTS: "Los puntos deben ser un número entero mayor que 0.",
   INVALID_SEMESTER: "El semestre no tiene un formato válido.",
   LEAGUE_FINALIZED: "La liga está finalizada y ya no se puede modificar.",
+  MATCHDAY_ALREADY_FINALIZED: "La fecha ya está finalizada.",
   MATCHDAY_OPEN: "Hay una fecha abierta. Primero finaliza esa fecha.",
   MATCH_ALREADY_FINISHED: "El partido ya está terminado.",
   MATCH_LOCKED: "El partido ya no se puede modificar porque su fecha fue finalizada.",

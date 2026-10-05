@@ -367,22 +367,22 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/server/use-cases/finish-match.ts, src/server/use-cases/revert-match.ts, src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/actions.ts, tests/integration/finish-match.test.ts
       Hecho cuando: terminar un partido (incluido un 0-0) hace que la tabla calculada sobre los datos persistidos lo cuente, y devolverlo a pendiente lo excluye conservando sus goles.
 
-- [ ] T72 - Crear los componentes de tabla de posiciones y de goleadores para 360 px
+- [x] T72 - Crear los componentes de tabla de posiciones y de goleadores para 360 px
       RF: RF-62, RF-70, RF-71
       Archivos: src/components/standings/standings-table.tsx, src/components/standings/top-scorers-table.tsx, src/components/standings/deduction-note.tsx
       Hecho cuando: con 8 equipos de nombre de 30 caracteres la tabla cabe en 360 px sin desplazamiento horizontal y el asterisco muestra cada motivo con su cantidad.
 
-- [ ] T73 - Consultar las tablas desde la vista de la fecha
+- [x] T73 - Consultar las tablas desde la vista de la fecha
       RF: RF-60, RF-61
       Archivos: src/app/api/leagues/[leagueId]/tables/route.ts, src/server/queries/tables.ts, src/components/matchday/matchday-tabs.tsx, tests/e2e/matchday-view.spec.ts
       Hecho cuando: el E2E termina un partido, abre la pestaña de tabla sin salir de la vista y ve la tabla y los goleadores actualizados.
 
-- [ ] T74 - Finalizar una fecha con confirmación y bloquear sus partidos
+- [x] T74 - Finalizar una fecha con confirmación y bloquear sus partidos
       RF: RF-49, RF-101, RF-102, RF-103, RF-104, RF-105
       Archivos: src/server/use-cases/finalize-matchday.ts, src/app/(admin)/mis-ligas/[leagueId]/fechas/[matchdayId]/actions.ts, src/components/matchday/finalize-matchday-dialog.tsx, tests/e2e/matchday-view.spec.ts
       Hecho cuando: el E2E finaliza con 2 pendientes, la fecha queda "Incompleta (2)", los terminados ya no admiten cambios, juega los pendientes y al refinalizar queda "Finalizada".
 
-- [ ] T75 - Ofrecer finalizar la liga después de finalizar una fecha
+- [x] T75 - Ofrecer finalizar la liga después de finalizar una fecha
       RF: RF-106
       Archivos: src/components/matchday/finalize-matchday-dialog.tsx, tests/e2e/matchday-view.spec.ts
       Hecho cuando: tras finalizar la fecha aparece "¿Era la última fecha del semestre?" con un botón que abre la finalización de la liga.

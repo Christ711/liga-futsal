@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { errorMessages, type Result } from "@/domain/result";
 import { addGoal } from "@/server/use-cases/add-goal";
+import { finalizeMatchday } from "@/server/use-cases/finalize-matchday";
 import { finishMatch } from "@/server/use-cases/finish-match";
 import { reassignGoal } from "@/server/use-cases/reassign-goal";
 import { removeGoal } from "@/server/use-cases/remove-goal";
@@ -54,4 +55,11 @@ export async function moveMatchAction(leagueId: string, input: unknown): Promise
   const parsed = z.object({ matchId: id, direction: z.enum(["up", "down"]) }).safeParse(input);
   if (!parsed.success) return invalid();
   return moveMatch(leagueId, parsed.data.matchId, parsed.data.direction, await headers());
+}
+
+export async function finalizeMatchdayAction(
+  leagueId: string,
+  matchdayId: string,
+): Promise<Result<null>> {
+  return finalizeMatchday(leagueId, matchdayId, await headers());
 }
