@@ -88,21 +88,16 @@ test("sin equipos no ofrece aplicar descuentos", async ({ page, request }) => {
   await expect(section(page).getByRole("button", { name: "Aplicar descuento" })).toHaveCount(0);
 });
 
-test("en una liga finalizada los descuentos se ven pero no se cambian (RF-76)", async ({
+test("una liga finalizada ya no ofrece descuentos: quedaron en su tabla final (RF-75, RF-76)", async ({
   page,
   request,
 }) => {
   const owner = await signInNewAccount(page, request);
   const league = await seedLeague(owner.email, { status: "FINALIZED" });
-  const team = await seedTeam(league.id, "Tigres");
-  await queryDatabase(
-    `INSERT INTO point_deduction (id, "teamId", points, reason) VALUES ($1, $2, 3, 'Atraso')`,
-    [crypto.randomUUID(), team.id],
-  );
+  await seedTeam(league.id, "Tigres");
 
   await page.goto(`/mis-ligas/${league.id}`);
 
-  await expect(deductionItem(page, "Atraso")).toContainText("3 puntos");
-  await expect(section(page).locator("summary")).toHaveCount(0);
-  await expect(section(page).getByRole("button", { name: "Aplicar descuento" })).toHaveCount(0);
+  await expect(page.getByRole("main")).toContainText("Finalizada");
+  await expect(section(page)).toHaveCount(0);
 });

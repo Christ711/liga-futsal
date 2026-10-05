@@ -40,7 +40,9 @@ export default defineConfig({
   webServer: {
     // Siempre contra el build de producción (ADR 013), nunca contra `next dev`.
     command: `pnpm build && pnpm start -p ${PORT}`,
-    url: `http://127.0.0.1:${PORT}`,
+    // Espera una ruta que no toca la base: `liga_e2e` la crea el globalSetup,
+    // que Playwright ejecuta después de levantar el servidor.
+    url: `http://127.0.0.1:${PORT}/api/auth/ok`,
     reuseExistingServer: false,
     timeout: 180_000,
     env: {

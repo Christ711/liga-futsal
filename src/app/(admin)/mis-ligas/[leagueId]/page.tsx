@@ -3,10 +3,11 @@ import Link from "next/link";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PageSection } from "@/components/layout/page-section";
+import { FinalizeLeagueDialog } from "@/components/league/finalize-league-dialog";
 import { getLeagueAdmin } from "@/server/queries/league-admin";
 
 import { LeagueForm } from "../league-form";
-import { deleteLeagueAction, updateLeagueAction } from "./actions";
+import { deleteLeagueAction, finalizeLeagueAction, updateLeagueAction } from "./actions";
 import { DeductionsSection } from "./deductions-section";
 import { MatchdaysSection } from "./matchdays-section";
 import { loadOwnedLeague } from "./owned-league";
@@ -39,6 +40,9 @@ export default async function LeagueAdminPage({ params }: Props) {
             {league.finalized ? "Finalizada" : "En curso"}
           </span>
         </p>
+        <Link href={`/ligas/${league.id}`} className="text-sm font-medium underline">
+          Ver página pública
+        </Link>
       </div>
 
       {league.finalized ? null : (
@@ -59,19 +63,37 @@ export default async function LeagueAdminPage({ params }: Props) {
         canChangeTeams={league.canChangeTeams}
       />
 
-      <MatchdaysSection
-        leagueId={league.id}
-        matchdays={league.matchdays}
-        finalized={league.finalized}
-        generateBlocker={league.generateBlocker}
-      />
+      {/* Una liga finalizada ya no tiene fechas ni descuentos: quedaron en sus tablas finales (RF-75). */}
+      {league.finalized ? null : (
+        <MatchdaysSection
+          leagueId={league.id}
+          matchdays={league.matchdays}
+          finalized={league.finalized}
+          generateBlocker={league.generateBlocker}
+        />
+      )}
 
-      <DeductionsSection
-        leagueId={league.id}
-        teams={league.teams}
-        deductions={league.deductions}
-        finalized={league.finalized}
-      />
+      {league.finalized ? null : (
+        <DeductionsSection
+          leagueId={league.id}
+          teams={league.teams}
+          deductions={league.deductions}
+          finalized={league.finalized}
+        />
+      )}
+
+      {league.finalized ? null : (
+        <PageSection
+          id="finalizar-liga"
+          title="Finalizar liga"
+          description="Al cierre del semestre, deja la liga en el historial con sus tablas finales."
+        >
+          <FinalizeLeagueDialog
+            pendingCount={league.pendingCount}
+            action={finalizeLeagueAction.bind(null, league.id)}
+          />
+        </PageSection>
+      )}
 
       <PageSection
         id="eliminar-liga"

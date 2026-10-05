@@ -5,7 +5,9 @@ test("la portada abre a 360 px en español", async ({ page }) => {
 
   expect(page.viewportSize()?.width).toBe(360);
   await expect(page.locator("html")).toHaveAttribute("lang", "es-CL");
-  await expect(page.getByRole("heading", { level: 1, name: "Liga Futsal" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Ligas de futsal y fútbol" }),
+  ).toBeVisible();
 });
 
 test("la API de autenticación responde", async ({ request }) => {
