@@ -414,12 +414,12 @@ Toda tarea, además de su criterio "Hecho cuando", termina con la verificación 
       Archivos: src/app/(public)/ligas/[leagueId]/page.tsx, src/components/league/finalized-league.tsx, tests/e2e/finalize-league.spec.ts
       Hecho cuando: el E2E ve en el historial la tabla final, los goleadores con su equipo y los equipos con sus jugadores y escudos.
 
-- [ ] T81 - Verificar la visibilidad y la autorización de extremo a extremo
+- [x] T81 - Verificar la visibilidad y la autorización de extremo a extremo
       RF: RF-12, RF-13, RF-14, RF-93
       Archivos: tests/e2e/visibility.spec.ts
       Hecho cuando: sin sesión no hay acciones en ninguna página pública, un ayudante ajeno ve solo la vista pública, las rutas GET privadas de una liga ajena responden 403, y ninguna página pública contiene correos.
 
-- [ ] T82 - Verificar que el último cambio gana entre dos dispositivos
+- [x] T82 - Verificar que el último cambio gana entre dos dispositivos
       RF: RF-85
       Archivos: tests/integration/last-write-wins.test.ts
       Hecho cuando: dos renombres consecutivos del mismo equipo desde dos sesiones dejan el nombre del último.

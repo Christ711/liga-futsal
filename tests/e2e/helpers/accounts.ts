@@ -40,15 +40,14 @@ export async function createAccount(request: APIRequestContext) {
 
 /**
  * Inicia sesión con la cuenta administradora de `ADMIN_EMAILS` (RF-112). La
- * crea si todavía no existe; con `--repeat-each` puede existir de antes.
+ * intenta crear siempre: puede existir de una repetición anterior, o la puede
+ * estar creando a la vez otro test en paralelo (el índice único hace que solo
+ * uno gane). En ambos casos basta con ingresar después.
  */
 export async function signInAsAdmin(page: Page, request: APIRequestContext) {
-  const response = await apiPost(request, "/api/auth/sign-up/email", {
+  await apiPost(request, "/api/auth/sign-up/email", {
     data: { email: e2eAdminEmail, password: PASSWORD, name: "", inviteCode: e2eInviteCode },
   });
-  if (!response.ok() && !(await response.text()).includes("USER_ALREADY_EXISTS")) {
-    throw new Error(`No se pudo crear la cuenta administradora: ${response.status()}`);
-  }
   await signIn(page, e2eAdminEmail, PASSWORD);
   await page.getByRole("button", { name: "Cerrar sesión" }).waitFor();
 }
